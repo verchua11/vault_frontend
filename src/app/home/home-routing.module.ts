@@ -6,6 +6,18 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'vault',
+        pathMatch: 'full',
+      },
+      {
+        path: 'vault',
+        loadChildren: () =>
+          import('./vault/vault.module').then((m) => m.VaultModule),
+      },
+    ],
   },
 ];
 
