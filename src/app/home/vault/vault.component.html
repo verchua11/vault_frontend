@@ -1,0 +1,78 @@
+<div class="page-wrapper">
+  <div class="title-nav">
+    <a nz-dropdown [nzDropdownMenu]="menu">
+      My Vault
+      <i
+        class="ms-3"
+        nz-icon
+        nzType="down"
+        nzTheme="outline"
+        style="font-size: 15px"
+      ></i>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item>1st menu item</li>
+        <li nz-menu-item>2nd menu item</li>
+        <li nz-menu-item>3rd menu item</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+  <div class="main-content">
+    <div class="file-explorer">
+      <p class="file-explorer-header">My Recently Opened Files</p>
+      <div class="recent-files">
+        <div *ngFor="let x of [1, 2, 3]" class="file-card">
+          <nz-card nzHoverable [nzCover]="coverTemplate">
+            <nz-card-meta
+              nzTitle="Lorem Ipsum"
+              nzDescription="Lorem ipsum"
+            ></nz-card-meta>
+          </nz-card>
+          <ng-template #coverTemplate>
+            <img
+              alt="example"
+              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            />
+          </ng-template>
+        </div>
+      </div>
+      <p class="file-explorer-header">Folders</p>
+      <div class="folders">
+        <nz-card
+          class="folder-card"
+          *ngFor="let x of ['Makati', 'BGC', 'Ortigas']"
+        >
+          <div class="folder-card-content">
+            <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+            <p>{{ x }}</p>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+    <div class="file-info">
+      <p class="file-info-header">My Vault</p>
+      <p class="file-info-subtext">
+        Select a file or folder to view its details
+      </p>
+      <ul class="mt-1" nz-menu nzMode="horizontal">
+        <li nz-menu-item nzSelected>Details</li>
+        <li nz-menu-item>Activity</li>
+      </ul>
+      <div class="folder-icon">
+        <i class="mt-2 mb-2" nz-icon nzType="folder" nzTheme="outline"></i>
+      </div>
+      <div class="file-metadata">
+        <p>File Name: BGC</p>
+        <p>Type: Folder</p>
+        <p>Size: 6 MB (6,757,874 bytes)</p>
+        <p>Storage used: 6 MB (6,757,874 bytes)</p>
+        <p>Location: My Vault</p>
+        <p>Owner: me</p>
+        <p>Modified: Dec 25, 2020 by me</p>
+        <p>Opened: Dec 25, 2020 by me</p>
+        <p>Created: Dec 23, 2020</p>
+      </div>
+    </div>
+  </div>
+</div>
