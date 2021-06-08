@@ -64,6 +64,7 @@ a:link {
 }
 a:hover {
   text-decoration: none;
+  color: var(--jcva-black-80);
 }
 
 /* width */
@@ -86,6 +87,37 @@ a:hover {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--jcva-black-50);
+}
+
+// ANT DESIGN CUSTOM STYLES
+.ant-dropdown-link {
+  display: flex;
+  align-items: center;
+  color: var(--jcva-black-80);
+}
+
+.ant-card {
+  border-radius: 8px;
+}
+
+.ant-card-cover img {
+  border-radius: 8px 8px 0 0;
+}
+
+.ant-card-meta-title {
+  color: var(--jcva-black-80);
+}
+
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected {
+  color: var(--jcva-black-80);
+  border-bottom: 2px solid var(--jcva-orange);
 }
 
 // GLOBAL STYLES
@@ -210,6 +242,13 @@ a:hover {
 
 .filler {
   flex: 1;
+}
+
+.page-wrapper {
+  margin-top: 80px;
+  margin-left: 300px;
+  padding: 1.5rem 3rem;
+  transition: all 0.3s;
 }
 
 @media screen and (min-width: 576px) {
