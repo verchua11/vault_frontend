@@ -1,0 +1,17 @@
+<label>{{ label }}</label>
+<div class="input-wrapper">
+  <input
+    [type]="type ? type : 'text'"
+    class="jcva-input"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [ngClass]="{
+      'jcva-input-white': mode === 'white',
+      disabled: disabled,
+      'has-error': hasError,
+      successful: successful
+    }"
+    [formControl]="parentFormControl"
+  />
+  <i *ngIf="successful" class="fas fa-check fa-lg"></i>
+</div>

@@ -1,0 +1,237 @@
+:root {
+  --jcva-orange: #7fb1ff;
+  --jcva-orange-40: #f1b89d;
+  --jcva-orange-50: #f1a37e;
+  --jcva-black-80: #58595b;
+  --jcva-black-70: #737477;
+  --jcva-black-60: #8f9094;
+  --jcva-black-50: #aaacb0;
+  --jcva-black-40: #c5c7cc;
+  --jcva-white: #ffffff;
+  --jcva-background: #f1f1f2;
+  --jcva-steel-blue: #577897;
+
+  --jcva-sec-orange: #f16522;
+  --jcva-ind-red: #ef4123;
+  --jcva-ind-green: #93db51;
+  --jcva-ind-yellow: #ffdd15;
+  --jcva-ind-teal: #1ed6a5;
+  --jcva-blue: #00adee;
+  --jcva-pink: #ec649d;
+  --jcva-green: #1ed6a5;
+}
+
+$theme-colors: (
+  // "primary": #352463,
+  "secondary": #ffffff
+);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+@font-face {
+  font-family: "Nimbus Sans L";
+  src: local("Nimbus Sans L"),
+    url(./assets/fonts/NimbusSanL-Regular.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "Nimbus Sans L";
+  font-weight: 900;
+  src: local("Nimbus Sans L Bold"),
+    url(./assets/fonts/NimbusSanL-Bold.otf) format("opentype");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-size: 12px;
+  font-family: "Nimbus Sans L";
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a,
+a:link {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--jcva-black-50);
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--jcva-black-50);
+}
+
+// GLOBAL STYLES
+.jcva-card-header {
+  color: var(--jcva-black-80);
+  font-size: 1.5rem;
+}
+
+.jcva-card-header-orange {
+  color: var(--jcva-orange);
+  font-size: 1.5rem;
+}
+
+.input-label {
+  font-size: 0.85rem;
+  color: var(--jcva-black-80);
+}
+
+.input-label-white {
+  font-size: 0.85rem;
+  color: var(--jcva-white);
+}
+
+.jcva-btn,
+.jcva-btn-lg {
+  color: #fff;
+  background-color: var(--jcva-orange);
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid var(--jcva-orange);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.5;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #cbddfa;
+    border-color: #cbddfa;
+    color: white;
+  }
+
+  &:active {
+    color: var(--jcva-orange);
+    background-color: var(--jcva-white);
+    border-color: var(--jcva-orange);
+  }
+}
+
+.jcva-btn {
+  padding: 0.65rem 1.25rem 0.55rem;
+}
+
+.jcva-btn-lg {
+  padding: 0.85rem 1.25rem 0.75rem;
+}
+
+.jcva-input,
+.jcva-input-white {
+  display: block;
+  width: 100%;
+  padding: 0.425rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--jcva-black-50);
+  background-color: #fff;
+  background-clip: padding-box;
+  border-radius: 5px;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.jcva-input {
+  height: calc(1em + 1.25rem + 5px);
+  border: 1px solid var(--jcva-black-80);
+
+  &:focus {
+    color: var(--jcva-black-80);
+    background-color: #fff;
+    outline: 0;
+  }
+}
+
+.jcva-input-white {
+  height: calc(1em + 1.25rem + 5px);
+  border: none;
+
+  &:focus {
+    border-color: none;
+  }
+}
+
+.user-avatar {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--jcva-black-80);
+  color: white;
+  font-weight: 900;
+
+  img {
+    width: 100%;
+    border-radius: 50%;
+  }
+}
+
+.user-avatar-sm {
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+}
+
+.user-avatar-lg {
+  width: 56px;
+  height: 56px;
+  font-size: 2rem;
+}
+
+.filler {
+  flex: 1;
+}
+
+@media screen and (min-width: 576px) {
+  html,
+  body {
+    font-size: 13px;
+  }
+
+  .jcva-btn-lg {
+    font-size: 1.25rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+}
+
+@media screen and (min-width: 1200px) {
+  html,
+  body {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+}

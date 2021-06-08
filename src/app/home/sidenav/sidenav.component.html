@@ -1,0 +1,162 @@
+<nav #nav class="nav">
+  <div id="jcva-sidenav" class="sidenav">
+    <div class="text-right"></div>
+
+    <div class="sidenav-header">
+      <div class="logo">
+        <img src="assets/logos/Logo_Agile_Default.svg" alt="" />
+      </div>
+      <div class="close-btn">
+        <a (click)="sidenavOverlayClicked()">
+          <i class="fas fa-angle-left fa-3x"></i>
+        </a>
+      </div>
+    </div>
+    <div class="sidenav-user-profile mt-3 pl-3">
+      <div class="user-avatar user-avatar-lg mr-3">JC</div>
+      <div class="info">
+        <p class="user-name">John dela Cruz</p>
+        <p class="user-project">GML & Company</p>
+      </div>
+      <div class="dropdown-icon">
+        <img src="assets/icons/Icon_Arrow Right.svg" alt="" />
+      </div>
+    </div>
+    <a class="sidenav-new-btn" role="button">
+      <i class="fas fa-plus fa-lg"></i>
+      <p>New</p>
+    </a>
+    <div class="navi-links mt-5">
+      <div class="navi-item">
+        <a
+          #navAccount
+          class="navi-link"
+          data-bs-toggle="collapse"
+          href="#collapseAccount"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseAccount"
+          (click)="navItemClicked(navAccount)"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>My Vault</p>
+          </div>
+          <img
+            class="arrow-icon"
+            src="assets/icons/Icon_Arrow Right.svg"
+            alt=""
+          />
+        </a>
+        <div class="collapse" id="collapseAccount">
+          <div class="subnavi">
+            <div
+              class="subnavi-item"
+              [ngClass]="{
+                'selected-nav': selectedNav === 'account/list'
+              }"
+            >
+              <a
+                class="subnavi-link"
+                role="button"
+                (click)="navigateTo('account/list')"
+              >
+                <i class="far fa-folder fa-lg"></i>
+                <p>Folder</p>
+              </a>
+            </div>
+            <div
+              class="subnavi-item"
+              [ngClass]="{
+                'selected-nav': selectedNav === 'account/list'
+              }"
+            >
+              <a
+                class="subnavi-link"
+                role="button"
+                (click)="navigateTo('account/list')"
+              >
+                <i class="far fa-folder fa-lg"></i>
+                <p>Folder</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navi-item">
+        <a
+          class="navi-link"
+          role="button"
+          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
+          (click)="navigateTo('pmo')"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>Shared with me</p>
+          </div>
+        </a>
+      </div>
+      <div class="navi-item">
+        <a
+          class="navi-link"
+          role="button"
+          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
+          (click)="navigateTo('pmo')"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>Recent</p>
+          </div>
+        </a>
+      </div>
+      <div class="navi-item">
+        <a
+          class="navi-link"
+          role="button"
+          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
+          (click)="navigateTo('pmo')"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>Starred</p>
+          </div>
+        </a>
+      </div>
+      <div class="navi-item">
+        <a
+          class="navi-link"
+          role="button"
+          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
+          (click)="navigateTo('pmo')"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>Trash</p>
+          </div>
+        </a>
+      </div>
+      <hr />
+      <div class="navi-item">
+        <a
+          class="navi-link"
+          role="button"
+          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
+          (click)="navigateTo('pmo')"
+        >
+          <img src="assets/icons/Icon_Profile Login.svg" alt="" />
+          <div>
+            <p>Storage</p>
+          </div>
+        </a>
+      </div>
+      <div class="storage">
+        <div class="used"></div>
+        <div class="free"></div>
+      </div>
+      <p class="mt-1" style="color: var(--jcva-black-80)">
+        300 GB of 1 TB used
+      </p>
+    </div>
+  </div>
+  <div class="sidenav-overlay" (click)="sidenavOverlayClicked()"></div>
+</nav>
