@@ -8,7 +8,7 @@ import {
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { UserAuthService } from '../core/user-auth.service';
+import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,10 +28,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   errorMessage: string;
   showForgotPassword = false;
 
-  constructor(
-    private Router: Router,
-    private UserAuthService: UserAuthService
-  ) {}
+  constructor(private Router: Router, private AuthService: AuthService) {}
 
   ngAfterViewInit(): void {
     this.backgroundVideo.nativeElement.muted = true;
@@ -42,36 +39,36 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   login() {
-    this.Router.navigateByUrl('/home');
-    // if (this.isFormValid()) {
-    //   this.subscriptions$.push(
-    //     this.UserAuthService.doLogin(
-    //       this.loginForm.value.username,
-    //       this.loginForm.value.password
-    //     ).subscribe(
-    //       (response: any) => {
-    //         localStorage.setItem(
-    //           'expiry',
-    //           response.authentication.expires_in + 3600000
-    //         );
-    //         localStorage.setItem('token', response.authentication.access_token);
-    //         localStorage.setItem(
-    //           'user_info',
-    //           JSON.stringify(response.user_info)
-    //         );
+    if (this.isFormValid()) {
+      this.subscriptions$.push(
+        this.AuthService.login(
+          this.loginForm.value.username,
+          this.loginForm.value.password
+        ).subscribe(
+          (response: any) => {
+            console.log(response);
+            // localStorage.setItem(
+            //   'expiry',
+            //   response.authentication.expires_in + 3600000
+            // );
+            // localStorage.setItem('token', response.authentication.access_token);
+            // localStorage.setItem(
+            //   'user_info',
+            //   JSON.stringify(response.user_info)
+            // );
 
-    //         this.UserAuthService.userRole.next(
-    //           this.UserAuthService.getUserInfo().role
-    //         );
-    //         this.resetForm();
-    //         this.Router.navigateByUrl('/agile/project-summary');
-    //       },
-    //       (error) => {
-    //         this.errorMessage = error.error;
-    //       }
-    //     )
-    //   );
-    // }
+            // this.UserAuthService.userRole.next(
+            //   this.UserAuthService.getUserInfo().role
+            // );
+            this.resetForm();
+            this.Router.navigateByUrl('/home/vault');
+          },
+          (error) => {
+            this.errorMessage = 'Invalid username/password.';
+          }
+        )
+      );
+    }
   }
 
   isFormValid() {
