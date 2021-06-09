@@ -40,13 +40,13 @@
 .recent-files,
 .folders {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .file-card,
 .folder-card {
   width: 32%;
+  margin-right: 1%;
 }
 
 .folder-card:hover {
@@ -104,4 +104,10 @@
     font-size: 0.95rem;
     color: var(--jcva-black-70);
   }
+}
+
+.folder-breadcrumb {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--jcva-background);
 }

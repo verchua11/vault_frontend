@@ -89,6 +89,13 @@ a:hover {
   background: var(--jcva-black-50);
 }
 
+// BOOTSTRAP CUSTOM STYLES
+.alert-danger {
+  color: var(--jcva-white);
+  background-color: var(--jcva-ind-red);
+  border-color: var(--jcva-ind-red);
+}
+
 // ANT DESIGN CUSTOM STYLES
 .ant-dropdown-link {
   display: flex;
@@ -118,6 +125,10 @@ a:hover {
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected {
   color: var(--jcva-black-80);
   border-bottom: 2px solid var(--jcva-orange);
+}
+
+.ant-breadcrumb > nz-breadcrumb-item:last-child a {
+  color: var(--jcva-black-80);
 }
 
 // GLOBAL STYLES

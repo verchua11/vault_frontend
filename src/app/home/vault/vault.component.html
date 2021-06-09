@@ -38,14 +38,25 @@
         </div>
       </div>
       <p class="file-explorer-header">Folders</p>
+      <div *ngIf="breadcrumbs.length > 0" class="folder-breadcrumb">
+        <nz-breadcrumb>
+          <nz-breadcrumb-item
+            *ngFor="let breadcrumb of breadcrumbs; let i = index"
+          >
+            <a (click)="navigateBreadcrumb(breadcrumb, i)">{{ breadcrumb }}</a>
+          </nz-breadcrumb-item>
+        </nz-breadcrumb>
+      </div>
+
       <div class="folders">
         <nz-card
-          class="folder-card"
-          *ngFor="let x of ['Makati', 'BGC', 'Ortigas']"
+          class="folder-card mb-2"
+          *ngFor="let node of getFolders()"
+          (click)="openFolder(node)"
         >
           <div class="folder-card-content">
             <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-            <p>{{ x }}</p>
+            <p>{{ node }}</p>
           </div>
         </nz-card>
       </div>

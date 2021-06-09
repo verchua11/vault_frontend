@@ -7,6 +7,9 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
 @NgModule({
   declarations: [JcvaInputComponent],
@@ -19,6 +22,9 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     NzIconModule,
     NzCardModule,
     NzMenuModule,
+    NzAlertModule,
+    NzButtonModule,
+    NzBreadCrumbModule,
   ],
 })
 export class SharedModule {}
