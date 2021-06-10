@@ -131,6 +131,60 @@ a:hover {
   color: var(--jcva-black-80);
 }
 
+.ant-tooltip-inner {
+  color: var(--jcva-black-80);
+}
+
+.ant-radio-checked .ant-radio-inner {
+  border-color: var(--jcva-steel-blue);
+}
+
+.ant-radio-inner::after {
+  background-color: var(--jcva-steel-blue);
+}
+
+.ant-menu-item-selected {
+  color: var(--jcva-steel-blue);
+}
+
+.ant-menu-submenu-selected {
+  color: var(--jcva-orange);
+}
+
+.ant-menu-item:hover,
+.ant-menu-item-active,
+.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+.ant-menu-submenu-active,
+.ant-menu-submenu-title:hover {
+  color: var(--jcva-orange);
+}
+
+.ant-menu-vertical .ant-menu-item::after,
+.ant-menu-vertical-left .ant-menu-item::after,
+.ant-menu-vertical-right .ant-menu-item::after,
+.ant-menu-inline .ant-menu-item::after {
+  border-right: 3px solid var(--jcva-orange);
+}
+
+.ant-menu-vertical > .ant-menu-item,
+.ant-menu-vertical-left > .ant-menu-item,
+.ant-menu-vertical-right > .ant-menu-item,
+.ant-menu-inline > .ant-menu-item,
+.ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.ant-btn {
+  display: flex;
+  align-items: center;
+}
+
 // GLOBAL STYLES
 .jcva-card-header {
   color: var(--jcva-black-80);

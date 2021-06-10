@@ -49,6 +49,12 @@
       </div>
 
       <div class="folders">
+        <nz-card class="folder-card-add mb-2" (click)="openUploadModal()">
+          <div class="folder-card-content">
+            <i class="me-2" nz-icon nzType="file-add" nzTheme="outline"></i>
+            <p>New File/Folder</p>
+          </div>
+        </nz-card>
         <nz-card
           class="folder-card mb-2"
           *ngFor="let node of getFolders()"
@@ -56,7 +62,9 @@
         >
           <div class="folder-card-content">
             <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-            <p>{{ node }}</p>
+            <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
+              {{ node }}
+            </p>
           </div>
         </nz-card>
       </div>
@@ -87,3 +95,69 @@
     </div>
   </div>
 </div>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="New File/Folder">
+  <form [formGroup]="uploadForm" (ngSubmit)="submitUpload()">
+    <ng-container *nzModalContent>
+      <!-- <p style="font-size: 1rem; color: var(--jcva-black-80)" class="mb-2">
+        Location:
+      </p>
+      <ul
+        nz-menu
+        nzMode="inline"
+        style="padding: 1rem; border: 1px solid var(--jcva-black-40)"
+        class="mb-3"
+      >
+        <li
+          *ngFor="let folder of getFolders()"
+          nz-submenu
+          [nzTitle]="folder"
+          nzIcon="folder"
+        >
+          <ul>
+            <li nz-submenu nzTitle="Submenu">
+              <ul>
+                <li nz-menu-item>Option 7</li>
+                <li nz-menu-item>Option 8</li>
+                <li nz-submenu nzTitle="Submenu">
+                  <ul>
+                    <li nz-menu-item>Option 9</li>
+                    <li nz-menu-item>Option 10</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul> -->
+      <nz-radio-group formControlName="uploadType" class="mb-3">
+        <label nz-radio nzValue="1">Upload File</label>
+        <label nz-radio nzValue="2">Create New Folder</label>
+      </nz-radio-group>
+      <div *ngIf="uploadForm.get('uploadType').value === '1'">
+        <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+          <button nz-button><i nz-icon nzType="upload"></i>Select File</button>
+        </nz-upload>
+      </div>
+      <div *ngIf="uploadForm.get('uploadType').value === '2'">
+        <nz-input-group nzAddOnBefore="Folder name:">
+          <input type="text" nz-input formControlName="folderName" />
+        </nz-input-group>
+      </div>
+    </ng-container>
+    <div *nzModalFooter class="d-flex justify-content-end">
+      <button nz-button nzType="default" (click)="handleCancel()">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        nz-button
+        nzType="primary"
+        [nzLoading]="isConfirmLoading"
+        (click)="submitUpload()"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</nz-modal>

@@ -44,7 +44,8 @@
 }
 
 .file-card,
-.folder-card {
+.folder-card,
+.folder-card-add {
   width: 32%;
   margin-right: 1%;
 }
@@ -52,6 +53,15 @@
 .folder-card:hover {
   cursor: pointer;
   border: 1px solid var(--jcva-orange);
+}
+
+.folder-card-add {
+  border: 1px dashed var(--jcva-black-40);
+}
+
+.folder-card-add:hover {
+  cursor: pointer;
+  border: 1px dashed var(--jcva-orange);
 }
 
 .folder-card-content {
@@ -65,6 +75,9 @@
 
   p {
     color: var(--jcva-black-80);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
