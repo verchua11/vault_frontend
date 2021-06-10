@@ -51,33 +51,15 @@
         <div class="collapse" id="collapseAccount">
           <div class="subnavi">
             <div
+              *ngFor="let folder of folders"
               class="subnavi-item"
               [ngClass]="{
-                'selected-nav': selectedNav === 'account/list'
+                'selected-nav': selectedNav === folder
               }"
             >
-              <a
-                class="subnavi-link"
-                role="button"
-                (click)="navigateTo('account/list')"
-              >
+              <a class="subnavi-link" role="button">
                 <i class="far fa-folder fa-lg"></i>
-                <p>Folder</p>
-              </a>
-            </div>
-            <div
-              class="subnavi-item"
-              [ngClass]="{
-                'selected-nav': selectedNav === 'account/list'
-              }"
-            >
-              <a
-                class="subnavi-link"
-                role="button"
-                (click)="navigateTo('account/list')"
-              >
-                <i class="far fa-folder fa-lg"></i>
-                <p>Folder</p>
+                <p>{{ folder }}</p>
               </a>
             </div>
           </div>
