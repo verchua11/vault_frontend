@@ -159,6 +159,7 @@
     i {
       color: var(--jcva-black-80);
       margin-right: 1rem;
+      font-size: 18px;
     }
   }
 
@@ -207,12 +208,10 @@
   height: 5px;
 
   .used {
-    width: 33%;
     background: var(--jcva-orange);
   }
 
   .free {
-    width: 67%;
     background: var(--jcva-steel-blue);
   }
 }

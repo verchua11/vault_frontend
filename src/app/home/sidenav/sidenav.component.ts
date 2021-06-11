@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProjectService } from 'src/app/core/project.service';
+import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 
 declare var $;
@@ -13,14 +14,18 @@ declare var $;
 })
 export class SidenavComponent implements OnInit, OnDestroy {
   selectedNav: string;
+  selectedProject: string;
   folders = [];
+
+  storageSize = 0;
 
   subscriptions: Subscription[] = [];
   constructor(
     private renderer: Renderer2,
     private router: Router,
     private ProjectService: ProjectService,
-    private VaultService: VaultService
+    private VaultService: VaultService,
+    private VaultStateService: VaultStateService
   ) {}
 
   ngOnInit(): void {
@@ -48,10 +53,30 @@ export class SidenavComponent implements OnInit, OnDestroy {
         );
       })
     );
+
+    this.subscriptions.push(
+      this.VaultStateService.newSelectedProject.subscribe((project) => {
+        if (project) {
+          this.selectedProject = project;
+          this.selectedNav = project;
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.VaultService.getStorageUsed().subscribe((response: any) => {
+        this.storageSize = parseFloat(response.results.split(' ')[0]) * 1000;
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
+  }
+
+  public setSelectedProject(project: string) {
+    this.VaultStateService.updateSelectedProject(project);
+    this.selectedNav = project;
   }
 
   sidenavOverlayClicked() {

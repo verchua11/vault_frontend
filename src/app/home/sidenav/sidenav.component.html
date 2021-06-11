@@ -22,10 +22,10 @@
         <img src="assets/icons/Icon_Arrow Right.svg" alt="" />
       </div>
     </div>
-    <a class="sidenav-new-btn" role="button">
+    <!-- <a class="sidenav-new-btn" role="button">
       <i class="fas fa-plus fa-lg"></i>
       <p>New</p>
-    </a>
+    </a> -->
     <div class="navi-links mt-5">
       <div class="navi-item">
         <a
@@ -57,8 +57,12 @@
                 'selected-nav': selectedNav === folder
               }"
             >
-              <a class="subnavi-link" role="button">
-                <i class="far fa-folder fa-lg"></i>
+              <a
+                class="subnavi-link"
+                role="button"
+                (click)="setSelectedProject(folder)"
+              >
+                <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
                 <p>{{ folder }}</p>
               </a>
             </div>
@@ -69,8 +73,8 @@
         <a
           class="navi-link"
           role="button"
-          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
-          (click)="navigateTo('pmo')"
+          [ngClass]="{ 'selected-nav': selectedNav === 'shared' }"
+          (click)="navigateTo('shared')"
         >
           <img src="assets/icons/Icon_Profile Login.svg" alt="" />
           <div>
@@ -82,8 +86,8 @@
         <a
           class="navi-link"
           role="button"
-          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
-          (click)="navigateTo('pmo')"
+          [ngClass]="{ 'selected-nav': selectedNav === 'recent' }"
+          (click)="navigateTo('recent')"
         >
           <img src="assets/icons/Icon_Profile Login.svg" alt="" />
           <div>
@@ -95,8 +99,8 @@
         <a
           class="navi-link"
           role="button"
-          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
-          (click)="navigateTo('pmo')"
+          [ngClass]="{ 'selected-nav': selectedNav === 'starred' }"
+          (click)="navigateTo('starred')"
         >
           <img src="assets/icons/Icon_Profile Login.svg" alt="" />
           <div>
@@ -108,8 +112,8 @@
         <a
           class="navi-link"
           role="button"
-          [ngClass]="{ 'selected-nav': selectedNav === 'pmo' }"
-          (click)="navigateTo('pmo')"
+          [ngClass]="{ 'selected-nav': selectedNav === 'trash' }"
+          (click)="navigateTo('trash')"
         >
           <img src="assets/icons/Icon_Profile Login.svg" alt="" />
           <div>
@@ -132,11 +136,17 @@
         </a>
       </div>
       <div class="storage">
-        <div class="used"></div>
-        <div class="free"></div>
+        <div class="used" [ngStyle]="{ width: storageSize / 1000 + '%' }"></div>
+        <div
+          class="free"
+          [ngStyle]="{ width: 1000 - storageSize / 1000 + '%' }"
+        ></div>
       </div>
       <p class="mt-1" style="color: var(--jcva-black-80)">
-        300 GB of 1 TB used
+        {{ storageSize.toFixed(2) }} MB used ({{
+          (storageSize * 1000000).toFixed(0) | number: "7.0"
+        }}
+        bytes)
       </p>
     </div>
   </div>

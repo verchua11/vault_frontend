@@ -10,13 +10,19 @@ export class VaultService {
 
   getFolders(ids: Array<string>) {
     const formData = new FormData();
-    // formData.append('id', ids[ids.length - 1]);
-    // formData.append('project_name', project_name);
     ids.forEach((id) => {
       formData.append('id[]', id);
     });
 
     return this.http.post(`${environment.awsURL}/getproject`, formData);
+  }
+
+  getFiles() {
+    return this.http.get(`${environment.awsURL}/listobjects`);
+  }
+
+  getStorageUsed() {
+    return this.http.get(`${environment.awsURL}/storagesize`);
   }
 
   uploadFile(file: File, path: string) {
