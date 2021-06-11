@@ -15,6 +15,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @NgModule({
   declarations: [JcvaInputComponent],
@@ -35,6 +37,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     NzRadioModule,
     NzInputModule,
     NzUploadModule,
+    NzSpinModule,
+    NzEmptyModule,
   ],
 })
 export class SharedModule {}

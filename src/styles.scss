@@ -185,6 +185,40 @@ a:hover {
   align-items: center;
 }
 
+.ant-btn:hover,
+.ant-btn:focus {
+  color: var(--jcva-steel-blue);
+  background: #fff;
+  border-color: var(--jcva-steel-blue);
+}
+
+.ant-btn-primary {
+  background: var(--jcva-orange);
+  border-color: var(--jcva-orange);
+}
+
+.ant-btn-primary:hover {
+  color: #fff;
+  background: var(--jcva-steel-blue);
+  border-color: var(--jcva-steel-blue);
+}
+
+.ant-spin {
+  color: white;
+}
+
+.ant-spin-dot-item {
+  background-color: white;
+}
+
+.anticon {
+  vertical-align: 0;
+}
+
+.ant-empty-description {
+  color: var(--jcva-black-80);
+}
+
 // GLOBAL STYLES
 .jcva-card-header {
   color: var(--jcva-black-80);
