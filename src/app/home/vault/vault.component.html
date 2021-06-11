@@ -12,16 +12,23 @@
     </a>
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu nzSelectable>
-        <li nz-menu-item>1st menu item</li>
-        <li nz-menu-item>2nd menu item</li>
-        <li nz-menu-item>3rd menu item</li>
+        <li
+          *ngFor="let project of projects"
+          nz-menu-item
+          (click)="openProject(project)"
+        >
+          <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+          {{ project }}
+        </li>
       </ul>
     </nz-dropdown-menu>
   </div>
   <div class="main-content">
     <div class="file-explorer">
-      <p class="file-explorer-header">My Recently Opened Files</p>
-      <div class="recent-files">
+      <p *ngIf="directoryLevel < 1" class="file-explorer-header">
+        My Recently Opened Files
+      </p>
+      <div *ngIf="directoryLevel < 1" class="recent-files">
         <div *ngFor="let x of [1, 2, 3]" class="file-card">
           <nz-card nzHoverable [nzCover]="coverTemplate">
             <nz-card-meta
@@ -37,19 +44,30 @@
           </ng-template>
         </div>
       </div>
-      <p class="file-explorer-header">Folders</p>
-      <div *ngIf="breadcrumbs.length > 0" class="folder-breadcrumb">
+      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
+      <div *ngIf="directoryLevel > 0" class="folder-breadcrumb">
         <nz-breadcrumb>
           <nz-breadcrumb-item
             *ngFor="let breadcrumb of breadcrumbs; let i = index"
           >
+            <i
+              *ngIf="i === 0"
+              nz-icon
+              nzType="home"
+              nzTheme="outline"
+              class="me-2"
+            ></i>
             <a (click)="navigateBreadcrumb(breadcrumb, i)">{{ breadcrumb }}</a>
           </nz-breadcrumb-item>
         </nz-breadcrumb>
       </div>
 
-      <div class="folders">
-        <nz-card class="folder-card-add mb-2" (click)="openUploadModal()">
+      <div *ngIf="directoryLevel > 0" class="folders">
+        <nz-card
+          *ngIf="directoryLevel > 0"
+          class="folder-card-add mb-2"
+          (click)="openUploadModal()"
+        >
           <div class="folder-card-content">
             <i class="me-2" nz-icon nzType="file-add" nzTheme="outline"></i>
             <p>New File/Folder</p>
@@ -58,10 +76,25 @@
         <nz-card
           class="folder-card mb-2"
           *ngFor="let node of getFolders()"
-          (click)="openFolder(node)"
+          [ngClass]="getFolderClass(node)"
+          (dblclick)="openNode(node)"
+          (click)="selectNode(node)"
         >
           <div class="folder-card-content">
-            <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+            <i
+              *ngIf="node.indexOf('.') === -1"
+              class="me-2"
+              nz-icon
+              nzType="folder"
+              nzTheme="outline"
+            ></i>
+            <i
+              *ngIf="node.indexOf('.') !== -1"
+              class="me-2"
+              nz-icon
+              nzType="file"
+              nzTheme="outline"
+            ></i>
             <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
               {{ node }}
             </p>
@@ -75,28 +108,83 @@
         Select a file or folder to view its details
       </p>
       <ul class="mt-1" nz-menu nzMode="horizontal">
-        <li nz-menu-item nzSelected>Details</li>
-        <li nz-menu-item>Activity</li>
+        <li nz-menu-item nzSelected (click)="selectedTab = 'Details'">
+          Details
+        </li>
+        <li nz-menu-item (click)="selectedTab = 'Activity'">Activity</li>
       </ul>
-      <div class="folder-icon">
-        <i class="mt-2 mb-2" nz-icon nzType="folder" nzTheme="outline"></i>
-      </div>
-      <div class="file-metadata">
-        <p>File Name: BGC</p>
-        <p>Type: Folder</p>
-        <p>Size: 6 MB (6,757,874 bytes)</p>
-        <p>Storage used: 6 MB (6,757,874 bytes)</p>
-        <p>Location: My Vault</p>
-        <p>Owner: me</p>
-        <p>Modified: Dec 25, 2020 by me</p>
-        <p>Opened: Dec 25, 2020 by me</p>
-        <p>Created: Dec 23, 2020</p>
+      <div *ngIf="selectedTab === 'Details'">
+        <div *ngIf="selectedFile">
+          <div class="folder-icon">
+            <i
+              class="mt-2 mb-2"
+              nz-icon
+              [nzType]="
+                selectedFile.Key.indexOf('.') === -1 ? 'folder' : 'file'
+              "
+              nzTheme="outline"
+            ></i>
+          </div>
+          <div class="file-metadata">
+            <p>
+              File Name:
+              {{
+                selectedFile.Key.indexOf(".") === -1
+                  ? selectedFile.Key.split("/")[
+                      selectedFile.Key.split("/").length - 2
+                    ]
+                  : selectedFile.Key.split("/")[
+                      selectedFile.Key.split("/").length - 1
+                    ]
+              }}
+            </p>
+            <p>
+              Type:
+              {{ selectedFile.Key.indexOf(".") === -1 ? "Folder" : "File" }}
+            </p>
+            <p>
+              Size: {{ (selectedFile.Size / 1000000).toFixed(0) }} MB ({{
+                selectedFile.Size
+              }}
+              bytes)
+            </p>
+            <p>
+              Storage used: {{ (selectedFile.Size / 1000000).toFixed(0) }} MB
+              ({{ selectedFile.Size }}
+              bytes)
+            </p>
+            <p>Location: My Vault</p>
+            <p>Owner: {{ selectedFile.Owner.DisplayName }}</p>
+            <p>Modified: {{ getFormattedDate(selectedFile.LastModified) }}</p>
+            <p>Opened: Dec 25, 2020 by me</p>
+            <p>Created: Dec 23, 2020</p>
+          </div>
+        </div>
+        <div *ngIf="!selectedFile">
+          <nz-empty
+            nzNotFoundContent="No selected file/folder."
+            style="margin-top: 2rem"
+          ></nz-empty>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="New File/Folder">
+<div
+  [ngClass]="
+    isLoadingVault ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Loading Vault..."></nz-spin>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="New File/Folder"
+  (nzOnCancel)="closeUploadModal()"
+>
   <form [formGroup]="uploadForm" (ngSubmit)="submitUpload()">
     <ng-container *nzModalContent>
       <!-- <p style="font-size: 1rem; color: var(--jcva-black-80)" class="mb-2">
@@ -146,14 +234,19 @@
       </div>
     </ng-container>
     <div *nzModalFooter class="d-flex justify-content-end">
-      <button nz-button nzType="default" (click)="handleCancel()">
+      <button
+        [disabled]="isSubmitting"
+        nz-button
+        nzType="default"
+        (click)="closeUploadModal()"
+      >
         Cancel
       </button>
       <button
         type="submit"
         nz-button
         nzType="primary"
-        [nzLoading]="isConfirmLoading"
+        [nzLoading]="isSubmitting"
         (click)="submitUpload()"
       >
         Submit
