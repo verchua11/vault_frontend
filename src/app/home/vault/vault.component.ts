@@ -68,21 +68,25 @@ export class VaultComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.push(
-          this.VaultService.getFolders(ids).subscribe((response: any) => {
+          this.VaultService.getFiles().subscribe((response: any) => {
             console.log(response);
+            // this.metadata = response.results;
+
             this.projects = [];
             this.folders = [];
-            response.results.forEach((result) => {
-              result.forEach((res) => {
-                let folders = res
-                  .split('/')
-                  .filter((v) => v !== '' && v !== 'projects');
+            response.results.forEach((res) => {
+              let folders = res.split('/');
 
-                this.folders.push(folders);
+              if (folders[0] === 'projects') {
+                folders = folders.filter((v) => v !== '' && v !== 'projects');
 
-                if (this.projects.indexOf(folders[0]) === -1)
-                  this.projects.push(folders[0]);
-              });
+                if (folders.length > 0) {
+                  this.folders.push(folders);
+
+                  if (this.projects.indexOf(folders[0]) === -1)
+                    this.projects.push(folders[0]);
+                }
+              }
             });
             this.isLoadingVault = false;
 
@@ -90,11 +94,9 @@ export class VaultComponent implements OnInit, OnDestroy {
               this.VaultStateService.newSelectedProject.subscribe((project) => {
                 if (project) {
                   this.selectedProject = project;
-                  this.openNode(this.selectedProject);
+                  this.openProjectFolder(this.selectedProject);
                   this.prevent = false;
                 }
-
-                console.log(project);
               })
             );
           })
@@ -102,11 +104,12 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(
-      this.VaultService.getFiles().subscribe((response: any) => {
-        this.metadata = response.results;
-      })
-    );
+    // this.subscriptions.push(
+    //   this.VaultService.getFiles().subscribe((response: any) => {
+    //     console.log(response);
+    //     this.metadata = response.results;
+    //   })
+    // );
   }
 
   ngOnDestroy(): void {
@@ -148,7 +151,54 @@ export class VaultComponent implements OnInit, OnDestroy {
             arr.push(f[this.directoryLevel]);
         }
     });
-    return arr;
+    return arr.filter((v) => v.indexOf('.') === -1);
+  }
+
+  public getFiles() {
+    const arr = [];
+    this.folders.forEach((f) => {
+      if (f[this.directoryLevel])
+        if (this.selectedNode) {
+          if (
+            arr.indexOf(f[this.directoryLevel]) === -1 &&
+            this.selectedNode === f[this.directoryLevel - 1]
+          )
+            arr.push(f[this.directoryLevel]);
+        } else {
+          if (arr.indexOf(f[this.directoryLevel]) === -1)
+            arr.push(f[this.directoryLevel]);
+        }
+    });
+    return arr.filter((v) => v.indexOf('.') !== -1);
+  }
+
+  public getFileIcon(node: string) {
+    switch (node.split('.')[1].toLowerCase()) {
+      case 'csv':
+      case 'xls':
+      case 'xlsx':
+        return 'file-excel';
+      case 'pdf':
+        return 'file-pdf';
+      case 'doc':
+      case 'docx':
+        return 'file-word';
+      case 'ppt':
+      case 'pptx':
+        return 'file-ppt';
+      case 'jpeg':
+      case 'jpg':
+      case 'png':
+      case 'gif':
+        return 'file-image';
+      case 'txt':
+        return 'file-text';
+      case 'zip':
+      case 'rar':
+        return 'file-zip';
+      default:
+        return 'file';
+    }
   }
 
   public openNode(node: any) {
@@ -159,7 +209,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public selectNode(node: any) {
-    this;
     const _this = this;
     this.timer = setTimeout(function () {
       if (!_this.prevent) {
@@ -231,15 +280,26 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
+  public downloadFile(node: string) {
+    this.subscriptions.push(
+      this.VaultService.downloadFile(
+        'projects/' + this.breadcrumbs.join('/') + '/',
+        node
+      ).subscribe((response) => {
+        console.log(response);
+      })
+    );
+  }
+
   public navigateBreadcrumb(node: any, index: number) {
     this.selectedNode = node;
     this.directoryLevel -= this.breadcrumbs.splice(index + 1).length;
   }
 
-  public navigateBreadcrumbHome() {
-    this.selectedNode = null;
-    this.directoryLevel = 0;
-    this.breadcrumbs.splice(0);
+  private openProjectFolder(project: string) {
+    this.selectedNode = project;
+    this.directoryLevel = 1;
+    this.breadcrumbs = [project];
   }
 
   private openFolder(node: string) {

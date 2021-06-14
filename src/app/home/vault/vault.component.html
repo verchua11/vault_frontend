@@ -44,7 +44,6 @@
           </ng-template>
         </div>
       </div>
-      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
       <div *ngIf="directoryLevel > 0" class="folder-breadcrumb">
         <nz-breadcrumb>
           <nz-breadcrumb-item
@@ -62,6 +61,7 @@
         </nz-breadcrumb>
       </div>
 
+      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
       <div *ngIf="directoryLevel > 0" class="folders">
         <nz-card
           *ngIf="directoryLevel > 0"
@@ -69,8 +69,8 @@
           (click)="openUploadModal()"
         >
           <div class="folder-card-content">
-            <i class="me-2" nz-icon nzType="file-add" nzTheme="outline"></i>
-            <p>New File/Folder</p>
+            <i nz-icon nzType="folder-add" nzTheme="fill"></i>
+            <p>New Folder</p>
           </div>
         </nz-card>
         <nz-card
@@ -83,18 +83,62 @@
           <div class="folder-card-content">
             <i
               *ngIf="node.indexOf('.') === -1"
-              class="me-2"
               nz-icon
               nzType="folder"
-              nzTheme="outline"
+              nzTheme="fill"
             ></i>
             <i
               *ngIf="node.indexOf('.') !== -1"
-              class="me-2"
               nz-icon
               nzType="file"
-              nzTheme="outline"
+              nzTheme="fill"
             ></i>
+            <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
+              {{ node }}
+            </p>
+          </div>
+        </nz-card>
+      </div>
+
+      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Files</p>
+      <div *ngIf="directoryLevel > 0" class="folders">
+        <nz-card
+          *ngIf="directoryLevel > 0"
+          class="folder-card-add mb-2"
+          (click)="openUploadModal()"
+        >
+          <div class="file-thumbnail">
+            <i nz-icon nzType="file-add" nzTheme="fill"></i>
+          </div>
+          <div class="folder-card-content">
+            <i nz-icon nzType="file-add" nzTheme="fill"></i>
+            <p>New File</p>
+          </div>
+        </nz-card>
+        <nz-card
+          class="folder-card mb-2"
+          *ngFor="let node of getFiles()"
+          [ngClass]="getFolderClass(node)"
+          (dblclick)="openNode(node)"
+          (click)="selectNode(node)"
+        >
+          <div class="file-thumbnail">
+            <i nz-icon [nzType]="getFileIcon(node)" nzTheme="fill"></i>
+          </div>
+          <div class="folder-card-content">
+            <i
+              *ngIf="node.indexOf('.') === -1"
+              nz-icon
+              nzType="folder"
+              nzTheme="fill"
+            ></i>
+            <i
+              *ngIf="node.indexOf('.') !== -1"
+              nz-icon
+              nzType="file"
+              nzTheme="fill"
+            ></i>
+
             <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
               {{ node }}
             </p>

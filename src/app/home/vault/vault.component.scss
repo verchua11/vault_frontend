@@ -53,6 +53,12 @@
   flex-wrap: wrap;
 }
 
+nz-card {
+  .ant-card-body {
+    padding: 12px 24px !important;
+  }
+}
+
 .file-card,
 .folder-card,
 .folder-card-add {
@@ -78,6 +84,17 @@
   border: 1px dashed var(--jcva-orange);
 }
 
+.file-thumbnail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 130px;
+
+  i {
+    font-size: 4rem;
+  }
+}
+
 .folder-card-content {
   display: flex;
   align-items: center;
@@ -85,6 +102,7 @@
   i {
     font-size: 1.5rem;
     color: var(--jcva-black-80);
+    margin-right: 1.5rem;
   }
 
   p {
@@ -136,9 +154,7 @@
 }
 
 .folder-breadcrumb {
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--jcva-background);
+  margin-top: 1rem;
 }
 
 .preloader-overlay {

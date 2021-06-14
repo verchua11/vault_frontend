@@ -37,17 +37,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.push(
-          this.VaultService.getFolders(ids).subscribe((response: any) => {
+          this.VaultService.getFiles().subscribe((response: any) => {
             this.folders = [];
-            response.results.forEach((result) => {
-              result.forEach((res) => {
-                let folders = res
-                  .split('/')
-                  .filter((v) => v !== '' && v !== 'projects');
+            response.results.forEach((res) => {
+              let folders = res.split('/');
 
-                if (this.folders.indexOf(folders[0]) === -1)
-                  this.folders.push(folders[0]);
-              });
+              if (folders[0] === 'projects') {
+                folders = folders.filter((v) => v !== '' && v !== 'projects');
+
+                if (folders.length > 0) {
+                  if (this.folders.indexOf(folders[0]) === -1)
+                    this.folders.push(folders[0]);
+                }
+              }
             });
           })
         );
