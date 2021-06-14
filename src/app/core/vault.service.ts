@@ -33,10 +33,14 @@ export class VaultService {
     return this.http.post(`${environment.awsURL}/download`, formData);
   }
 
-  uploadFile(file: File, path: string) {
+  uploadFile(files: Array<any>, path: string) {
     const formData = new FormData();
     formData.append('path', path);
-    formData.append('file[]', file);
+
+    files.forEach((file) => {
+      formData.append('file[]', file);
+    });
+
     return this.http.post(`${environment.awsURL}/upload`, formData);
   }
 

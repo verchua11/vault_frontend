@@ -66,7 +66,7 @@
         <nz-card
           *ngIf="directoryLevel > 0"
           class="folder-card-add mb-2"
-          (click)="openUploadModal()"
+          (click)="openFolderUploadModal()"
         >
           <div class="folder-card-content">
             <i nz-icon nzType="folder-add" nzTheme="fill"></i>
@@ -105,7 +105,7 @@
         <nz-card
           *ngIf="directoryLevel > 0"
           class="folder-card-add mb-2"
-          (click)="openUploadModal()"
+          (click)="openFileUploadModal()"
         >
           <div class="file-thumbnail">
             <i nz-icon nzType="file-add" nzTheme="fill"></i>
@@ -226,7 +226,9 @@
 
 <nz-modal
   [(nzVisible)]="isVisible"
-  nzTitle="New File/Folder"
+  nzTitle="{{
+    uploadForm.get('uploadType').value === '2' ? 'New Folder' : 'New  File'
+  }}"
   (nzOnCancel)="closeUploadModal()"
 >
   <form [formGroup]="uploadForm" (ngSubmit)="submitUpload()">
@@ -262,12 +264,16 @@
           </ul>
         </li>
       </ul> -->
-      <nz-radio-group formControlName="uploadType" class="mb-3">
+      <!-- <nz-radio-group formControlName="uploadType" class="mb-3">
         <label nz-radio nzValue="1">Upload File</label>
         <label nz-radio nzValue="2">Create New Folder</label>
-      </nz-radio-group>
+      </nz-radio-group> -->
       <div *ngIf="uploadForm.get('uploadType').value === '1'">
-        <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+        <nz-upload
+          [(nzFileList)]="fileList"
+          nzMultiple="true"
+          [nzBeforeUpload]="beforeUpload"
+        >
           <button nz-button><i nz-icon nzType="upload"></i>Select File</button>
         </nz-upload>
       </div>

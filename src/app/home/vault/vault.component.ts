@@ -51,9 +51,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = [file];
+    this.fileList = this.fileList.concat(file);
     this.uploadForm.patchValue({
-      uploadedFile: file,
+      uploadedFile: this.fileList,
     });
     return false;
   };
@@ -234,8 +234,19 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.VaultStateService.updateSelectedProject(project);
   }
 
-  public openUploadModal() {
+  public openFolderUploadModal() {
     this.resetForm();
+    this.uploadForm.patchValue({
+      uploadType: '2',
+    });
+    this.isVisible = true;
+  }
+
+  public openFileUploadModal() {
+    this.resetForm();
+    this.uploadForm.patchValue({
+      uploadType: '1',
+    });
     this.isVisible = true;
   }
 
@@ -251,6 +262,13 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.uploadForm.value.uploadedFile,
           'projects/' + this.breadcrumbs.join('/') + '/'
         ).subscribe((response) => {
+          this.uploadForm.value.uploadedFile.forEach((file: any) => {
+            this.folders.push(
+              ('projects/' + this.breadcrumbs.join('/') + '/' + file.name)
+                .split('/')
+                .filter((v) => v !== '' && v !== 'projects')
+            );
+          });
           this.isSubmitting = false;
           this.closeUploadModal();
         })
@@ -272,7 +290,6 @@ export class VaultComponent implements OnInit, OnDestroy {
               .split('/')
               .filter((v) => v !== '' && v !== 'projects')
           );
-          console.log(this.folders);
           this.isSubmitting = false;
           this.closeUploadModal();
         })
@@ -312,8 +329,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   private resetForm() {
     this.uploadForm.reset();
-    this.uploadForm.patchValue({
-      uploadType: '1',
-    });
+    this.fileList = [];
   }
 }
