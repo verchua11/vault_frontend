@@ -13,10 +13,49 @@
   </div>
   <span class="filler"></span>
   <i class="fas fa-cog fa-2x" style="color: white; margin-right: 2rem"></i>
-  <div class="user-avatar user-avatar-sm mr-3">
-    {{
-      "Mike".substring(0, 1).toUpperCase() +
-        "Cagampan".substring(0, 1).toUpperCase()
-    }}
+  <div
+    *ngIf="userInfo && userInfo.profile_image_url === ''"
+    class="user-avatar user-avatar-sm mr-3"
+  >
+    <a nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight">
+      {{
+        userInfo.first_name.substring(0, 1).toUpperCase() +
+          userInfo.last_name.substring(0, 1).toUpperCase()
+      }}
+    </a>
+    <nz-dropdown-menu #menu1="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="openLogoutModal()">Logout</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+  <div
+    *ngIf="userInfo && userInfo.profile_image_url !== ''"
+    class="user-avatar user-avatar-sm ml-3"
+  >
+    <a nz-dropdown [nzDropdownMenu]="menu2" nzPlacement="bottomRight">
+      <img [src]="userInfo.profile_image_url" alt="" />
+    </a>
+    <nz-dropdown-menu #menu2="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="openLogoutModal()">Logout</li>
+      </ul>
+    </nz-dropdown-menu>
   </div>
 </div>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Logout"
+  (nzOnCancel)="closeLogoutModal()"
+>
+  <ng-container *nzModalContent>
+    <p>Are you sure you want to logout?</p>
+  </ng-container>
+  <div *nzModalFooter class="d-flex justify-content-end">
+    <button nz-button nzType="default" (click)="closeLogoutModal()">
+      Cancel
+    </button>
+    <button nz-button nzType="primary" (click)="logout()">Yes</button>
+  </div>
+</nz-modal>

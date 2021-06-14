@@ -18,6 +18,8 @@ import { AuthService } from '../core/auth.service';
 export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('backgroundVideo') backgroundVideo: ElementRef;
 
+  isSubmitting = false;
+
   subscriptions$: Subscription[] = [];
 
   loginForm = new FormGroup({
@@ -39,6 +41,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   login() {
+    this.isSubmitting = true;
     if (this.isFormValid()) {
       this.subscriptions$.push(
         this.AuthService.login(
@@ -46,24 +49,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.loginForm.value.password
         ).subscribe(
           (response: any) => {
-            console.log(response);
-            // localStorage.setItem(
-            //   'expiry',
-            //   response.authentication.expires_in + 3600000
-            // );
-            // localStorage.setItem('token', response.authentication.access_token);
-            // localStorage.setItem(
-            //   'user_info',
-            //   JSON.stringify(response.user_info)
-            // );
-
-            // this.UserAuthService.userRole.next(
-            //   this.UserAuthService.getUserInfo().role
-            // );
+            this.isSubmitting = false;
             this.resetForm();
             this.Router.navigateByUrl('/home/vault');
           },
           (error) => {
+            this.isSubmitting = false;
             this.errorMessage = 'Invalid username/password.';
           }
         )
