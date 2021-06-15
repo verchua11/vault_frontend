@@ -40,7 +40,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           this.VaultService.getFiles().subscribe((response: any) => {
             this.folders = [];
             response.results.forEach((res) => {
-              let folders = res.split('/');
+              let folders = res.Key.split('/');
 
               if (folders[0] === 'projects') {
                 folders = folders.filter((v) => v !== '' && v !== 'projects');
