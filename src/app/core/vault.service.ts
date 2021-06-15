@@ -57,4 +57,10 @@ export class VaultService {
       responseType: 'blob',
     });
   }
+
+  deleteFile(url: string) {
+    const formData = new FormData();
+    formData.append('url', url);
+    return this.http.post(`${environment.awsURL}/delete`, formData);
+  }
 }

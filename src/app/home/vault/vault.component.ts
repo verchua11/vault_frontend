@@ -30,6 +30,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   isVisible = false;
   isLoadingVault = true;
   isDownloading = false;
+  isDeleting = false;
   isSubmitting = false;
   prevent = false;
   timer: any;
@@ -319,6 +320,38 @@ export class VaultComponent implements OnInit, OnDestroy {
         );
 
         this.isDownloading = false;
+      })
+    );
+  }
+
+  public deleteFile(node: string) {
+    this.isDeleting = true;
+    const url =
+      'https://jcva-agile-vault.s3-ap-southeast-1.amazonaws.com/' +
+      this.breadcrumbs.join('/') +
+      '/' +
+      node;
+
+    this.subscriptions.push(
+      this.VaultService.deleteFile(url).subscribe((response) => {
+        const del = this.breadcrumbs.concat([node]);
+        console.log(del);
+        console.log(this.breadcrumbs);
+
+        this.folders.forEach((folder, idx) => {
+          let isMatch = true;
+          folder.forEach((f, i) => {
+            if (f !== del[i]) {
+              isMatch = false;
+            }
+          });
+
+          if (isMatch) {
+            this.folders.splice(idx, 1);
+          }
+        });
+
+        this.isDeleting = false;
       })
     );
   }

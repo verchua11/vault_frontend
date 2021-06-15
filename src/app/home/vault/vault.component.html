@@ -123,6 +123,7 @@
             <nz-dropdown-menu #fileMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="downloadFile(node)">Download</li>
+                <li nz-menu-item (click)="deleteFile(node)">Delete</li>
               </ul>
             </nz-dropdown-menu>
           </div>
@@ -230,6 +231,13 @@
   class="preloader-overlay"
 >
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="isDeleting ? 'preloader-overlay-show' : 'preloader-overlay-hide'"
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
 </div>
 
 <nz-modal
