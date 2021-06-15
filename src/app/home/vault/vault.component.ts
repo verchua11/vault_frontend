@@ -6,6 +6,7 @@ import { VaultService } from 'src/app/core/vault.service';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import * as moment from 'moment';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 declare var $;
 @Component({
@@ -49,7 +50,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   constructor(
     private ProjectService: ProjectService,
     private VaultService: VaultService,
-    private VaultStateService: VaultStateService
+    private VaultStateService: VaultStateService,
+    private message: NzMessageService
   ) {}
 
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -273,6 +275,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           });
           this.isSubmitting = false;
           this.closeUploadModal();
+          this.displayMessage('Uploading file complete.');
         })
       );
     } else {
@@ -294,6 +297,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           );
           this.isSubmitting = false;
           this.closeUploadModal();
+          this.displayMessage('Creating new folder complete.');
         })
       );
     }
@@ -352,6 +356,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         });
 
         this.isDeleting = false;
+        this.displayMessage('Deleting file complete.');
       })
     );
   }
@@ -359,6 +364,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   public navigateBreadcrumb(node: any, index: number) {
     this.selectedNode = node;
     this.directoryLevel -= this.breadcrumbs.splice(index + 1).length;
+  }
+
+  private displayMessage(msg: string): void {
+    this.message.info(msg);
   }
 
   private openProjectFolder(project: string) {

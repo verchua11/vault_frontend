@@ -242,6 +242,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisible"
+  nzMaskClosable="false"
   nzTitle="{{
     uploadForm.get('uploadType').value === '2' ? 'New Folder' : 'New  File'
   }}"
