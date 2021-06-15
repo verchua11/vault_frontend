@@ -87,12 +87,6 @@
               nzType="folder"
               nzTheme="fill"
             ></i>
-            <i
-              *ngIf="node.indexOf('.') !== -1"
-              nz-icon
-              nzType="file"
-              nzTheme="fill"
-            ></i>
             <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
               {{ node }}
             </p>
@@ -122,20 +116,25 @@
           (dblclick)="openNode(node)"
           (click)="selectNode(node)"
         >
+          <div class="file-menu">
+            <a nz-dropdown [nzDropdownMenu]="fileMenu"
+              ><i nz-icon nzType="more"></i
+            ></a>
+            <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="downloadFile(node)">Download</li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+
           <div class="file-thumbnail">
             <i nz-icon [nzType]="getFileIcon(node)" nzTheme="fill"></i>
           </div>
           <div class="folder-card-content">
             <i
-              *ngIf="node.indexOf('.') === -1"
-              nz-icon
-              nzType="folder"
-              nzTheme="fill"
-            ></i>
-            <i
               *ngIf="node.indexOf('.') !== -1"
               nz-icon
-              nzType="file"
+              [nzType]="getFileIcon(node)"
               nzTheme="fill"
             ></i>
 
@@ -222,6 +221,15 @@
   class="preloader-overlay"
 >
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Loading Vault..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="
+    isDownloading ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
 </div>
 
 <nz-modal

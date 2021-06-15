@@ -29,6 +29,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   isVisible = false;
   isLoadingVault = true;
+  isDownloading = false;
   isSubmitting = false;
   prevent = false;
   timer: any;
@@ -298,12 +299,26 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public downloadFile(node: string) {
+    this.isDownloading = true;
     this.subscriptions.push(
       this.VaultService.downloadFile(
         'projects/' + this.breadcrumbs.join('/') + '/',
         node
-      ).subscribe((response) => {
+      ).subscribe(async (response: any) => {
         console.log(response);
+
+        this.VaultService.download(response.results.effectiveUri).subscribe(
+          (blob) => {
+            const a = document.createElement('a');
+            const objectUrl = URL.createObjectURL(blob);
+            a.href = objectUrl;
+            a.download = 'archive.jpg';
+            a.click();
+            URL.revokeObjectURL(objectUrl);
+          }
+        );
+
+        this.isDownloading = false;
       })
     );
   }

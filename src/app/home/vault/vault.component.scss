@@ -95,6 +95,16 @@ nz-card {
   }
 }
 
+.file-menu {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+
+  a:hover {
+    cursor: pointer;
+  }
+}
+
 .folder-card-content {
   display: flex;
   align-items: center;
