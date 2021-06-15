@@ -24,6 +24,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   folders = [];
   metadata = [];
   directoryLevel = null;
+  deletedFiles = [];
 
   selectedTab = 'Details';
   selectedFile: any;
@@ -64,30 +65,30 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoadingVault = true;
+
     this.subscriptions.push(
-      this.ProjectService.getProjects().subscribe((response: any) => {
-        const ids = [];
-        response.projects.forEach((p) => {
-          ids.push(p.project_id);
-        });
+      this.VaultService.getDeletedFiles().subscribe((response: any) => {
+        this.deletedFiles = response.items;
 
         this.subscriptions.push(
           this.VaultService.getFiles().subscribe((response: any) => {
-            // this.metadata = response.results;
+            this.metadata = response.results;
 
             this.projects = [];
             this.folders = [];
             response.results.forEach((res) => {
-              let folders = res.split('/');
+              if (this.deletedFiles.indexOf(res.Key) === -1) {
+                let folders = res.Key.split('/');
 
-              if (folders[0] === 'projects') {
-                folders = folders.filter((v) => v !== '' && v !== 'projects');
+                if (folders[0] === 'projects') {
+                  folders = folders.filter((v) => v !== '' && v !== 'projects');
 
-                if (folders.length > 0) {
-                  this.folders.push(folders);
+                  if (folders.length > 0) {
+                    this.folders.push(folders);
 
-                  if (this.projects.indexOf(folders[0]) === -1)
-                    this.projects.push(folders[0]);
+                    if (this.projects.indexOf(folders[0]) === -1)
+                      this.projects.push(folders[0]);
+                  }
                 }
               }
             });
@@ -314,7 +315,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             const a = document.createElement('a');
             const objectUrl = URL.createObjectURL(blob);
             a.href = objectUrl;
-            a.download = 'archive.jpg';
+            a.download = node;
             a.click();
             URL.revokeObjectURL(objectUrl);
           }
@@ -327,11 +328,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public deleteFile(node: string) {
     this.isDeleting = true;
-    const url =
-      'https://jcva-agile-vault.s3-ap-southeast-1.amazonaws.com/' +
-      this.breadcrumbs.join('/') +
-      '/' +
-      node;
+    const url = 'projects/' + this.breadcrumbs.join('/') + '/' + node;
 
     this.subscriptions.push(
       this.VaultService.deleteFile(url).subscribe((response) => {

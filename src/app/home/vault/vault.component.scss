@@ -73,6 +73,11 @@ nz-card {
 .folder-card:hover {
   cursor: pointer;
   border: 1px solid var(--jcva-orange);
+
+  .file-menu,
+  .file-menu-folder {
+    display: flex;
+  }
 }
 
 .folder-card-add {
@@ -95,10 +100,26 @@ nz-card {
   }
 }
 
+.file-menu-folder {
+  display: none;
+  position: absolute;
+  justify-content: flex-end;
+  align-items: center;
+  left: 0;
+  top: 0;
+  right: 0.5rem;
+  bottom: 0;
+
+  a:hover {
+    cursor: pointer;
+  }
+}
+
 .file-menu {
+  display: none;
   position: absolute;
   right: 0.5rem;
-  top: 0.5rem;
+  top: 1rem;
 
   a:hover {
     cursor: pointer;

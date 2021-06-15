@@ -22,6 +22,10 @@ export class VaultService {
     return this.http.get(`${environment.awsURL}/listobjects`);
   }
 
+  getDeletedFiles() {
+    return this.http.get(`${environment.awsURL}/deleted`);
+  }
+
   getStorageUsed() {
     return this.http.get(`${environment.awsURL}/storagesize`);
   }
@@ -60,7 +64,7 @@ export class VaultService {
 
   deleteFile(url: string) {
     const formData = new FormData();
-    formData.append('url', url);
+    formData.append('url', url.indexOf('.') === -1 ? url + '/' : url);
     return this.http.post(`${environment.awsURL}/delete`, formData);
   }
 }
