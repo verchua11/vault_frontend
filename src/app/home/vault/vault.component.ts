@@ -73,7 +73,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         this.subscriptions.push(
           this.VaultService.getFiles().subscribe((response: any) => {
-            console.log(response);
             // this.metadata = response.results;
 
             this.projects = [];
@@ -110,7 +109,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     // this.subscriptions.push(
     //   this.VaultService.getFiles().subscribe((response: any) => {
-    //     console.log(response);
+    //
     //     this.metadata = response.results;
     //   })
     // );
@@ -310,8 +309,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         'projects/' + this.breadcrumbs.join('/') + '/',
         node
       ).subscribe(async (response: any) => {
-        console.log(response);
-
         this.VaultService.download(response.results.effectiveUri).subscribe(
           (blob) => {
             const a = document.createElement('a');
@@ -339,8 +336,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.VaultService.deleteFile(url).subscribe((response) => {
         const del = this.breadcrumbs.concat([node]);
-        console.log(del);
-        console.log(this.breadcrumbs);
 
         this.folders.forEach((folder, idx) => {
           let isMatch = true;

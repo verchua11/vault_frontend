@@ -54,7 +54,6 @@ export class AuthService {
       .post(`${environment.apiURL}/tokenrequest`, new FormData())
       .pipe(
         map((response: any) => {
-          console.log(response);
           localStorage.setItem(
             'expiry',
             response.access_token.expires_in + 3600000
