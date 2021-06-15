@@ -13,7 +13,9 @@ export class TokenInterceptorService {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (request.url.indexOf('login') === -1) {
-      request = this.addAuthToken(request);
+      if (request.url.indexOf('amazonaws') === -1)
+        request = this.addAuthToken(request);
+      else request = this.addAuthTokenWithBlob(request);
     }
 
     return next.handle(request);
@@ -23,6 +25,14 @@ export class TokenInterceptorService {
     return (request = request.clone({
       setHeaders: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }));
+  }
+
+  private addAuthTokenWithBlob(request: HttpRequest<any>) {
+    return (request = request.clone({
+      setHeaders: {
+        responseType: 'blob',
       },
     }));
   }
