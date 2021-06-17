@@ -16,6 +16,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   selectedNav: string;
   selectedProject: string;
   folders = [];
+  metadata = [];
 
   storageSize = 0;
 
@@ -38,6 +39,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
         this.subscriptions.push(
           this.VaultService.getFiles().subscribe((response: any) => {
+            this.metadata = response.results;
             this.folders = [];
             response.results.forEach((res) => {
               let folders = res.Key.split('/');
@@ -74,6 +76,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
+  }
+
+  public getProjectName(node: string) {
+    return this.metadata.find((m) => m.Key === 'projects/' + node + '/')
+      .ProjectDetails;
   }
 
   public setSelectedProject(project: string) {

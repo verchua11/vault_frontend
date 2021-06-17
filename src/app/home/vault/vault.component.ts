@@ -26,7 +26,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   directoryLevel = null;
   deletedFiles = [];
 
-  selectedTab = 'Details';
   selectedFile: any;
 
   isVisible = false;
@@ -118,6 +117,11 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
+  }
+
+  public getProjectName(node: string) {
+    return this.metadata.find((m) => m.Key === 'projects/' + node + '/')
+      .ProjectDetails;
   }
 
   public getFormattedDate(date: string) {
