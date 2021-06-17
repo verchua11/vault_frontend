@@ -13,10 +13,7 @@
   </div>
   <span class="filler"></span>
   <i class="fas fa-cog fa-2x" style="color: white; margin-right: 2rem"></i>
-  <div
-    *ngIf="userInfo && userInfo.profile_image_url === ''"
-    class="user-avatar user-avatar-sm mr-3"
-  >
+  <div *ngIf="userInfo" class="user-avatar user-avatar-sm mr-3">
     <a nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight">
       {{
         userInfo.first_name.substring(0, 1).toUpperCase() +
@@ -29,7 +26,7 @@
       </ul>
     </nz-dropdown-menu>
   </div>
-  <div
+  <!-- <div
     *ngIf="userInfo && userInfo.profile_image_url !== ''"
     class="user-avatar user-avatar-sm ml-3"
   >
@@ -41,7 +38,7 @@
         <li nz-menu-item (click)="openLogoutModal()">Logout</li>
       </ul>
     </nz-dropdown-menu>
-  </div>
+  </div> -->
 </div>
 
 <nz-modal
