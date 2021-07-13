@@ -18,6 +18,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 
 @NgModule({
   declarations: [JcvaInputComponent],
@@ -41,6 +42,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     NzSpinModule,
     NzEmptyModule,
     NzMessageModule,
+    NzCollapseModule,
   ],
 })
 export class SharedModule {}

@@ -18,17 +18,17 @@
           (click)="openProject(project)"
         >
           <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-          {{ project }}
+          {{ project.project_name }}
         </li>
       </ul>
     </nz-dropdown-menu>
   </div>
   <div class="main-content">
     <div class="file-explorer">
-      <p *ngIf="directoryLevel < 1" class="file-explorer-header">
+      <p *ngIf="!selectedProject" class="file-explorer-header">
         My Recently Opened Files
       </p>
-      <div *ngIf="directoryLevel < 1" class="recent-files">
+      <div *ngIf="!selectedProject" class="recent-files">
         <div *ngFor="let x of [1, 2, 3]" class="file-card">
           <nz-card nzHoverable [nzCover]="coverTemplate">
             <nz-card-meta
@@ -44,24 +44,159 @@
           </ng-template>
         </div>
       </div>
-      <div *ngIf="directoryLevel > 0" class="folder-breadcrumb">
-        <nz-breadcrumb>
-          <nz-breadcrumb-item
-            *ngFor="let breadcrumb of breadcrumbs; let i = index"
-          >
-            <i
-              *ngIf="i === 0"
-              nz-icon
-              nzType="home"
-              nzTheme="outline"
-              class="me-2"
-            ></i>
-            <a (click)="navigateBreadcrumb(breadcrumb, i)">{{ breadcrumb }}</a>
-          </nz-breadcrumb-item>
-        </nz-breadcrumb>
-      </div>
 
-      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
+      <nz-collapse nzAccordion *ngIf="selectedProject" class="mt-2">
+        <nz-collapse-panel
+          *ngFor="
+            let stage of selectedProject.is_dnb_traditional === 'dnb'
+              ? stagesDnB
+              : stagesTraditional;
+            let stageIdx = index
+          "
+          [nzHeader]="stage.name"
+          [nzActive]="stage.active"
+        >
+          <div class="folder-breadcrumb">
+            <nz-breadcrumb>
+              <nz-breadcrumb-item
+                *ngFor="let breadcrumb of stage.breadcrumbs; let i = index"
+              >
+                <i
+                  *ngIf="i === 0"
+                  nz-icon
+                  nzType="home"
+                  nzTheme="outline"
+                  class="me-2"
+                ></i>
+                <a (click)="navigateBreadcrumb(stage, i)">{{ breadcrumb }}</a>
+              </nz-breadcrumb-item>
+            </nz-breadcrumb>
+          </div>
+          <p class="file-explorer-header">Folders</p>
+          <div class="folders">
+            <nz-card
+              *ngIf="stage.currDirLevel > 3"
+              class="folder-card-add mb-2"
+              (click)="openFolderUploadModal()"
+            >
+              <div class="folder-card-content">
+                <i nz-icon nzType="folder-add" nzTheme="fill"></i>
+                <p>New Folder</p>
+              </div>
+            </nz-card>
+            <nz-card
+              class="folder-card mb-2"
+              *ngFor="
+                let folder of getSubdirectory(stage, true);
+                let folderIdx = index
+              "
+              [ngClass]="{
+                'selected-node': selectedFile?.Key == folder.Key
+              }"
+              (dblclick)="openDirectory(stage, folder)"
+              (click)="selectDirectory(stage, folder)"
+            >
+              <div class="file-menu-folder">
+                <a
+                  nz-dropdown
+                  [nzDropdownMenu]="fileMenu1"
+                  nzPlacement="bottomRight"
+                  ><i nz-icon nzType="more"></i
+                ></a>
+                <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="deleteFile(node)">Delete</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div class="folder-card-content">
+                <i
+                  *ngIf="folder.folder_name.indexOf('.') === -1"
+                  nz-icon
+                  nzType="folder"
+                  nzTheme="fill"
+                ></i>
+                <p
+                  nz-tooltip
+                  nzTooltipTitle="{{ folder.folder_name }}"
+                  nzTooltipColor="white"
+                >
+                  {{
+                    stageIdx +
+                      1 +
+                      "." +
+                      (folderIdx + 1 | number: "2.0") +
+                      " " +
+                      folder.folder_name
+                  }}
+                </p>
+              </div>
+            </nz-card>
+          </div>
+
+          <p *ngIf="stage.currDirLevel > 3" class="file-explorer-header">
+            Files
+          </p>
+          <div class="folders">
+            <nz-card
+              *ngIf="stage.currDirLevel > 3"
+              class="folder-card-add mb-2"
+              (click)="openFileUploadModal()"
+            >
+              <div class="file-thumbnail">
+                <i nz-icon nzType="file-add" nzTheme="fill"></i>
+              </div>
+              <div class="folder-card-content">
+                <i nz-icon nzType="file-add" nzTheme="fill"></i>
+                <p>New File</p>
+              </div>
+            </nz-card>
+            <nz-card
+              class="folder-card mb-2"
+              *ngFor="let file of getSubdirectory(stage, false)"
+              [ngClass]="getFolderClass(node)"
+              (dblclick)="openNode(node)"
+              (click)="selectNode(node)"
+            >
+              <div class="file-menu">
+                <a
+                  nz-dropdown
+                  [nzDropdownMenu]="fileMenu"
+                  nzPlacement="bottomRight"
+                  ><i nz-icon nzType="more"></i
+                ></a>
+                <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="downloadFile(node)">Download</li>
+                    <li nz-menu-item (click)="deleteFile(node)">Delete</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+
+              <div class="file-thumbnail">
+                <i nz-icon [nzType]="getFileIcon(node)" nzTheme="fill"></i>
+              </div>
+              <div class="folder-card-content">
+                <i
+                  *ngIf="file.indexOf('.') !== -1"
+                  nz-icon
+                  [nzType]="getFileIcon(node)"
+                  nzTheme="fill"
+                ></i>
+
+                <p
+                  nz-tooltip
+                  nzTooltipTitle="{{ file }}"
+                  nzTooltipColor="white"
+                >
+                  {{ file }}
+                </p>
+              </div>
+            </nz-card>
+          </div>
+        </nz-collapse-panel>
+      </nz-collapse>
+      <!-- <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
       <div *ngIf="directoryLevel > 0" class="folders">
         <nz-card
           *ngIf="directoryLevel > 0"
@@ -157,7 +292,7 @@
             </p>
           </div>
         </nz-card>
-      </div>
+      </div> -->
     </div>
     <div class="file-info">
       <p class="file-info-header">My Vault</p>
@@ -253,7 +388,7 @@
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
 </div>
 
-<nz-modal
+<!-- <nz-modal
   [(nzVisible)]="isVisible"
   nzMaskClosable="false"
   nzTitle="{{
@@ -263,41 +398,6 @@
 >
   <form [formGroup]="uploadForm" (ngSubmit)="submitUpload()">
     <ng-container *nzModalContent>
-      <!-- <p style="font-size: 1rem; color: var(--jcva-black-80)" class="mb-2">
-        Location:
-      </p>
-      <ul
-        nz-menu
-        nzMode="inline"
-        style="padding: 1rem; border: 1px solid var(--jcva-black-40)"
-        class="mb-3"
-      >
-        <li
-          *ngFor="let folder of getFolders()"
-          nz-submenu
-          [nzTitle]="folder"
-          nzIcon="folder"
-        >
-          <ul>
-            <li nz-submenu nzTitle="Submenu">
-              <ul>
-                <li nz-menu-item>Option 7</li>
-                <li nz-menu-item>Option 8</li>
-                <li nz-submenu nzTitle="Submenu">
-                  <ul>
-                    <li nz-menu-item>Option 9</li>
-                    <li nz-menu-item>Option 10</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul> -->
-      <!-- <nz-radio-group formControlName="uploadType" class="mb-3">
-        <label nz-radio nzValue="1">Upload File</label>
-        <label nz-radio nzValue="2">Create New Folder</label>
-      </nz-radio-group> -->
       <div *ngIf="uploadForm.get('uploadType').value === '1'">
         <nz-upload
           [(nzFileList)]="fileList"
@@ -333,4 +433,4 @@
       </button>
     </div>
   </form>
-</nz-modal>
+</nz-modal> -->

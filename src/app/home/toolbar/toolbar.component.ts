@@ -18,7 +18,6 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
-    console.log(this.userInfo);
   }
 
   public openLogoutModal() {

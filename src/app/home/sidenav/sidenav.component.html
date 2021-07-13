@@ -73,19 +73,6 @@
         <a
           class="navi-link"
           role="button"
-          [ngClass]="{ 'selected-nav': selectedNav === 'shared' }"
-          (click)="navigateTo('shared')"
-        >
-          <i nz-icon nzType="team" nzTheme="outline"></i>
-          <div>
-            <p>Shared with me</p>
-          </div>
-        </a>
-      </div>
-      <div class="navi-item">
-        <a
-          class="navi-link"
-          role="button"
           [ngClass]="{ 'selected-nav': selectedNav === 'recent' }"
           (click)="navigateTo('recent')"
         >

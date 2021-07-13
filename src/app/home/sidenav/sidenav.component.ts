@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Project } from 'src/app/core/models/project.model';
 import { ProjectService } from 'src/app/core/project.service';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
@@ -83,9 +84,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
       .ProjectDetails;
   }
 
-  public setSelectedProject(project: string) {
+  public setSelectedProject(project: Project) {
     this.VaultStateService.updateSelectedProject(project);
-    this.selectedNav = project;
+    this.selectedNav = project.project_name;
   }
 
   sidenavOverlayClicked() {
