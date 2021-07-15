@@ -51,19 +51,30 @@
         <div class="collapse" id="collapseAccount">
           <div class="subnavi">
             <div
-              *ngFor="let folder of folders"
+              *ngFor="let project of projects"
               class="subnavi-item"
               [ngClass]="{
-                'selected-nav': selectedNav === folder
+                'selected-nav': selectedNav === project.project_name
               }"
             >
               <a
                 class="subnavi-link"
                 role="button"
-                (click)="setSelectedProject(folder)"
+                nz-tooltip
+                nzTooltipTitle="{{ project.project_name }}"
+                nzTooltipColor="white"
+                (click)="setSelectedProject(project)"
               >
                 <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-                <p>{{ folder }}</p>
+                <p
+                  style="
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ project.project_name }}
+                </p>
               </a>
             </div>
           </div>

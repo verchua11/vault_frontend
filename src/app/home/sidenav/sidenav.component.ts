@@ -15,8 +15,8 @@ declare var $;
 })
 export class SidenavComponent implements OnInit, OnDestroy {
   selectedNav: string;
-  selectedProject: string;
-  folders = [];
+  selectedProject: Project;
+  projects: Array<Project> = [];
   metadata = [];
 
   storageSize = 0;
@@ -33,28 +33,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(
       this.ProjectService.getProjects().subscribe((response: any) => {
-        const ids = [];
-        response.projects.forEach((p) => {
-          ids.push(p.project_id);
-        });
-
-        this.subscriptions.push(
-          this.VaultService.getFiles().subscribe((response: any) => {
-            this.metadata = response.results;
-            this.folders = [];
-            response.results.forEach((res) => {
-              let folders = res.Key.split('/');
-
-              if (folders[0] === 'projects') {
-                folders = folders.filter((v) => v !== '' && v !== 'projects');
-
-                if (folders.length > 0) {
-                  if (this.folders.indexOf(folders[0]) === -1)
-                    this.folders.push(folders[0]);
-                }
-              }
-            });
-          })
+        this.projects = response.projects.filter(
+          (p) => p.status === 'Approved'
         );
       })
     );
@@ -63,7 +43,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.VaultStateService.newSelectedProject.subscribe((project) => {
         if (project) {
           this.selectedProject = project;
-          this.selectedNav = project;
+          this.selectedNav = project.project_name;
         }
       })
     );
@@ -87,6 +67,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public setSelectedProject(project: Project) {
     this.VaultStateService.updateSelectedProject(project);
     this.selectedNav = project.project_name;
+    this.router.navigateByUrl('/home/my-vault');
   }
 
   sidenavOverlayClicked() {
@@ -101,6 +82,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   navigateTo(route: string) {
     this.selectedNav = route;
-    this.router.navigateByUrl(`/agile/${route}`);
+    this.router.navigateByUrl(`/home/${route}`);
   }
 }

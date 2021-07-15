@@ -21,4 +21,18 @@ export class VaultStateService {
   updateSelectedNav(nav: string) {
     this.selectedNav.next(nav);
   }
+
+  addToRecent(key: string, project_id: string) {
+    const recent = JSON.parse(localStorage.getItem('recent'));
+    if (
+      recent.find((r) => r.key === key && r.project_id === project_id) ===
+      undefined
+    )
+      recent.push({
+        key: key,
+        project_id: project_id,
+        date: new Date(),
+      });
+    localStorage.setItem('recent', JSON.stringify(recent));
+  }
 }

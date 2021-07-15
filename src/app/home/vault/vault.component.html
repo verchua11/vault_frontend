@@ -77,10 +77,10 @@
             <nz-card
               *ngIf="stage.currDirLevel > 3"
               class="folder-card-add mb-2"
-              (click)="openFolderUploadModal()"
+              (click)="openFolderUploadModal(stage)"
             >
               <div class="folder-card-content">
-                <i nz-icon nzType="folder-add" nzTheme="fill"></i>
+                <img src="assets/icons/Icon_New Folder.svg" alt="" />
                 <p>New Folder</p>
               </div>
             </nz-card>
@@ -94,7 +94,10 @@
                 'selected-node': selectedFile?.Key == folder.Key
               }"
               (dblclick)="openDirectory(stage, folder)"
-              (click)="selectDirectory(stage, folder)"
+              (click)="selectDirectory(folder)"
+              nz-tooltip
+              [nzTooltipTitle]="folder.name"
+              nzTooltipColor="white"
             >
               <div class="file-menu-folder">
                 <a
@@ -105,29 +108,29 @@
                 ></a>
                 <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="deleteFile(node)">Delete</li>
+                    <li nz-menu-item>Add to Starred</li>
+                    <li nz-menu-item>Rename</li>
+                    <li nz-menu-item (click)="deleteFile(stage, folder)">
+                      Delete
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
               <div class="folder-card-content">
                 <i
-                  *ngIf="folder.folder_name.indexOf('.') === -1"
+                  *ngIf="folder.name.indexOf('.') === -1"
                   nz-icon
                   nzType="folder"
                   nzTheme="fill"
                 ></i>
-                <p
-                  nz-tooltip
-                  nzTooltipTitle="{{ folder.folder_name }}"
-                  nzTooltipColor="white"
-                >
+                <p>
                   {{
                     stageIdx +
                       1 +
                       "." +
                       (folderIdx + 1 | number: "2.0") +
                       " " +
-                      folder.folder_name
+                      folder.name
                   }}
                 </p>
               </div>
@@ -141,22 +144,23 @@
             <nz-card
               *ngIf="stage.currDirLevel > 3"
               class="folder-card-add mb-2"
-              (click)="openFileUploadModal()"
+              (click)="openFileUploadModal(stage)"
             >
               <div class="file-thumbnail">
-                <i nz-icon nzType="file-add" nzTheme="fill"></i>
+                <img src="assets/icons/Icon_New File.svg" alt="" />
               </div>
               <div class="folder-card-content">
-                <i nz-icon nzType="file-add" nzTheme="fill"></i>
+                <img src="assets/icons/Icon_New File.svg" alt="" />
                 <p>New File</p>
               </div>
             </nz-card>
             <nz-card
               class="folder-card mb-2"
               *ngFor="let file of getSubdirectory(stage, false)"
-              [ngClass]="getFolderClass(node)"
-              (dblclick)="openNode(node)"
-              (click)="selectNode(node)"
+              [ngClass]="{
+                'selected-node': selectedFile?.Key == file.Key
+              }"
+              (click)="selectDirectory(file)"
             >
               <div class="file-menu">
                 <a
@@ -168,28 +172,32 @@
                 <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item (click)="downloadFile(node)">Download</li>
-                    <li nz-menu-item (click)="deleteFile(node)">Delete</li>
+                    <li nz-menu-item>Add to Starred</li>
+                    <li nz-menu-item>Rename</li>
+                    <li nz-menu-item (click)="deleteFile(stage, file)">
+                      Delete
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
 
               <div class="file-thumbnail">
-                <i nz-icon [nzType]="getFileIcon(node)" nzTheme="fill"></i>
+                <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
               </div>
               <div class="folder-card-content">
                 <i
-                  *ngIf="file.indexOf('.') !== -1"
+                  *ngIf="file.name.indexOf('.') !== -1"
                   nz-icon
-                  [nzType]="getFileIcon(node)"
+                  [nzType]="getFileIcon(file.name)"
                   nzTheme="fill"
                 ></i>
 
                 <p
                   nz-tooltip
-                  nzTooltipTitle="{{ file }}"
+                  nzTooltipTitle="{{ file.name }}"
                   nzTooltipColor="white"
                 >
-                  {{ file }}
+                  {{ file.name }}
                 </p>
               </div>
             </nz-card>
@@ -388,7 +396,7 @@
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
 </div>
 
-<!-- <nz-modal
+<nz-modal
   [(nzVisible)]="isVisible"
   nzMaskClosable="false"
   nzTitle="{{
@@ -433,4 +441,4 @@
       </button>
     </div>
   </form>
-</nz-modal> -->
+</nz-modal>

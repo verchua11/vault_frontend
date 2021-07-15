@@ -9,15 +9,6 @@ import { environment } from 'src/environments/environment';
 export class VaultService {
   constructor(private http: HttpClient) {}
 
-  // getFolders(ids: Array<string>) {
-  //   const formData = new FormData();
-  //   ids.forEach((id) => {
-  //     formData.append('id[]', id);
-  //   });
-
-  //   return this.http.post(`${environment.awsURL}/getproject`, formData);
-  // }
-
   getFiles() {
     return this.http.get(`${environment.awsURL}/listobjects`);
   }
@@ -66,5 +57,12 @@ export class VaultService {
     const formData = new FormData();
     formData.append('url', url.indexOf('.') === -1 ? url + '/' : url);
     return this.http.post(`${environment.awsURL}/delete`, formData);
+  }
+
+  toggleStarStatus(key: string, action: string) {
+    const formData = new FormData();
+    formData.append('key', key);
+    formData.append('action', action);
+    return this.http.post(`${environment.awsURL}/starred`, formData);
   }
 }

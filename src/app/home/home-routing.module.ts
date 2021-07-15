@@ -9,13 +9,18 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'vault',
+        redirectTo: 'my-vault',
         pathMatch: 'full',
       },
       {
-        path: 'vault',
+        path: 'my-vault',
         loadChildren: () =>
           import('./vault/vault.module').then((m) => m.VaultModule),
+      },
+      {
+        path: 'recent',
+        loadChildren: () =>
+          import('./recent/recent.module').then((m) => m.RecentModule),
       },
     ],
   },

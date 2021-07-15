@@ -1,0 +1,30 @@
+.ant-dropdown-link {
+  font-size: 1.5rem;
+}
+
+.ant-menu-horizontal {
+  display: flex;
+  color: var(--jcva-black-80);
+
+  li {
+    flex: 1;
+    margin: 0 1.5rem;
+    text-align: center;
+  }
+}
+
+.ant-dropdown-menu-item > .anticon:first-child,
+.ant-dropdown-menu-submenu-title > .anticon:first-child,
+.ant-dropdown-menu-item > a > .anticon:first-child,
+.ant-dropdown-menu-submenu-title > a > .anticon:first-child,
+.ant-dropdown-menu-item > span > .anticon:first-child,
+.ant-dropdown-menu-submenu-title > span > .anticon:first-child {
+  vertical-align: 0;
+  font-size: 18px;
+}
+
+.title-nav {
+  display: flex;
+  border-bottom: 1px solid var(--jcva-background);
+  padding-bottom: 1rem;
+}

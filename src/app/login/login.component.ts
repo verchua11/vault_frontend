@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           (response: any) => {
             this.isSubmitting = false;
             this.resetForm();
-            this.Router.navigateByUrl('/home/vault');
+            this.Router.navigateByUrl('/home/my-vault');
           },
           (error) => {
             this.isSubmitting = false;
