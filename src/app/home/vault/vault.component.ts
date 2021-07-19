@@ -34,6 +34,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   directoryLevel = null;
   deletedFiles = [];
 
+  openedFolder: any;
   selectedFile: any;
 
   isVisible = false;
@@ -161,7 +162,22 @@ export class VaultComponent implements OnInit, OnDestroy {
                     projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
                       -1 && this.deletedFiles.indexOf(dir.Key) === -1
                 );
+
                 console.log(this.vaultDirectory);
+
+                // const temp = [].concat(this.vaultDirectory);
+                // const urls = temp.map((dir) => dir.Key);
+                // const root = {};
+                // for (let url of urls) {
+                //   if (url.charAt(url.length - 1) === '/')
+                //     url = url.substring(0, url.length - 1);
+                //   let ptr = root;
+                //   const stack = url.split('/'),
+                //     basename = stack.pop();
+                //   for (const p of stack) ptr = ptr[p] = ptr[p] || {};
+                //   ptr[basename] = /\./.test(basename) || {};
+                // }
+                // console.log(root);
 
                 this.subscriptions.push(
                   this.VaultStateService.newSelectedProject.subscribe(
@@ -244,15 +260,32 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) !== -1
       )
       .forEach((dir) => {
-        const tmpDir = dir.Key.split('/')[stage.currDirLevel];
-        if (
-          tmpDir &&
-          arr.find((a) => a.name === tmpDir) === undefined &&
-          (isFolder ? tmpDir.indexOf('.') === -1 : tmpDir.indexOf('.') !== -1)
-        ) {
-          const finalDir = dir;
-          finalDir['name'] = tmpDir;
-          arr.push(finalDir);
+        if (stage.currDirLevel == 3) {
+          const tmpDir = dir.Key.split('/')[stage.currDirLevel];
+          if (
+            tmpDir &&
+            arr.find((a) => a.name === tmpDir) === undefined &&
+            (isFolder ? tmpDir.indexOf('.') === -1 : tmpDir.indexOf('.') !== -1)
+          ) {
+            const finalDir = dir;
+            finalDir['name'] = tmpDir;
+            arr.push(finalDir);
+          }
+        } else {
+          const tmpDir = dir.Key.split('/')[stage.currDirLevel - 1];
+          const content = dir.Key.split('/')[stage.currDirLevel];
+          if (
+            content &&
+            tmpDir === this.openedFolder.name &&
+            arr.find((a) => a.name === content) === undefined &&
+            (isFolder
+              ? content.indexOf('.') === -1
+              : content.indexOf('.') !== -1)
+          ) {
+            const finalDir = dir;
+            finalDir['name'] = content;
+            arr.push(finalDir);
+          }
         }
       });
     return arr;
@@ -262,6 +295,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     clearTimeout(this.timer);
     this.prevent = true;
     if (folder.name.indexOf('.') === -1) {
+      this.openedFolder = folder;
       stage.currDirLevel += 1;
       stage.breadcrumbs.push(folder.name);
     }
@@ -282,6 +316,14 @@ export class VaultComponent implements OnInit, OnDestroy {
   public navigateBreadcrumb(stage: any, index: number) {
     index += 3;
     stage.currDirLevel = index;
+    this.openedFolder = this.vaultDirectory.find(
+      (dir) =>
+        dir.Key ===
+        this.openedFolder.Key.split('/')
+          .slice(0, this.openedFolder.Key.split('/').length - 2)
+          .join('/') +
+          '/'
+    );
     const newBreadcrumbs = [];
     for (let i = 0; i < index - 2; i++) {
       newBreadcrumbs.push(stage.breadcrumbs[i]);
@@ -318,11 +360,15 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.selectedStage.breadcrumbs.slice(1).join('/') +
             '/'
         ).subscribe((response: any) => {
-          response.results.forEach((file) =>
+          response.results.forEach((file) => {
             this.vaultDirectory.push({
               Key: file,
-            })
-          );
+            });
+            this.VaultStateService.addToRecent(
+              file,
+              this.selectedProject.project_id
+            );
+          });
           this.isSubmitting = false;
           this.selectedStage = null;
           this.closeUploadModal();
@@ -460,28 +506,35 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.isVisible = true;
   }
 
-  // public downloadFile(node: string) {
-  //   this.isDownloading = true;
-  //   this.subscriptions.push(
-  //     this.VaultService.downloadFile(
-  //       'projects/' + this.breadcrumbs.join('/') + '/',
-  //       node
-  //     ).subscribe(async (response: any) => {
-  //       this.VaultService.download(response.results.effectiveUri).subscribe(
-  //         (blob) => {
-  //           const a = document.createElement('a');
-  //           const objectUrl = URL.createObjectURL(blob);
-  //           a.href = objectUrl;
-  //           a.download = node;
-  //           a.click();
-  //           URL.revokeObjectURL(objectUrl);
-  //         }
-  //       );
+  public downloadFile(file: any) {
+    this.isDownloading = true;
+    this.subscriptions.push(
+      this.VaultService.downloadFile(
+        file.Key.split('/')
+          .slice(0, file.Key.split('/').length - 1)
+          .join('/') + '/',
+        file.name
+      ).subscribe(async (response: any) => {
+        this.VaultService.download(response.results.effectiveUri).subscribe(
+          (blob) => {
+            const a = document.createElement('a');
+            const objectUrl = URL.createObjectURL(blob);
+            a.href = objectUrl;
+            a.download = file.name;
+            a.click();
+            URL.revokeObjectURL(objectUrl);
 
-  //       this.isDownloading = false;
-  //     })
-  //   );
-  // }
+            this.VaultStateService.addToRecent(
+              file.Key,
+              this.selectedProject.project_id
+            );
+          }
+        );
+
+        this.isDownloading = false;
+      })
+    );
+  }
 
   public deleteFile(stage: any, folder: any) {
     this.isDeleting = true;

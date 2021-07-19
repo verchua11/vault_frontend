@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Project } from './models/project.model';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -23,16 +24,31 @@ export class VaultStateService {
   }
 
   addToRecent(key: string, project_id: string) {
-    const recent = JSON.parse(localStorage.getItem('recent'));
-    if (
-      recent.find((r) => r.key === key && r.project_id === project_id) ===
-      undefined
-    )
-      recent.push({
-        key: key,
-        project_id: project_id,
-        date: new Date(),
+    let recent = JSON.parse(localStorage.getItem('recent'));
+
+    if (recent) {
+      recent = recent.filter((item) => {
+        const a = moment(item.date);
+        const b = moment().format('YYYY-MM-DD');
+        return a.diff(b, 'days') > -8;
       });
+    } else {
+      localStorage.setItem('recent', JSON.stringify([]));
+      recent = [];
+    }
+
+    const oldRecord = recent.find(
+      (item) => item.key === key && item.project_id === project_id
+    );
+
+    if (oldRecord !== undefined) recent.splice(recent.indexOf(oldRecord), 1);
+
+    recent.push({
+      key: key,
+      project_id: project_id,
+      date: moment().format('YYYY-MM-DD'),
+    });
+
     localStorage.setItem('recent', JSON.stringify(recent));
   }
 }

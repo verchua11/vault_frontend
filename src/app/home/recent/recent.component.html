@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <div class="title-nav">
+  <!-- <div class="title-nav">
     <a nz-dropdown [nzDropdownMenu]="menu">
       My Vault
       <i
@@ -22,54 +22,50 @@
         </li>
       </ul>
     </nz-dropdown-menu>
-  </div>
+  </div> -->
   <div class="main-content">
     <div class="file-explorer">
-      <p class="file-explorer-header">Folders</p>
+      <p class="file-explorer-header">Files</p>
       <div class="folders">
         <nz-card
           class="folder-card mb-2"
-          *ngFor="let folder of []; let folderIdx = index"
+          *ngFor="let file of files"
           [ngClass]="{
-            'selected-node': selectedFile?.Key == folder.Key
+            'selected-node': selectedFile?.Key == file.Key
           }"
-          (dblclick)="openDirectory(stage, folder)"
-          (click)="selectDirectory(folder)"
-          nz-tooltip
-          [nzTooltipTitle]="folder.name"
-          nzTooltipColor="white"
+          (click)="selectDirectory(file)"
         >
-          <div class="file-menu-folder">
-            <a
-              nz-dropdown
-              [nzDropdownMenu]="fileMenu1"
-              nzPlacement="bottomRight"
+          <div class="file-menu">
+            <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
               ><i nz-icon nzType="more"></i
             ></a>
-            <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
+            <nz-dropdown-menu #fileMenu="nzDropdownMenu">
               <ul nz-menu>
+                <li nz-menu-item (click)="downloadFile(file)">Download</li>
                 <li nz-menu-item>Add to Starred</li>
                 <li nz-menu-item>Rename</li>
-                <li nz-menu-item (click)="deleteFile(stage, folder)">Delete</li>
+                <li nz-menu-item (click)="deleteFile(stage, file)">Delete</li>
               </ul>
             </nz-dropdown-menu>
           </div>
+
+          <div class="file-thumbnail">
+            <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
+          </div>
           <div class="folder-card-content">
             <i
-              *ngIf="folder.name.indexOf('.') === -1"
+              *ngIf="file.name.indexOf('.') !== -1"
               nz-icon
-              nzType="folder"
+              [nzType]="getFileIcon(file.name)"
               nzTheme="fill"
             ></i>
-            <p>
-              {{
-                stageIdx +
-                  1 +
-                  "." +
-                  (folderIdx + 1 | number: "2.0") +
-                  " " +
-                  folder.name
-              }}
+
+            <p
+              nz-tooltip
+              nzTooltipTitle="{{ file.name }}"
+              nzTooltipColor="white"
+            >
+              {{ file.name }}
             </p>
           </div>
         </nz-card>
