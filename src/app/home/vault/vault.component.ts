@@ -60,35 +60,35 @@ export class VaultComponent implements OnInit, OnDestroy {
     {
       active: false,
       name: '1.0 Initiation',
-      vaultDir: 'initiation/',
+      vaultDir: 'Initiation/',
       currDirLevel: 3,
       breadcrumbs: ['Initiation'],
     },
     {
       active: false,
       name: '2.0 Design',
-      vaultDir: 'design/',
+      vaultDir: 'Design/',
       currDirLevel: 3,
       breadcrumbs: ['Design'],
     },
     {
       active: false,
       name: '3.0 Procurement',
-      vaultDir: 'procurement/',
+      vaultDir: 'Procurement/',
       currDirLevel: 3,
       breadcrumbs: ['Procurement'],
     },
     {
       active: false,
       name: '4.0 Construction',
-      vaultDir: 'construction/',
+      vaultDir: 'Construction/',
       currDirLevel: 3,
       breadcrumbs: ['Construction'],
     },
     {
       active: false,
       name: '5.0 Close-out',
-      vaultDir: 'close-out/',
+      vaultDir: 'Close-out/',
       currDirLevel: 3,
       breadcrumbs: ['Close-out'],
     },
@@ -98,27 +98,37 @@ export class VaultComponent implements OnInit, OnDestroy {
     {
       active: false,
       name: '1.0 Initiation',
-      vaultDir: 'initiation/',
+      vaultDir: 'Initiation/',
+      currDirLevel: 3,
+      breadcrumbs: ['Initiation'],
     },
     {
       active: false,
-      name: '2.0 Procurement',
-      vaultDir: 'procurement/',
+      name: '2.0 Design',
+      vaultDir: 'Design/',
+      currDirLevel: 3,
+      breadcrumbs: ['Design'],
     },
     {
       active: false,
-      name: '3.0 Design',
-      vaultDir: 'design/',
+      name: '3.0 Procurement',
+      vaultDir: 'Procurement/',
+      currDirLevel: 3,
+      breadcrumbs: ['Procurement'],
     },
     {
       active: false,
       name: '4.0 Construction',
-      vaultDir: 'construction/',
+      vaultDir: 'Construction/',
+      currDirLevel: 3,
+      breadcrumbs: ['Construction'],
     },
     {
       active: false,
       name: '5.0 Close-out',
-      vaultDir: 'close-out/',
+      vaultDir: 'Close-out/',
+      currDirLevel: 3,
+      breadcrumbs: ['Close-out'],
     },
   ];
 
@@ -145,16 +155,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.projects = response.projects.filter(
           (p) => p.status === 'Approved'
         );
-
+        console.log('projects are: ', this.projects);
         const projectVaultPaths = [];
         this.projects.forEach((p) => {
           if (p.vault_path) projectVaultPaths.push(p.vault_path);
         });
+        console.log('projects paths are: ', projectVaultPaths);
 
         this.subscriptions.push(
           this.VaultService.getDeletedFiles().subscribe((response: any) => {
             this.deletedFiles = response.items;
-
+            // console.log('deleted files are:', this.deletedFiles);
             this.subscriptions.push(
               this.VaultService.getFiles().subscribe((response: any) => {
                 this.vaultDirectory = response.results.filter(
@@ -182,6 +193,8 @@ export class VaultComponent implements OnInit, OnDestroy {
                 this.subscriptions.push(
                   this.VaultStateService.newSelectedProject.subscribe(
                     (project) => {
+                      console.log('vault state service is:', this.VaultStateService);
+                      // console.log('The project is:',project);
                       if (project) {
                         this.selectedProject = project;
                       }
@@ -189,6 +202,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                   )
                 );
 
+                console.log('selected projects are:', this.selectedProject);
                 this.isLoadingVault = false;
               })
             );
@@ -246,9 +260,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openProject(project: Project) {
+    console.log('selected project is:', project);
     if (this.selectedProject !== project)
       this.VaultStateService.updateSelectedProject(project);
-  }
+    }
 
   public getSubdirectory(stage: any, isFolder: boolean) {
     const arr = [];
@@ -290,8 +305,13 @@ export class VaultComponent implements OnInit, OnDestroy {
       });
     return arr;
   }
+  public capitalizeFirstLetter(dir: any) {
+    return dir.charAt(0).toUpperCase() + dir.slice(1);
+  }
 
   public openDirectory(stage: any, folder: any) {
+    console.log('stage is:', stage);
+    console.log('folder is:',folder);
     clearTimeout(this.timer);
     this.prevent = true;
     if (folder.name.indexOf('.') === -1) {
@@ -302,6 +322,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public selectDirectory(folder: any) {
+    console.log('folder is:',folder);
     const _this = this;
     this.timer = setTimeout(function () {
       if (!_this.prevent) {

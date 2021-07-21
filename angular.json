@@ -140,5 +140,8 @@
       }
     }
   },
-  "defaultProject": "vault-frontend"
+  "defaultProject": "vault-frontend",
+  "cli": {
+    "analytics": false
+  }
 }
