@@ -2,7 +2,7 @@
   <!-- <a class="mr-4" (click)="toggleSidenav()">
       <i id="sidenav-toggle" class="fas fa-angle-left fa-3x sidenav-toggle"></i>
     </a> -->
-  <div class="input-with-icon">
+  <!-- <div class="input-with-icon">
     <div class="search-input-icon">
       <i class="fas fa-search"></i>
     </div>
@@ -10,9 +10,37 @@
     <div class="filter-input-icon">
       <i class="fas fa-filter"></i>
     </div>
-  </div>
+  </div> -->
   <span class="filler"></span>
-  <i class="fas fa-cog fa-2x" style="color: white; margin-right: 2rem"></i>
+  <div *ngIf="userInfo" class="ml-4 toolbar-dropdown">
+    <div class="dropdown-container">
+      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor">
+        <span class="filler"></span>
+        <span>{{ currentProjectName }}</span>
+        <span class="filler"></span>
+        <i
+          class="ms-3"
+          nz-icon
+          nzType="down"
+          nzTheme="outline"
+          style="font-size: 15px"
+        ></i>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li
+            *ngFor="let project of projects"
+            nz-menu-item
+            (click)="openProject(project)"
+          >
+            <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+            {{ project.project_name }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+  </div>
+  <!-- <i class="fas fa-cog fa-2x" style="color: white; margin-right: 2rem"></i> -->
   <div *ngIf="userInfo" class="user-avatar user-avatar-sm mr-3">
     <a nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight">
       {{

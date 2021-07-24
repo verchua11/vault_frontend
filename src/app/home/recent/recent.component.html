@@ -25,15 +25,13 @@
   </div> -->
   <div class="main-content">
     <div class="file-explorer">
-      <p class="file-explorer-header">Files</p>
+      <span class="file-info-header">Recently Viewed</span>
+      <!-- for folder items -->
       <div class="folders">
         <nz-card
           class="folder-card mb-2"
-          *ngFor="let file of files"
-          [ngClass]="{
-            'selected-node': selectedFile?.Key == file.Key
-          }"
-          (click)="selectDirectory(file)"
+          *ngFor="let file of generateRecentItems()"
+          (click)="selectFile(file)"
         >
           <div class="file-menu">
             <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
@@ -42,7 +40,7 @@
             <nz-dropdown-menu #fileMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="downloadFile(file)">Download</li>
-                <li nz-menu-item>Add to Starred</li>
+                <li nz-menu-item (click)="addToStarred(file)">Add to Starred</li>
                 <li nz-menu-item>Rename</li>
                 <li nz-menu-item (click)="deleteFile(stage, file)">Delete</li>
               </ul>

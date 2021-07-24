@@ -25,7 +25,6 @@ export class VaultService {
     const formData = new FormData();
     formData.append('path', path);
     formData.append('filename', file_name);
-
     return this.http.post(`${environment.awsURL}/download`, formData);
   }
 
@@ -38,6 +37,22 @@ export class VaultService {
     });
 
     return this.http.post(`${environment.awsURL}/upload`, formData);
+  }
+  
+  //fetch the user's recently viewed folder
+  getUserViewed() {
+    return this.http.get(`${environment.awsURL}/viewed`);
+  }
+
+  //update the user's recently viewed folder
+  updateUserViewed(directory: any) {
+    const formData = new FormData();
+    formData.append('key', directory);
+    return this.http.post(`${environment.awsURL}/viewed`, formData);
+  }
+
+  getUserStarred() {
+    return this.http.get(`${environment.awsURL}/starred`);
   }
 
   uploadFolder(folderName: string, path: string) {
@@ -53,10 +68,28 @@ export class VaultService {
     });
   }
 
-  deleteFile(url: string) {
+  deleteFile(project_id: any, key: any) {
     const formData = new FormData();
-    formData.append('url', url.indexOf('.') === -1 ? url + '/' : url);
-    return this.http.post(`${environment.awsURL}/delete`, formData);
+    formData.append('project_id', project_id);
+    formData.append('key', key);
+    return this.http.post(`${environment.awsURL}/trashed`, formData);
+  }
+
+  unDeleteFile(project_id: any, key: any) {
+    const formData = new FormData();
+    formData.append('project_id', project_id);
+    formData.append('key', key);
+    return this.http.post(`${environment.awsURL}/untrashed`, formData);
+  }
+
+  viewDeletedFile() {
+    return this.http.get(`${environment.awsURL}/trashed`);
+  }
+
+  deleteForever(key: any) {
+    const formData = new FormData();
+    formData.append('key', key);
+    return this.http.post(`${environment.awsURL}/deleteforever`, formData);
   }
 
   toggleStarStatus(key: string, action: string) {

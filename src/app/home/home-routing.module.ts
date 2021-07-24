@@ -22,6 +22,16 @@ const routes: Routes = [
         loadChildren: () =>
           import('./recent/recent.module').then((m) => m.RecentModule),
       },
+      {
+        path: 'starred',
+        loadChildren: () =>
+          import('./starred/starred.module').then((m) => m.StarredModule),
+      },
+      {
+        path: 'trash',
+        loadChildren: () =>
+          import('./trash/trashed.module').then((m) => m.TrashedModule),
+      },
     ],
   },
 ];

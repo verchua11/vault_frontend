@@ -13,6 +13,7 @@ import { VaultStateService } from 'src/app/core/vault-state.service';
 import * as moment from 'moment';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Project } from 'src/app/core/models/project.model';
+import { VaultFolderService } from 'src/app/core/vault-folder.service';
 
 declare var $;
 @Component({
@@ -136,7 +137,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private ProjectService: ProjectService,
     private VaultService: VaultService,
     private VaultStateService: VaultStateService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private VaultFolderService: VaultFolderService
   ) {}
 
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -155,12 +157,12 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.projects = response.projects.filter(
           (p) => p.status === 'Approved'
         );
-        console.log('projects are: ', this.projects);
+        // console.log('projects are: ', this.projects);
         const projectVaultPaths = [];
         this.projects.forEach((p) => {
           if (p.vault_path) projectVaultPaths.push(p.vault_path);
         });
-        console.log('projects paths are: ', projectVaultPaths);
+        // console.log('projects paths are: ', projectVaultPaths);
 
         this.subscriptions.push(
           this.VaultService.getDeletedFiles().subscribe((response: any) => {
@@ -173,8 +175,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                     projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
                       -1 && this.deletedFiles.indexOf(dir.Key) === -1
                 );
-
-                console.log(this.vaultDirectory);
+                // console.log(this.vaultDirectory);
 
                 // const temp = [].concat(this.vaultDirectory);
                 // const urls = temp.map((dir) => dir.Key);
@@ -193,7 +194,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                 this.subscriptions.push(
                   this.VaultStateService.newSelectedProject.subscribe(
                     (project) => {
-                      console.log('vault state service is:', this.VaultStateService);
+                      // console.log('vault state service is:', this.VaultStateService);
                       // console.log('The project is:',project);
                       if (project) {
                         this.selectedProject = project;
@@ -202,57 +203,18 @@ export class VaultComponent implements OnInit, OnDestroy {
                   )
                 );
 
-                console.log('selected projects are:', this.selectedProject);
+                // console.log('selected projects are:', this.selectedProject);
                 this.isLoadingVault = false;
-              })
+              },
+              (error) => {
+                console.log('no files detected');
+                this.isLoadingVault = false;
+              }),
             );
           })
         );
       })
     );
-
-    // this.subscriptions.push(
-    //   this.VaultService.getDeletedFiles().subscribe((response: any) => {
-    //     this.deletedFiles = response.items;
-
-    //     this.subscriptions.push(
-    //       this.VaultService.getFiles().subscribe((response: any) => {
-    //         this.metadata = response.results;
-
-    //         this.projects = [];
-    //         this.folders = [];
-    //         response.results.forEach((res) => {
-    //           if (this.deletedFiles.indexOf(res.Key) === -1) {
-    //             let folders = res.Key.split('/');
-
-    //             if (folders[0] === 'projects') {
-    //               folders = folders.filter((v) => v !== '' && v !== 'projects');
-
-    //               if (folders.length > 0) {
-    //                 this.folders.push(folders);
-
-    //                 if (this.projects.indexOf(folders[0]) === -1)
-    //                   this.projects.push(folders[0]);
-    //               }
-    //             }
-    //           }
-    //         });
-    //         this.isLoadingVault = false;
-
-    //         this.subscriptions.push(
-    //           this.VaultStateService.newSelectedProject.subscribe((project) => {
-    //             if (project) {
-    //               this.selectedProject = project;
-    //               this.openProjectFolder(this.selectedProject);
-    //               this.prevent = false;
-    //               console.log(this.getFolders());
-    //             }
-    //           })
-    //         );
-    //       })
-    //     );
-    //   })
-    // );
   }
 
   ngOnDestroy(): void {
@@ -260,11 +222,12 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openProject(project: Project) {
-    console.log('selected project is:', project);
-    if (this.selectedProject !== project)
+    // console.log('selected project is:', project);
+    if (this.selectedProject !== project) {
       this.VaultStateService.updateSelectedProject(project);
     }
-
+  }
+    
   public getSubdirectory(stage: any, isFolder: boolean) {
     const arr = [];
     this.vaultDirectory
@@ -303,6 +266,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           }
         }
       });
+      // console.log('subdirectory is:',arr);
     return arr;
   }
   public capitalizeFirstLetter(dir: any) {
@@ -310,8 +274,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openDirectory(stage: any, folder: any) {
-    console.log('stage is:', stage);
-    console.log('folder is:',folder);
+    // console.log('stage is:', stage);
+    // console.log('folder is:',folder);
     clearTimeout(this.timer);
     this.prevent = true;
     if (folder.name.indexOf('.') === -1) {
@@ -322,7 +286,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public selectDirectory(folder: any) {
-    console.log('folder is:',folder);
+    // console.log('Directory is:',folder);
     const _this = this;
     this.timer = setTimeout(function () {
       if (!_this.prevent) {
@@ -332,6 +296,19 @@ export class VaultComponent implements OnInit, OnDestroy {
       }
       _this.prevent = false;
     }, 200);
+  }
+  
+  public selectFile(folder: any) {
+    this.subscriptions.push(
+      this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
+        // console.log('recent response:', response);
+      })
+    );
+    this.subscriptions.push(
+      this.VaultService.getUserViewed().subscribe((response:any) => {
+        // console.log('recent response:', response);
+      })
+    );
   }
 
   public navigateBreadcrumb(stage: any, index: number) {
@@ -427,63 +404,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.message.info(msg);
   }
 
-  // public getProjectName(node: string) {
-  //   return this.metadata.find((m) => m.Key === 'projects/' + node + '/')
-  //     .ProjectDetails;
-  // }
-
-  // public getFolderClass(node: string) {
-  //   if (this.selectedFile) {
-  //     if (node.indexOf('.') === -1) {
-  //       return 'projects/' + this.breadcrumbs.join('/') + '/' + node + '/' ===
-  //         this.selectedFile.Key
-  //         ? 'selected-node'
-  //         : '';
-  //     } else {
-  //       return 'projects/' + this.breadcrumbs.join('/') + '/' + node ===
-  //         this.selectedFile.Key
-  //         ? 'selected-node'
-  //         : '';
-  //     }
-  //   } else return '';
-  // }
-
-  // public getFolders() {
-  //   const arr = [];
-  //   this.folders.forEach((f) => {
-  //     if (f[this.directoryLevel])
-  //       if (this.selectedNode) {
-  //         if (
-  //           arr.indexOf(f[this.directoryLevel]) === -1 &&
-  //           this.selectedNode === f[this.directoryLevel - 1]
-  //         )
-  //           arr.push(f[this.directoryLevel]);
-  //       } else {
-  //         if (arr.indexOf(f[this.directoryLevel]) === -1)
-  //           arr.push(f[this.directoryLevel]);
-  //       }
-  //   });
-  //   return arr.filter((v) => v.indexOf('.') === -1);
-  // }
-
-  // public getFiles() {
-  //   const arr = [];
-  //   this.folders.forEach((f) => {
-  //     if (f[this.directoryLevel])
-  //       if (this.selectedNode) {
-  //         if (
-  //           arr.indexOf(f[this.directoryLevel]) === -1 &&
-  //           this.selectedNode === f[this.directoryLevel - 1]
-  //         )
-  //           arr.push(f[this.directoryLevel]);
-  //       } else {
-  //         if (arr.indexOf(f[this.directoryLevel]) === -1)
-  //           arr.push(f[this.directoryLevel]);
-  //       }
-  //   });
-  //   return arr.filter((v) => v.indexOf('.') !== -1);
-  // }
-
   public getFileIcon(fileName: string) {
     switch (fileName.split('.')[1].toLowerCase()) {
       case 'csv':
@@ -512,11 +432,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         return 'file';
     }
   }
-
-  // public openProject(project: string) {
-  //   if (this.selectedProject !== project)
-  //     this.VaultStateService.updateSelectedProject(project);
-  // }
 
   public openFileUploadModal(stage: any) {
     this.selectedStage = stage;
@@ -557,41 +472,12 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
   }
 
-  public deleteFile(stage: any, folder: any) {
-    this.isDeleting = true;
-    const url =
-      'projects/' +
-      this.selectedProject.vault_path +
-      stage.vaultDir +
-      stage.breadcrumbs.slice(1).join('/') +
-      '/' +
-      folder.name;
-
-    this.subscriptions.push(
-      this.VaultService.deleteFile(url).subscribe((response) => {
-        this.deletedFiles.push(url);
-
-        const idx =
-          folder.name.indexOf('.') === -1
-            ? this.vaultDirectory.indexOf(
-                this.vaultDirectory.find((dir) => dir.Key === url + '/')
-              )
-            : this.vaultDirectory.indexOf(
-                this.vaultDirectory.find((dir) => dir.Key === url)
-              );
-        this.vaultDirectory.splice(idx, 1);
-
-        this.isDeleting = false;
-        this.displayMessage('Deleting file complete.');
-      })
-    );
-  }
-
   public addToStarred(folder: any) {
     this.subscriptions.push(
       this.VaultService.toggleStarStatus(folder.Key, 'add').subscribe(
         (response: any) => {
           console.log(response);
+          this.VaultFolderService.refreshPage('my-vault');
         }
       )
     );
@@ -602,6 +488,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
         (response: any) => {
           console.log(response);
+          this.VaultFolderService.refreshPage('my-vault');
         }
       )
     );
@@ -611,18 +498,4 @@ export class VaultComponent implements OnInit, OnDestroy {
   //   this.selectedNode = node;
   //   this.directoryLevel -= this.breadcrumbs.splice(index + 1).length;
   // }
-
-  // private openProjectFolder(project: string) {
-  //   this.selectedNode = project;
-  //   this.directoryLevel = 1;
-  //   this.breadcrumbs = [project];
-  // }
-
-  // private openFolder(node: string) {
-  //   this.selectedNode = node;
-  //   this.directoryLevel++;
-  //   this.breadcrumbs.push(node);
-  // }
-
-  // private openFile(node: string) {}
 }

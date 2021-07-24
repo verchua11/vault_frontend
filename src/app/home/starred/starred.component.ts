@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Project } from 'src/app/core/models/project.model';
 import { ProjectService } from 'src/app/core/project.service';
@@ -6,73 +7,94 @@ import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
 
+declare var $;
+
 @Component({
-  selector: 'app-recent',
-  templateUrl: './recent.component.html',
-  styleUrls: ['./recent.component.scss'],
+  selector: 'app-starred',
+  templateUrl: './starred.component.html',
+  styleUrls: ['./starred.component.scss'],
 })
-export class RecentComponent implements OnInit {
+export class StarredComponent implements OnInit {
   projects: Array<Project> = [];
   selectedProject: Project;
   recentItems: any;
-  folderFile = [];
-  files = [];
-  selectedFile: any;
+
+  isFolder = false;
+  isFile = false;
   isDownloading = false;
 
-  subscriptions: Subscription[] = [];
+  folderFile = [];
+  fileList = [];
+  folderList = [];
+  files = [];
+  selectedFile: any;
 
+  subscriptions: Subscription[] = [];
   constructor(
     private ProjectService: ProjectService,
     private VaultStateService: VaultStateService,
     private VaultService: VaultService,
-    private VaultFolderService: VaultFolderService
+    private VaultFolderService: VaultFolderService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.VaultService.getUserViewed().subscribe((response:any) => {
+      this.VaultService.getUserStarred().subscribe((response:any) => {
         this.prepareRecentItems(response);
-        // if (this.folderFile != null) {
-        //   console.log('enter here');
-        //   // this.VaultFolderService.getConvertedFolder(response);
-        // }
       })
     );
     this.subscriptions.push(
       this.VaultStateService.newSelectedProject.subscribe(
         (project) => {
-          // console.log('vault state service is:', this.VaultStateService);
-          console.log('The project is:',project);
           if (project) {
             this.selectedProject = project;
           }
         }
       )
     );
-
-    this.subscriptions.push(
-      this.VaultService.getFiles().subscribe((response:any) => {
-        console.log(response);
-      })
-    );
-   
   }
 
   public prepareRecentItems(recentItems) {
     console.log('recentItems are:', recentItems);
-    recentItems.viewed.forEach(item => {
-      let segment = item.path.split('/');
-      let fileInfo = {};
-      if (segment[segment.length-1] != '') {
-        fileInfo = {
-          "name": segment[segment.length-1],
-          "Key": item.path,
-          "project_id": item.project_id
+    if(recentItems.starred) {
+      recentItems.starred.forEach(item => {
+        let segment = item.path.split('/');
+        let fileInfo = {};
+        let folderInfo = {};
+  
+        if (segment.length > 2) {
+          //if folder
+          if (segment[segment.length-1] == "") {
+            folderInfo = {
+              "name": segment[segment.length-2],
+              "Key": item.path,
+              "project_id": item.project_id,
+              "starred_type": "folder",
+            }
+            this.folderList.push(folderInfo);
+          } else { //else, file
+            fileInfo = {
+              "name": segment[segment.length-1],
+              "Key": item.path,
+              "project_id": item.project_id,
+              "starred_type": "file"
+            }
+            this.fileList.push(fileInfo);
+          }
         }
-        this.folderFile.push(fileInfo);
+      });
+      this.folderFile['folder'] = this.folderList;
+      this.folderFile['file'] = this.fileList;
+  
+      if (this.folderFile['folder'].length > 0) {
+        this.isFolder = true;
       }
-    });
+  
+      if (this.folderFile['file'].length > 0) {
+        this.isFile = true;
+      }
+    }
   }
 
   public selectFile(folder: any) {
@@ -88,15 +110,17 @@ export class RecentComponent implements OnInit {
     );
   }
 
-  public generateRecentItems() {
-    return this.folderFile.reverse();
+  public generateRecentItems(section: any) {
+    if (this.folderFile[section]) {
+      return this.folderFile[section].reverse();
+    }
   }
   
   public openProject(project: Project) {
     if (this.selectedProject !== project)
       this.VaultStateService.updateSelectedProject(project);
   }
-
+  
   public downloadFile(file: any) {
     this.isDownloading = true;
     this.subscriptions.push(
@@ -127,23 +151,37 @@ export class RecentComponent implements OnInit {
     );
   }
 
-  public addToStarred(folder: any) {
+  public removeFromStarred(folder: any) {
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'add').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
         (response: any) => {
-          console.log(response);
-          this.VaultFolderService.refreshPage('recent');
+          console.log(folder.Key);
+          this.VaultFolderService.refreshPage('starred');
         }
       )
     );
   }
 
-  public removeFromStarred(folder: any) {
+  public deleteFile(item: any) {
+    let project_id = item.project_id;
+    let path = item.path;
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
+      this.VaultService.deleteFile(project_id, path).subscribe(
         (response: any) => {
           console.log(response);
-          this.VaultFolderService.refreshPage('recent');
+          // this.VaultFolderService.refreshPage('starred');
+        }
+      )
+    );
+    this.viewDeletedFile();
+  }
+
+  public viewDeletedFile() {
+    this.subscriptions.push(
+      this.VaultService.viewDeletedFile().subscribe(
+        (response: any) => {
+          console.log(response);
+          // this.VaultFolderService.refreshPage('starred');
         }
       )
     );

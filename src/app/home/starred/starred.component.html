@@ -1,0 +1,99 @@
+<div class="page-wrapper">
+  <div class="main-content">
+    <div class="file-explorer">
+
+      <span class="file-info-header starred-label">Starred Items</span>
+
+      <!-- folder generation -->
+      <h5 *ngIf="isFolder">Folders</h5>
+      <div class="folders starred-folders">
+        <nz-card
+          class="folder-card mb-2"
+          *ngFor="let file of generateRecentItems('folder')"
+          (click)="selectFile(file)"
+        >
+          <div *ngIf="file.name.indexOf('.') == -1">
+            <div class="file-menu">
+              <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
+                ><i nz-icon nzType="more"></i
+              ></a>
+              <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="removeFromStarred(file)">Remove From Starred</li>
+                  <li nz-menu-item>Rename</li>
+                  <li nz-menu-item (click)="deleteFile(file)">Delete</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="folder-icon starred-folder">
+              <i
+              nz-icon
+              nzType="folder"
+              nzTheme="fill"
+              ></i>
+            </div>
+            <div class="folder-card-content">
+              <i
+                nz-icon
+                nzType="folder"
+                nzTheme="fill"
+              ></i>
+              <p>
+                {{ file.name }}
+              </p>
+            </div>
+          </div>
+        </nz-card>
+      </div>
+
+      <!-- Line break -->
+      <hr *ngIf="isFile">
+
+      <!-- For Files -->
+      <h5 *ngIf="isFile">Files</h5>
+      <div class="folders starred-files">
+
+        <nz-card
+          class="folder-card mb-2"
+          *ngFor="let file of generateRecentItems('file')"
+          (click)="selectFile(file)"
+        >
+          <div *ngIf="file.name.indexOf('.') !== -1">
+            <div class="file-menu">
+              <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
+                ><i nz-icon nzType="more"></i
+              ></a>
+              <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="downloadFile(file)">Download</li>
+                  <li nz-menu-item (click)="removeFromStarred(file)">Remove From Starred</li>
+                  <li nz-menu-item>Rename</li>
+                  <li nz-menu-item (click)="deleteFile(file)">Delete</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+
+            <div class="file-thumbnail">
+              <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
+            </div>
+            <div class="folder-card-content">
+              <i
+                *ngIf="file.name.indexOf('.') !== -1"
+                nz-icon
+                [nzType]="getFileIcon(file.name)"
+                nzTheme="fill"
+              ></i>
+              <p
+                nz-tooltip
+                nzTooltipTitle="{{ file.name }}"
+                nzTooltipColor="white"
+              >
+                {{ file.name }}
+              </p>
+            </div>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+</div>

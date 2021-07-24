@@ -1,28 +1,5 @@
 <div class="page-wrapper">
-  <div class="title-nav">
-    <a nz-dropdown [nzDropdownMenu]="menu">
-      My Vault
-      <i
-        class="ms-3"
-        nz-icon
-        nzType="down"
-        nzTheme="outline"
-        style="font-size: 15px"
-      ></i>
-    </a>
-    <nz-dropdown-menu #menu="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li
-          *ngFor="let project of projects"
-          nz-menu-item
-          (click)="openProject(project)"
-        >
-          <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-          {{ project.project_name }}
-        </li>
-      </ul>
-    </nz-dropdown-menu>
-  </div>
+  <span *ngIf="selectedProject" class="file-info-header project-name-inside">{{ selectedProject.project_name }}</span>
   <div class="main-content">
     <div class="file-explorer">
       <p *ngIf="!selectedProject" class="file-explorer-header">
@@ -56,7 +33,6 @@
           [nzHeader]="stage.name"
           [nzActive]="stage.active"
         >
-        <!-- {{stage.name}} -->
           <div class="folder-breadcrumb">
             <nz-breadcrumb>
               <nz-breadcrumb-item
@@ -109,9 +85,9 @@
                 ></a>
                 <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>Add to Starred</li>
-                    <li nz-menu-item>Rename</li>
-                    <li nz-menu-item (click)="deleteFile(stage, folder)">
+                    <li nz-menu-item (click)="addToStarred(folder)">Add to Starred</li>
+                    <li *ngIf="stage.currDirLevel > 3" nz-menu-item>Rename</li>
+                    <li *ngIf="stage.currDirLevel > 3" nz-menu-item (click)="deleteFile(stage, folder)">
                       Delete
                     </li>
                   </ul>
@@ -161,7 +137,7 @@
               [ngClass]="{
                 'selected-node': selectedFile?.Key == file.Key
               }"
-              (click)="selectDirectory(file)"
+              (click)="selectFile(file)"
             >
               <div class="file-menu">
                 <a
@@ -173,7 +149,7 @@
                 <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li nz-menu-item (click)="downloadFile(file)">Download</li>
-                    <li nz-menu-item>Add to Starred</li>
+                    <li nz-menu-item (click)="addToStarred(file)">Add to Starred</li>
                     <li nz-menu-item>Rename</li>
                     <li nz-menu-item (click)="deleteFile(stage, file)">
                       Delete
@@ -372,7 +348,7 @@
   </div>
 </div>
 
-<div
+<!-- <div
   [ngClass]="
     isLoadingVault ? 'preloader-overlay-show' : 'preloader-overlay-hide'
   "
@@ -388,14 +364,14 @@
   class="preloader-overlay"
 >
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
-</div>
-
+</div> -->
+<!-- 
 <div
   [ngClass]="isDeleting ? 'preloader-overlay-show' : 'preloader-overlay-hide'"
   class="preloader-overlay"
 >
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
-</div>
+</div> -->
 
 <nz-modal
   [(nzVisible)]="isVisible"
