@@ -41,7 +41,8 @@ export class StarredComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptions.push(
       this.VaultService.getUserStarred().subscribe((response:any) => {
-        this.prepareRecentItems(response);
+        // console.log(response);
+        this.prepareStarredItems(response);
       })
     );
     this.subscriptions.push(
@@ -55,8 +56,10 @@ export class StarredComponent implements OnInit {
     );
   }
 
-  public prepareRecentItems(recentItems) {
-    console.log('recentItems are:', recentItems);
+  public prepareStarredItems(recentItems) {
+    // console.log('starred are:', recentItems);
+    this.folderList = [];
+    this.fileList = [];
     if(recentItems.starred) {
       recentItems.starred.forEach(item => {
         let segment = item.path.split('/');
@@ -71,6 +74,10 @@ export class StarredComponent implements OnInit {
               "Key": item.path,
               "project_id": item.project_id,
               "starred_type": "folder",
+            }
+            if(segment.length <= 5){
+              // console.log(segment);
+              folderInfo["isProject"] = 1;
             }
             this.folderList.push(folderInfo);
           } else { //else, file
@@ -139,10 +146,10 @@ export class StarredComponent implements OnInit {
             a.click();
             URL.revokeObjectURL(objectUrl);
 
-            this.VaultStateService.addToRecent(
-              file.Key,
-              file.project_id
-            );
+            // this.VaultStateService.addToRecent(
+            //   file.Key,
+            //   file.project_id
+            // );
           }
         );
 
@@ -153,22 +160,30 @@ export class StarredComponent implements OnInit {
 
   public removeFromStarred(folder: any) {
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, '', 'remove').subscribe(
         (response: any) => {
           console.log(folder.Key);
-          this.VaultFolderService.refreshPage('starred');
+          this.regenerateStarred();
+          // this.VaultFolderService.refreshPage('starred');
         }
       )
     );
   }
 
-  public deleteFile(item: any) {
-    let project_id = item.project_id;
-    let path = item.path;
+  public regenerateStarred() {
     this.subscriptions.push(
-      this.VaultService.deleteFile(project_id, path).subscribe(
+      this.VaultService.getUserStarred().subscribe((response:any) => {
+        this.prepareStarredItems(response);
+      })
+    );
+  }
+
+  public deleteFile(item: any) {
+    this.subscriptions.push(
+      this.VaultService.deleteFile(item.Key, '').subscribe(
         (response: any) => {
           console.log(response);
+          this.regenerateStarred();
           // this.VaultFolderService.refreshPage('starred');
         }
       )

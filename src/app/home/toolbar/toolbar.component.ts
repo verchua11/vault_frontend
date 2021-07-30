@@ -52,7 +52,7 @@ export class ToolbarComponent implements OnInit {
     this.subscriptions.push(
       this.VaultStateService.newSelectedProject.subscribe(
         (project) => {
-          console.log('vault state service is:', this.VaultStateService);
+          // console.log('vault state service is:', this.VaultStateService);
           // console.log('The project is:',project);
           if (project) {
             this.selectedProject = project;

@@ -51,4 +51,8 @@ export class VaultStateService {
 
     localStorage.setItem('recent', JSON.stringify(recent));
   }
+  
+  getSelectedProject() {
+    return this.selectedProject;
+  }
 }

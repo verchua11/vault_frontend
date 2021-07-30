@@ -30,6 +30,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   selectedNode = null;
 
+  starredList: any;
   folders = [];
   metadata = [];
   directoryLevel = null;
@@ -38,6 +39,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   openedFolder: any;
   selectedFile: any;
 
+  isStarred = false;
   isVisible = false;
   isLoadingVault = true;
   isDownloading = false;
@@ -151,7 +153,13 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoadingVault = true;
-
+    this.subscriptions.push(
+      this.VaultService.getUserStarred().subscribe((response:any) => {
+        this.starredList = response.starred;
+        console.log(this.starredList);
+      })
+    );
+    
     this.subscriptions.push(
       this.ProjectService.getProjects().subscribe((response: any) => {
         this.projects = response.projects.filter(
@@ -175,35 +183,17 @@ export class VaultComponent implements OnInit, OnDestroy {
                     projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
                       -1 && this.deletedFiles.indexOf(dir.Key) === -1
                 );
-                // console.log(this.vaultDirectory);
-
-                // const temp = [].concat(this.vaultDirectory);
-                // const urls = temp.map((dir) => dir.Key);
-                // const root = {};
-                // for (let url of urls) {
-                //   if (url.charAt(url.length - 1) === '/')
-                //     url = url.substring(0, url.length - 1);
-                //   let ptr = root;
-                //   const stack = url.split('/'),
-                //     basename = stack.pop();
-                //   for (const p of stack) ptr = ptr[p] = ptr[p] || {};
-                //   ptr[basename] = /\./.test(basename) || {};
-                // }
-                // console.log(root);
 
                 this.subscriptions.push(
                   this.VaultStateService.newSelectedProject.subscribe(
                     (project) => {
-                      // console.log('vault state service is:', this.VaultStateService);
-                      // console.log('The project is:',project);
                       if (project) {
                         this.selectedProject = project;
+                      // console.log('selected project is:', this.selectedProject);
                       }
                     }
                   )
                 );
-
-                // console.log('selected projects are:', this.selectedProject);
                 this.isLoadingVault = false;
               },
               (error) => {
@@ -222,7 +212,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openProject(project: Project) {
-    // console.log('selected project is:', project);
     if (this.selectedProject !== project) {
       this.VaultStateService.updateSelectedProject(project);
     }
@@ -247,7 +236,21 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = tmpDir;
-            arr.push(finalDir);
+
+            this.starredList.forEach(item => {
+              if (item.path == dir.Key) {
+                if (item.is_starred == dir.isStarred) {
+                  finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+                } else {
+                  finalDir['finalStarred'] = item.is_starred;
+                }
+              } else {
+                finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+              }
+            });
+            if (dir.isDeleted == "0" || !dir.isDeleted) {
+              arr.push(finalDir);
+            }
           }
         } else {
           const tmpDir = dir.Key.split('/')[stage.currDirLevel - 1];
@@ -262,13 +265,27 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = content;
-            arr.push(finalDir);
+
+            this.starredList.forEach(item => {
+              if (item.path == dir.Key) {
+                if (item.is_starred == dir.isStarred) {
+                  finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+                } else {
+                  finalDir['finalStarred'] = item.is_starred;
+                }
+              } else {
+                finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+              }
+            });
+            if (dir.isDeleted == 0) {
+              arr.push(finalDir);
+            }
           }
         }
       });
-      // console.log('subdirectory is:',arr);
     return arr;
   }
+  
   public capitalizeFirstLetter(dir: any) {
     return dir.charAt(0).toUpperCase() + dir.slice(1);
   }
@@ -362,10 +379,10 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.vaultDirectory.push({
               Key: file,
             });
-            this.VaultStateService.addToRecent(
-              file,
-              this.selectedProject.project_id
-            );
+            // this.VaultStateService.addToRecent(
+            //   file,
+            //   this.selectedProject.project_id
+            // );
           });
           this.isSubmitting = false;
           this.selectedStage = null;
@@ -460,10 +477,10 @@ export class VaultComponent implements OnInit, OnDestroy {
             a.click();
             URL.revokeObjectURL(objectUrl);
 
-            this.VaultStateService.addToRecent(
-              file.Key,
-              this.selectedProject.project_id
-            );
+            // this.VaultStateService.addToRecent(
+            //   file.Key,
+            //   this.selectedProject.project_id
+            // );
           }
         );
 
@@ -472,28 +489,43 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
   }
 
-  public addToStarred(folder: any) {
+  public addToStarred(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'add').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'add').subscribe(
         (response: any) => {
           console.log(response);
-          this.VaultFolderService.refreshPage('my-vault');
+          folder.isStarred = 1;
         }
       )
     );
   }
 
-  public removeFromStarred(folder: any) {
+  public removeFromStarred(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'remove').subscribe(
         (response: any) => {
           console.log(response);
-          this.VaultFolderService.refreshPage('my-vault');
+          folder.isStarred = 0;
         }
       )
     );
   }
 
+  public deleteFile(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+
+    this.subscriptions.push(
+      this.VaultService.deleteFile(folder.Key, objectTarget).subscribe(
+        (response: any) => {
+          console.log(response);
+        }
+      )
+    );
+  }
   // public navigateBreadcrumb(node: any, index: number) {
   //   this.selectedNode = node;
   //   this.directoryLevel -= this.breadcrumbs.splice(index + 1).length;

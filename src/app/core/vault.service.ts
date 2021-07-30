@@ -68,17 +68,18 @@ export class VaultService {
     });
   }
 
-  deleteFile(project_id: any, key: any) {
+  deleteFile(parent: string, name: string) {
+    console.log(parent);
     const formData = new FormData();
-    formData.append('project_id', project_id);
-    formData.append('key', key);
+    formData.append('parent', parent);
+    formData.append('object', name);
     return this.http.post(`${environment.awsURL}/trashed`, formData);
   }
 
-  unDeleteFile(project_id: any, key: any) {
+  unDeleteFile(parent: string, name: string) {
     const formData = new FormData();
-    formData.append('project_id', project_id);
-    formData.append('key', key);
+    formData.append('parent', parent);
+    formData.append('object', name);
     return this.http.post(`${environment.awsURL}/untrashed`, formData);
   }
 
@@ -92,9 +93,10 @@ export class VaultService {
     return this.http.post(`${environment.awsURL}/deleteforever`, formData);
   }
 
-  toggleStarStatus(key: string, action: string) {
+  toggleStarStatus(parent: string, name: string, action: string) {
     const formData = new FormData();
-    formData.append('key', key);
+    formData.append('parent', parent);
+    formData.append('object', name);
     formData.append('action', action);
     return this.http.post(`${environment.awsURL}/starred`, formData);
   }

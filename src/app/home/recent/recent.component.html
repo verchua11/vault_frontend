@@ -40,7 +40,8 @@
             <nz-dropdown-menu #fileMenu="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="downloadFile(file)">Download</li>
-                <li nz-menu-item (click)="addToStarred(file)">Add to Starred</li>
+                <li *ngIf="file.finalStarred == 0" nz-menu-item (click)="addToStarred(file, false)">Add to Starred</li>
+                <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
                 <li nz-menu-item>Rename</li>
                 <li nz-menu-item (click)="deleteFile(stage, file)">Delete</li>
               </ul>

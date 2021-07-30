@@ -10,7 +10,6 @@
         <nz-card
           class="folder-card mb-2"
           *ngFor="let file of generateRecentItems('folder')"
-          (click)="selectFile(file)"
         >
           <div *ngIf="file.name.indexOf('.') == -1">
             <div class="file-menu">
@@ -20,8 +19,8 @@
               <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item (click)="removeFromStarred(file)">Remove From Starred</li>
-                  <li nz-menu-item>Rename</li>
-                  <li nz-menu-item (click)="deleteFile(file)">Delete</li>
+                  <li *ngIf="file.isProject != 1" nz-menu-item>Rename</li>
+                  <li *ngIf="file.isProject != 1" nz-menu-item (click)="deleteFile(file)">Delete</li>
                 </ul>
               </nz-dropdown-menu>
             </div>

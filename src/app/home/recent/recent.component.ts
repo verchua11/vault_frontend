@@ -18,6 +18,7 @@ export class RecentComponent implements OnInit {
   folderFile = [];
   files = [];
   selectedFile: any;
+  starredList: any;
   isDownloading = false;
 
   subscriptions: Subscription[] = [];
@@ -33,17 +34,12 @@ export class RecentComponent implements OnInit {
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
         this.prepareRecentItems(response);
-        // if (this.folderFile != null) {
-        //   console.log('enter here');
-        //   // this.VaultFolderService.getConvertedFolder(response);
-        // }
       })
     );
+    
     this.subscriptions.push(
       this.VaultStateService.newSelectedProject.subscribe(
         (project) => {
-          // console.log('vault state service is:', this.VaultStateService);
-          console.log('The project is:',project);
           if (project) {
             this.selectedProject = project;
           }
@@ -61,6 +57,7 @@ export class RecentComponent implements OnInit {
 
   public prepareRecentItems(recentItems) {
     console.log('recentItems are:', recentItems);
+    const arr = [];
     recentItems.viewed.forEach(item => {
       let segment = item.path.split('/');
       let fileInfo = {};
@@ -68,11 +65,40 @@ export class RecentComponent implements OnInit {
         fileInfo = {
           "name": segment[segment.length-1],
           "Key": item.path,
-          "project_id": item.project_id
+          "project_id": item.project_id,
         }
-        this.folderFile.push(fileInfo);
+        this.checkStarred(item, fileInfo);
       }
     });
+  }
+
+  public checkStarred(dir, fileInfo) {
+    var found = 0;
+    this.subscriptions.push(
+      this.VaultService.getUserStarred().subscribe((response:any) => {
+        this.starredList = response.starred;
+        this.starredList.forEach(item => {
+          if (dir.path == item.path) {
+            if (dir.is_starred) {
+              if (dir.is_starred == item.is_starred) {
+                fileInfo['finalStarred'] = item.is_starred;
+                found = 1;
+              } else {
+                fileInfo['finalStarred'] = (item.is_starred) ? item.is_starred : 0;
+                found = 1;
+              }
+            } else {
+              fileInfo['finalStarred'] = item.is_starred;
+              found = 1;
+            }
+          }
+        });
+        if ( found == 0 ) {
+          fileInfo['finalStarred'] = 0;
+        }
+        this.folderFile.push(fileInfo);
+      })
+    );
   }
 
   public selectFile(folder: any) {
@@ -115,10 +141,10 @@ export class RecentComponent implements OnInit {
             a.click();
             URL.revokeObjectURL(objectUrl);
 
-            this.VaultStateService.addToRecent(
-              file.Key,
-              file.project_id
-            );
+            // this.VaultStateService.addToRecent(
+            //   file.Key,
+            //   file.project_id
+            // );
           }
         );
 
@@ -128,53 +154,57 @@ export class RecentComponent implements OnInit {
   }
 
   public addToStarred(folder: any) {
+    var objectTarget = '';
+    console.log(folder);
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'add').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'add').subscribe(
         (response: any) => {
-          console.log(response);
-          this.VaultFolderService.refreshPage('recent');
+          folder.finalStarred = 1;
         }
       )
     );
   }
 
   public removeFromStarred(folder: any) {
+    var objectTarget = '';
     this.subscriptions.push(
-      this.VaultService.toggleStarStatus(folder.Key, 'remove').subscribe(
+      this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'remove').subscribe(
         (response: any) => {
-          console.log(response);
-          this.VaultFolderService.refreshPage('recent');
+          folder.finalStarred = 0;
         }
       )
     );
   }
 
   public getFileIcon(fileName: string) {
-    switch (fileName.split('.')[1].toLowerCase()) {
-      case 'csv':
-      case 'xls':
-      case 'xlsx':
-        return 'file-excel';
-      case 'pdf':
-        return 'file-pdf';
-      case 'doc':
-      case 'docx':
-        return 'file-word';
-      case 'ppt':
-      case 'pptx':
-        return 'file-ppt';
-      case 'jpeg':
-      case 'jpg':
-      case 'png':
-      case 'gif':
-        return 'file-image';
-      case 'txt':
-        return 'file-text';
-      case 'zip':
-      case 'rar':
-        return 'file-zip';
-      default:
-        return 'file';
+    if (fileName.indexOf('.') !== -1) {
+      switch (fileName.split('.')[1].toLowerCase()) {
+        case 'csv':
+        case 'xls':
+        case 'xlsx':
+          return 'file-excel';
+        case 'pdf':
+          return 'file-pdf';
+        case 'doc':
+        case 'docx':
+          return 'file-word';
+        case 'ppt':
+        case 'pptx':
+          return 'file-ppt';
+        case 'jpeg':
+        case 'jpg':
+        case 'png':
+        case 'gif':
+          return 'file-image';
+        case 'txt':
+          return 'file-text';
+        case 'zip':
+        case 'rar':
+          return 'file-zip';
+        default:
+          return 'file';
+      }
     }
   }
+    
 }
