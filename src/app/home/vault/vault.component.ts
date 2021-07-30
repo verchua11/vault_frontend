@@ -495,7 +495,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'add').subscribe(
         (response: any) => {
-          console.log(response);
           folder.isStarred = 1;
         }
       )
@@ -508,7 +507,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'remove').subscribe(
         (response: any) => {
-          console.log(response);
           folder.isStarred = 0;
         }
       )
@@ -517,11 +515,19 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public deleteFile(folder: any, isFolder: boolean) {
     var objectTarget = '';
+    var segment = folder.Key.split('/');
+
+    if (segment[segment.length-1] == "") {
+      objectTarget = segment[segment.length-1];
+    } else {
+      objectTarget = segment[segment.length-2];
+    }
 
     this.subscriptions.push(
       this.VaultService.deleteFile(folder.Key, objectTarget).subscribe(
         (response: any) => {
           console.log(response);
+          folder.deleted = 1;
         }
       )
     );

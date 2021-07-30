@@ -88,7 +88,7 @@
                     <li *ngIf="folder.finalStarred == 0" nz-menu-item (click)="addToStarred(folder, true)">Add to Starred</li>
                     <li *ngIf="folder.finalStarred == 1" nz-menu-item (click)="removeFromStarred(folder, true)">Remove from Starred</li>
                     <li *ngIf="stage.currDirLevel > 3" nz-menu-item>Rename</li>
-                    <li *ngIf="stage.currDirLevel > 3" nz-menu-item (click)="deleteFile(folder, true)">
+                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted" nz-menu-item (click)="deleteFile(folder, true)">
                       Delete
                     </li>
                   </ul>
@@ -153,7 +153,7 @@
                     <li *ngIf="file.finalStarred == 0" nz-menu-item (click)="addToStarred(file, false)">Add to Starred</li>
                     <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
                     <li nz-menu-item>Rename</li>
-                    <li nz-menu-item (click)="deleteFile(file, true)">
+                    <li *ngIf="!file.deleted" nz-menu-item (click)="deleteFile(file, true)">
                       Delete
                     </li>
                   </ul>
