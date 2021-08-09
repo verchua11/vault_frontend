@@ -216,7 +216,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.VaultStateService.updateSelectedProject(project);
     }
   }
-    
+  //get subdirectory of each folder/files inside the parent folder
   public getSubdirectory(stage: any, isFolder: boolean) {
     const arr = [];
     this.vaultDirectory
@@ -227,6 +227,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) !== -1
       )
       .forEach((dir) => {
+        //if the user is on the general folders stage
         if (stage.currDirLevel == 3) {
           const tmpDir = dir.Key.split('/')[stage.currDirLevel];
           if (
@@ -248,13 +249,16 @@ export class VaultComponent implements OnInit, OnDestroy {
                 finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
               }
             });
-            if (dir.isDeleted == "0" || !dir.isDeleted) {
+            // if (dir.isDeleted == "0" || !dir.isDeleted) {
               arr.push(finalDir);
-            }
+            // }
           }
-        } else {
+        } else { //if the accessed folder is beyond the general folders
           const tmpDir = dir.Key.split('/')[stage.currDirLevel - 1];
           const content = dir.Key.split('/')[stage.currDirLevel];
+          // console.log('content is:', content);
+          // console.log('tmpDir is:', tmpDir);
+          // console.log('folder name is:', this.openedFolder.name);
           if (
             content &&
             tmpDir === this.openedFolder.name &&
@@ -265,7 +269,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = content;
-
             this.starredList.forEach(item => {
               if (item.path == dir.Key) {
                 if (item.is_starred == dir.isStarred) {
@@ -277,9 +280,9 @@ export class VaultComponent implements OnInit, OnDestroy {
                 finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
               }
             });
-            if (dir.isDeleted == 0) {
+            // if (dir.isDeleted == 0) {
               arr.push(finalDir);
-            }
+            // }
           }
         }
       });
@@ -292,14 +295,16 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public openDirectory(stage: any, folder: any) {
     // console.log('stage is:', stage);
-    // console.log('folder is:',folder);
+    console.log('folder is:',folder);
     clearTimeout(this.timer);
     this.prevent = true;
     if (folder.name.indexOf('.') === -1) {
       this.openedFolder = folder;
+      console.log(this.openedFolder);
       stage.currDirLevel += 1;
       stage.breadcrumbs.push(folder.name);
     }
+    console.log('stage is:',stage);
   }
 
   public selectDirectory(folder: any) {

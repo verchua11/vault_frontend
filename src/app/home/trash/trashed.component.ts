@@ -38,7 +38,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(
       this.VaultService.viewDeletedFile().subscribe((response:any) => {
-        this.prepareRecentItems(response);
+        this.trashedItems(response);
       })
     );
     this.subscriptions.push(
@@ -52,8 +52,8 @@ export class TrashedComponent implements OnInit, OnDestroy {
     );
   }
 
-  public prepareRecentItems(recentItems) {
-    console.log('recentItems are:', recentItems);
+  public trashedItems(recentItems) {
+    console.log('Trashed items are:', recentItems);
     if (recentItems.trashed) {
       recentItems.trashed.forEach(item => {
         let segment = item.path.split('/');
@@ -106,7 +106,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
     let path = item.path;
     this.subscriptions.push(
       this.VaultService.unDeleteFile(project_id, path).subscribe((response:any) => {
-        this.prepareRecentItems(response);
+        this.trashedItems(response);
       })
     );
   }
@@ -115,7 +115,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
     let path = item.path;
     this.subscriptions.push(
       this.VaultService.deleteForever(path).subscribe((response:any) => {
-        this.prepareRecentItems(response);
+        this.trashedItems(response);
       })
     );
   }
@@ -128,5 +128,34 @@ export class TrashedComponent implements OnInit, OnDestroy {
     this.VaultStateService.updateSelectedProject(project);
     this.selectedNav = project.project_name;
     this.router.navigateByUrl('/home/my-vault');
+  }
+
+  public getFileIcon(fileName: string) {
+    switch (fileName.split('.')[1].toLowerCase()) {
+      case 'csv':
+      case 'xls':
+      case 'xlsx':
+        return 'file-excel';
+      case 'pdf':
+        return 'file-pdf';
+      case 'doc':
+      case 'docx':
+        return 'file-word';
+      case 'ppt':
+      case 'pptx':
+        return 'file-ppt';
+      case 'jpeg':
+      case 'jpg':
+      case 'png':
+      case 'gif':
+        return 'file-image';
+      case 'txt':
+        return 'file-text';
+      case 'zip':
+      case 'rar':
+        return 'file-zip';
+      default:
+        return 'file';
+    }
   }
 }

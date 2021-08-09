@@ -57,7 +57,7 @@ export class StarredComponent implements OnInit {
   }
 
   public prepareStarredItems(recentItems) {
-    // console.log('starred are:', recentItems);
+    console.log('starred items are:', recentItems);
     this.folderList = [];
     this.fileList = [];
     if(recentItems.starred) {
