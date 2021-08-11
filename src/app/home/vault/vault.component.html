@@ -2,24 +2,10 @@
   <span *ngIf="selectedProject" class="file-info-header project-name-inside">{{ selectedProject.project_name }}</span>
   <div class="main-content">
     <div class="file-explorer">
-      <p *ngIf="!selectedProject" class="file-explorer-header">
-        My Recently Opened Files
-      </p>
-      <div *ngIf="!selectedProject" class="recent-files">
-        <div *ngFor="let x of [1, 2, 3]" class="file-card">
-          <nz-card nzHoverable [nzCover]="coverTemplate">
-            <nz-card-meta
-              nzTitle="Lorem Ipsum"
-              nzDescription="Lorem ipsum"
-            ></nz-card-meta>
-          </nz-card>
-          <ng-template #coverTemplate>
-            <img
-              alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-            />
-          </ng-template>
-        </div>
+      <div *ngIf="!selectedProject" class="welcome-page">
+        <p class="file-info-header welcome-text">Welcome to</p>
+        <img src="assets/logos/Logo_Vault_Default.svg">
+        <p class="file-info-header name-text">{{userInfo.first_name}} {{userInfo.last_name}}!</p>
       </div>
 
       <nz-collapse nzAccordion *ngIf="selectedProject" class="mt-2">
@@ -87,8 +73,8 @@
                   <ul nz-menu>
                     <li *ngIf="folder.finalStarred == 0" nz-menu-item (click)="addToStarred(folder, true)">Add to Starred</li>
                     <li *ngIf="folder.finalStarred == 1" nz-menu-item (click)="removeFromStarred(folder, true)">Remove from Starred</li>
-                    <li *ngIf="stage.currDirLevel > 3" nz-menu-item>Rename</li>
-                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted" nz-menu-item (click)="deleteFile(folder, true)">
+                    <li *ngIf="stage.currDirLevel > 3 && allowDelete" (click)="openRenameModal(folder, stage)" nz-menu-item>Rename</li>
+                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted && allowDelete" nz-menu-item (click)="deleteFile(folder, true)">
                       Delete
                     </li>
                   </ul>
@@ -101,7 +87,7 @@
                   nzType="folder"
                   nzTheme="fill"
                 ></i>
-                <p>
+                <p *ngIf="!folder.newName">
                   {{
                     stageIdx +
                       1 +
@@ -109,6 +95,16 @@
                       (folderIdx + 1 | number: "2.0") +
                       " " +
                       folder.name
+                  }}
+                </p>
+                <p *ngIf="folder.newName">
+                  {{
+                    stageIdx +
+                      1 +
+                      "." +
+                      (folderIdx + 1 | number: "2.0") +
+                      " " +
+                      folder.newName
                   }}
                 </p>
               </div>
@@ -152,8 +148,8 @@
                     <li nz-menu-item (click)="downloadFile(file)">Download</li>
                     <li *ngIf="file.finalStarred == 0" nz-menu-item (click)="addToStarred(file, false)">Add to Starred</li>
                     <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
-                    <li nz-menu-item>Rename</li>
-                    <li *ngIf="!file.deleted" nz-menu-item (click)="deleteFile(file, true)">
+                    <li nz-menu-item *ngIf="allowDelete" (click)="openRenameModal(file, stage)">Rename</li>
+                    <li *ngIf="!file.deleted && allowDelete" nz-menu-item (click)="deleteFile(file, false)">
                       Delete
                     </li>
                   </ul>
@@ -175,123 +171,29 @@
                   nz-tooltip
                   nzTooltipTitle="{{ file.name }}"
                   nzTooltipColor="white"
+                  *ngIf="!file.newName"
                 >
                   {{ file.name }}
+                </p>
+                <p
+                  nz-tooltip
+                  nzTooltipTitle="{{ file.name }}"
+                  nzTooltipColor="white"
+                  *ngIf="file.newName"
+                >
+                  {{ file.newName }}
                 </p>
               </div>
             </nz-card>
           </div>
         </nz-collapse-panel>
       </nz-collapse>
-      <!-- <p *ngIf="directoryLevel > 0" class="file-explorer-header">Folders</p>
-      <div *ngIf="directoryLevel > 0" class="folders">
-        <nz-card
-          *ngIf="directoryLevel > 0"
-          class="folder-card-add mb-2"
-          (click)="openFolderUploadModal()"
-        >
-          <div class="folder-card-content">
-            <i nz-icon nzType="folder-add" nzTheme="fill"></i>
-            <p>New Folder</p>
-          </div>
-        </nz-card>
-        <nz-card
-          class="folder-card mb-2"
-          *ngFor="let node of getFolders()"
-          [ngClass]="getFolderClass(node)"
-          (dblclick)="openNode(node)"
-          (click)="selectNode(node)"
-        >
-          <div class="file-menu-folder">
-            <a
-              nz-dropdown
-              [nzDropdownMenu]="fileMenu1"
-              nzPlacement="bottomRight"
-              ><i nz-icon nzType="more"></i
-            ></a>
-            <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item (click)="deleteFile(node)">Delete</li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-          <div class="folder-card-content">
-            <i
-              *ngIf="node.indexOf('.') === -1"
-              nz-icon
-              nzType="folder"
-              nzTheme="fill"
-            ></i>
-            <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
-              {{ node }}
-            </p>
-          </div>
-        </nz-card>
-      </div>
-
-      <p *ngIf="directoryLevel > 0" class="file-explorer-header">Files</p>
-      <div *ngIf="directoryLevel > 0" class="folders">
-        <nz-card
-          *ngIf="directoryLevel > 0"
-          class="folder-card-add mb-2"
-          (click)="openFileUploadModal()"
-        >
-          <div class="file-thumbnail">
-            <i nz-icon nzType="file-add" nzTheme="fill"></i>
-          </div>
-          <div class="folder-card-content">
-            <i nz-icon nzType="file-add" nzTheme="fill"></i>
-            <p>New File</p>
-          </div>
-        </nz-card>
-        <nz-card
-          class="folder-card mb-2"
-          *ngFor="let node of getFiles()"
-          [ngClass]="getFolderClass(node)"
-          (dblclick)="openNode(node)"
-          (click)="selectNode(node)"
-        >
-          <div class="file-menu">
-            <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
-              ><i nz-icon nzType="more"></i
-            ></a>
-            <nz-dropdown-menu #fileMenu="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item (click)="downloadFile(node)">Download</li>
-                <li nz-menu-item (click)="deleteFile(node)">Delete</li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-
-          <div class="file-thumbnail">
-            <i nz-icon [nzType]="getFileIcon(node)" nzTheme="fill"></i>
-          </div>
-          <div class="folder-card-content">
-            <i
-              *ngIf="node.indexOf('.') !== -1"
-              nz-icon
-              [nzType]="getFileIcon(node)"
-              nzTheme="fill"
-            ></i>
-
-            <p nz-tooltip nzTooltipTitle="{{ node }}" nzTooltipColor="white">
-              {{ node }}
-            </p>
-          </div>
-        </nz-card>
-      </div> -->
     </div>
     <div class="file-info">
       <p class="file-info-header">My Vault</p>
       <p class="file-info-subtext">
         Select a file or folder to view its details
       </p>
-      <!-- <ul class="mt-1" nz-menu nzMode="horizontal">
-        <li nz-menu-item nzSelected (click)="selectedTab = 'Details'">
-          Details
-        </li>
-        <li nz-menu-item (click)="selectedTab = 'Activity'">Activity</li>
-      </ul> -->
       <div>
         <div *ngIf="selectedFile">
           <div class="folder-icon">
@@ -415,6 +317,40 @@
         nzType="primary"
         [nzLoading]="isSubmitting"
         (click)="submitUpload()"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</nz-modal>
+
+<!-- renameForm -->
+<nz-modal
+[(nzVisible)]="renameModalVisible"
+nzMaskClosable="false"
+nzTitle="Rename"
+(nzOnCancel)="closeUploadModal()"
+>
+  <form [formGroup]="renameForm" (ngSubmit)="renameSubmit()">
+    <ng-container *nzModalContent>
+        <p>Enter new name for <strong>{{currItemName}}</strong>:</p>
+        <input type="text" nz-input formControlName="newName" />
+    </ng-container>
+    <div *nzModalFooter class="d-flex justify-content-end">
+      <button
+        [disabled]="isSubmitting"
+        nz-button
+        nzType="default"
+        (click)="closeUploadModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        nz-button
+        nzType="primary"
+        [nzLoading]="isSubmitting"
+        (click)="renameSubmit()"
       >
         Submit
       </button>

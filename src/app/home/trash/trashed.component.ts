@@ -20,6 +20,9 @@ export class TrashedComponent implements OnInit, OnDestroy {
 
   isFolder = false;
   isFile = false;
+  isLoadingVault = true;
+  isDownloading = false;
+  isDeleting = false;
 
   metadata = [];
   folderFile = [];
@@ -93,6 +96,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
         this.isFile = true;
       }
     }
+    this.isLoadingVault = false;
   }
 
   public generateRecentItems(section: any) {
@@ -101,21 +105,76 @@ export class TrashedComponent implements OnInit, OnDestroy {
     }
   }
 
-  public untrash(item: any) {
-    let project_id = item.project_id;
-    let path = item.path;
+  public untrash(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+    var path = '';
+    var segment = folder.Key.split('/');
+
+    if (isFolder) {
+      if (segment[segment.length-1] == "") {
+        objectTarget = segment[segment.length-2];
+        segment.pop();
+        segment.pop();
+      } else {
+        objectTarget = segment[segment.length-1];
+        segment.pop();
+      }
+    } else {
+      objectTarget = segment[segment.length-1];
+      segment.pop();
+    }
+    path = segment.join('/');
+    path = path + '/';
+    console.log(path, objectTarget);
     this.subscriptions.push(
-      this.VaultService.unDeleteFile(project_id, path).subscribe((response:any) => {
-        this.trashedItems(response);
+      this.VaultService.unDeleteFile(path, objectTarget).subscribe((response:any) => {
+        this.subscriptions.push(
+          this.VaultService.viewDeletedFile().subscribe((response2:any) => {
+            this.fileList = [];
+            this.folderList = [];
+            this.trashedItems(response2);
+          })
+        );
       })
     );
   }
 
-  public deleteForever(item: any) {
-    let path = item.path;
+  public deleteForever(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+    var path = '';
+    var segment = folder.Key.split('/');
+    this.isDeleting = true;
+
+    if (isFolder) {
+      if (segment[segment.length-1] == "") {
+        objectTarget = segment[segment.length-2];
+        segment.pop();
+        segment.pop();
+      } else {
+        objectTarget = segment[segment.length-1];
+        segment.pop();
+      }
+    } else {
+      objectTarget = segment[segment.length-1];
+      segment.pop();
+    }
+    path = segment.join('/');
+    path = path + '/';
+    
+    console.log(path,objectTarget);
+
     this.subscriptions.push(
-      this.VaultService.deleteForever(path).subscribe((response:any) => {
-        this.trashedItems(response);
+      this.VaultService.deleteForever(path, objectTarget).subscribe((response:any) => {
+        console.log(response);
+
+        this.subscriptions.push(
+          this.VaultService.viewDeletedFile().subscribe((response2:any) => {
+            this.fileList = [];
+            this.folderList = [];
+            this.trashedItems(response2);
+            this.isDeleting = false;
+          })
+        );
       })
     );
   }

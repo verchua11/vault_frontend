@@ -5,6 +5,7 @@ import { ProjectService } from 'src/app/core/project.service';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
+import { UserAuthService } from 'src/app/core/user-auth.service';
 
 @Component({
   selector: 'app-recent',
@@ -19,7 +20,12 @@ export class RecentComponent implements OnInit {
   files = [];
   selectedFile: any;
   starredList: any;
+  userInfo: any;
+
+  allowDelete = false;
   isDownloading = false;
+  isLoadingVault = true;
+  isDeleting = false;
 
   subscriptions: Subscription[] = [];
 
@@ -27,10 +33,16 @@ export class RecentComponent implements OnInit {
     private ProjectService: ProjectService,
     private VaultStateService: VaultStateService,
     private VaultService: VaultService,
-    private VaultFolderService: VaultFolderService
+    private VaultFolderService: VaultFolderService,
+    private UserAuthService: UserAuthService,
   ) {}
 
   ngOnInit(): void {
+    this.userInfo = this.UserAuthService.getUserInfo();
+    if(this.userInfo.role != 3) {
+      this.allowDelete = true;
+    }
+
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
         this.prepareRecentItems(response);
@@ -46,30 +58,33 @@ export class RecentComponent implements OnInit {
         }
       )
     );
-
+    
     this.subscriptions.push(
       this.VaultService.getFiles().subscribe((response:any) => {
-        console.log(response);
       })
     );
    
   }
 
   public prepareRecentItems(recentItems) {
-    console.log('recentItems are:', recentItems);
     const arr = [];
     recentItems.viewed.forEach(item => {
-      let segment = item.path.split('/');
-      let fileInfo = {};
-      if (segment[segment.length-1] != '') {
-        fileInfo = {
-          "name": segment[segment.length-1],
-          "Key": item.path,
-          "project_id": item.project_id,
+      if(item.is_deleted != 1) {
+        let segment = item.path.split('/');
+        let fileInfo = {};
+        if (segment[segment.length-1] != '') {
+          fileInfo = {
+            "name": segment[segment.length-1],
+            "Key": item.path,
+            "project_id": item.project_id,
+            "isDeleted": 0
+          }
+          this.checkStarred(item, fileInfo);
         }
-        this.checkStarred(item, fileInfo);
       }
     });
+    this.isLoadingVault = false;
+    this.isDeleting = false;
   }
 
   public checkStarred(dir, fileInfo) {
@@ -104,13 +119,51 @@ export class RecentComponent implements OnInit {
   public selectFile(folder: any) {
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
-        // console.log('recent response:', response);
       })
     );
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
-        // console.log('recent response:', response);
       })
+    );
+  }
+
+  public regenerateRecent() {
+    this.subscriptions.push(
+      this.VaultService.getUserViewed().subscribe((response:any) => {
+        this.prepareRecentItems(response);
+      })
+    );
+  }
+
+  public deleteFile(folder: any, isFolder: boolean) {
+    var objectTarget = '';
+    var path = '';
+    var segment = folder.Key.split('/');
+    this.isDeleting = true;
+
+    if (isFolder) {
+      if (segment[segment.length-1] == "") {
+        objectTarget = segment[segment.length-2];
+        segment.pop();
+        segment.pop();
+      } else {
+        objectTarget = segment[segment.length-1];
+        segment.pop();
+      }
+    } else {
+      objectTarget = segment[segment.length-1];
+      segment.pop();
+    }
+    path = segment.join('/');
+    path = path + '/';
+
+    this.subscriptions.push(
+      this.VaultService.deleteFile(path, objectTarget).subscribe(
+        (response: any) => {
+          this.folderFile = [];
+          this.regenerateRecent();
+        }
+      )
     );
   }
 
@@ -155,7 +208,6 @@ export class RecentComponent implements OnInit {
 
   public addToStarred(folder: any) {
     var objectTarget = '';
-    console.log(folder);
     this.subscriptions.push(
       this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'add').subscribe(
         (response: any) => {

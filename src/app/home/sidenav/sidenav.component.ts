@@ -5,6 +5,7 @@ import { Project } from 'src/app/core/models/project.model';
 import { ProjectService } from 'src/app/core/project.service';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
+import { UserAuthService } from 'src/app/core/user-auth.service';
 
 declare var $;
 
@@ -18,6 +19,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   selectedProject: Project;
   projects: Array<Project> = [];
   metadata = [];
+  userInfo: any;
+  allowTrash = false;
 
   storageSize = 0;
 
@@ -27,10 +30,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private ProjectService: ProjectService,
     private VaultService: VaultService,
-    private VaultStateService: VaultStateService
+    private VaultStateService: VaultStateService,
+    private UserAuthService: UserAuthService,
   ) {}
 
   ngOnInit(): void {
+    this.userInfo = this.UserAuthService.getUserInfo();
+
+    if(this.userInfo.role != 3) {
+      this.allowTrash = true;
+    }
+    
     this.subscriptions.push(
       this.ProjectService.getProjects().subscribe((response: any) => {
         this.projects = response.projects.filter(

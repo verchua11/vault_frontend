@@ -28,11 +28,13 @@
       <span class="file-info-header">Recently Viewed</span>
       <!-- for folder items -->
       <div class="folders">
+        
         <nz-card
           class="folder-card mb-2"
           *ngFor="let file of generateRecentItems()"
           (click)="selectFile(file)"
         >
+
           <div class="file-menu">
             <a nz-dropdown [nzDropdownMenu]="fileMenu" nzPlacement="bottomRight"
               ><i nz-icon nzType="more"></i
@@ -42,8 +44,7 @@
                 <li nz-menu-item (click)="downloadFile(file)">Download</li>
                 <li *ngIf="file.finalStarred == 0" nz-menu-item (click)="addToStarred(file, false)">Add to Starred</li>
                 <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
-                <li nz-menu-item>Rename</li>
-                <li nz-menu-item (click)="deleteFile(stage, file)">Delete</li>
+                <li nz-menu-item *ngIf="file.isDeleted != 1 && allowDelete" (click)="deleteFile(file, false)">Delete</li>
               </ul>
             </nz-dropdown-menu>
           </div>
@@ -70,4 +71,29 @@
       </div>
     </div>
   </div>
+</div>
+
+<div
+  [ngClass]="
+    isLoadingVault ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Loading Vault..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="
+    isDownloading ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="isDeleting ? 'preloader-overlay-show' : 'preloader-overlay-hide'"
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
 </div>

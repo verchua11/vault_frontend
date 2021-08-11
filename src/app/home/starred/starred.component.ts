@@ -6,6 +6,7 @@ import { ProjectService } from 'src/app/core/project.service';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
+import { UserAuthService } from 'src/app/core/user-auth.service';
 
 declare var $;
 
@@ -18,10 +19,14 @@ export class StarredComponent implements OnInit {
   projects: Array<Project> = [];
   selectedProject: Project;
   recentItems: any;
+  userInfo: any;
 
   isFolder = false;
   isFile = false;
+  allowDelete = false;
+  isLoadingVault = true;
   isDownloading = false;
+  isDeleting = false;
 
   folderFile = [];
   fileList = [];
@@ -36,12 +41,18 @@ export class StarredComponent implements OnInit {
     private VaultService: VaultService,
     private VaultFolderService: VaultFolderService,
     private router: Router,
+    private UserAuthService: UserAuthService,
+
   ) {}
 
   ngOnInit(): void {
+    this.userInfo = this.UserAuthService.getUserInfo();
+    if(this.userInfo.role != 3) {
+      this.allowDelete = true;
+    }
+
     this.subscriptions.push(
       this.VaultService.getUserStarred().subscribe((response:any) => {
-        // console.log(response);
         this.prepareStarredItems(response);
       })
     );
@@ -57,7 +68,6 @@ export class StarredComponent implements OnInit {
   }
 
   public prepareStarredItems(recentItems) {
-    console.log('starred items are:', recentItems);
     this.folderList = [];
     this.fileList = [];
     if(recentItems.starred) {
@@ -76,7 +86,6 @@ export class StarredComponent implements OnInit {
               "starred_type": "folder",
             }
             if(segment.length <= 5){
-              // console.log(segment);
               folderInfo["isProject"] = 1;
             }
             this.folderList.push(folderInfo);
@@ -102,17 +111,16 @@ export class StarredComponent implements OnInit {
         this.isFile = true;
       }
     }
+    this.isLoadingVault = false;
   }
 
   public selectFile(folder: any) {
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
-        // console.log('recent response:', response);
       })
     );
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
-        // console.log('recent response:', response);
       })
     );
   }
@@ -164,7 +172,6 @@ export class StarredComponent implements OnInit {
         (response: any) => {
           console.log(folder.Key);
           this.regenerateStarred();
-          // this.VaultFolderService.refreshPage('starred');
         }
       )
     );
@@ -179,6 +186,7 @@ export class StarredComponent implements OnInit {
   }
 
   public deleteFile(item: any) {
+    this.isDeleting = true;
     this.subscriptions.push(
       this.VaultService.deleteFile(item.Key, '').subscribe(
         (response: any) => {
@@ -196,6 +204,7 @@ export class StarredComponent implements OnInit {
       this.VaultService.viewDeletedFile().subscribe(
         (response: any) => {
           console.log(response);
+          this.isDeleting = false;
           // this.VaultFolderService.refreshPage('starred');
         }
       )

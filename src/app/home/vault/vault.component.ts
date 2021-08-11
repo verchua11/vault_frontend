@@ -7,6 +7,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ProjectService } from 'src/app/core/project.service';
+import { UserAuthService } from 'src/app/core/user-auth.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { VaultStateService } from 'src/app/core/vault-state.service';
@@ -38,14 +39,20 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   openedFolder: any;
   selectedFile: any;
+  selectedItem: any;
+  currItemName: any;
+  selectedStageRename: any;
+  userInfo: any;
 
   isStarred = false;
   isVisible = false;
+  renameModalVisible = false;
   isLoadingVault = true;
   isDownloading = false;
   isDeleting = false;
   isSubmitting = false;
   prevent = false;
+  allowDelete = false;
   timer: any;
 
   uploadForm = new FormGroup({
@@ -53,6 +60,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     path: new FormControl(''),
     uploadedFile: new FormControl(''),
     folderName: new FormControl(''),
+  });
+
+  renameForm = new FormGroup({
+    oldName: new FormControl(''),
+    newName: new FormControl(''),
   });
 
   subscriptions: Subscription[] = [];
@@ -140,7 +152,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private VaultService: VaultService,
     private VaultStateService: VaultStateService,
     private message: NzMessageService,
-    private VaultFolderService: VaultFolderService
+    private VaultFolderService: VaultFolderService,
+    private UserAuthService: UserAuthService,
   ) {}
 
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -152,12 +165,25 @@ export class VaultComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.userInfo = this.UserAuthService.getUserInfo();
+
+    if(this.userInfo.role != 3) {
+      this.allowDelete = true;
+    }
+
     this.isLoadingVault = true;
+    this.initData();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
+  }
+
+  public initData() {
     this.subscriptions.push(
       this.VaultService.getUserStarred().subscribe((response:any) => {
         this.starredList = response.starred;
-        console.log(this.starredList);
-      })
+      }),
     );
     
     this.subscriptions.push(
@@ -171,7 +197,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           if (p.vault_path) projectVaultPaths.push(p.vault_path);
         });
         // console.log('projects paths are: ', projectVaultPaths);
-
         this.subscriptions.push(
           this.VaultService.getDeletedFiles().subscribe((response: any) => {
             this.deletedFiles = response.items;
@@ -183,7 +208,6 @@ export class VaultComponent implements OnInit, OnDestroy {
                     projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
                       -1 && this.deletedFiles.indexOf(dir.Key) === -1
                 );
-
                 this.subscriptions.push(
                   this.VaultStateService.newSelectedProject.subscribe(
                     (project) => {
@@ -206,11 +230,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
-
   public openProject(project: Project) {
     if (this.selectedProject !== project) {
       this.VaultStateService.updateSelectedProject(project);
@@ -227,6 +246,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) !== -1
       )
       .forEach((dir) => {
+        var found = 0;
         //if the user is on the general folders stage
         if (stage.currDirLevel == 3) {
           const tmpDir = dir.Key.split('/')[stage.currDirLevel];
@@ -237,28 +257,33 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = tmpDir;
-
-            this.starredList.forEach(item => {
-              if (item.path == dir.Key) {
-                if (item.is_starred == dir.isStarred) {
-                  finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+            // console.log(this.starredList);
+            if(this.starredList.length > 0) {
+              this.starredList.forEach(item => {
+                if (item.path == dir.Key) {
+                  if (item.is_starred == 1) {
+                    finalDir['finalStarred'] = item.is_starred;
+                    found = 1;
+                  } else {
+                    finalDir['finalStarred'] = dir.isStarred;
+                  }
                 } else {
-                  finalDir['finalStarred'] = item.is_starred;
+                  if ( found == 0) {
+                    finalDir['finalStarred'] = (dir.isStarred) ? dir.isStarred : 0;
+                  }
                 }
-              } else {
-                finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
-              }
-            });
-            // if (dir.isDeleted == "0" || !dir.isDeleted) {
+              });
+            } else {
+              finalDir['finalStarred'] = 0;
+            }
+            if (dir.isDeleted == 0) {
               arr.push(finalDir);
-            // }
+            }
           }
         } else { //if the accessed folder is beyond the general folders
           const tmpDir = dir.Key.split('/')[stage.currDirLevel - 1];
           const content = dir.Key.split('/')[stage.currDirLevel];
-          // console.log('content is:', content);
-          // console.log('tmpDir is:', tmpDir);
-          // console.log('folder name is:', this.openedFolder.name);
+          
           if (
             content &&
             tmpDir === this.openedFolder.name &&
@@ -269,20 +294,27 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = content;
-            this.starredList.forEach(item => {
-              if (item.path == dir.Key) {
-                if (item.is_starred == dir.isStarred) {
-                  finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
+            if(this.starredList.length > 0) {
+              this.starredList.forEach(item => {
+                if (item.path == dir.Key) {
+                  if (item.is_starred == 1) {
+                    finalDir['finalStarred'] = item.is_starred;
+                    found = 1;
+                  } else {
+                    finalDir['finalStarred'] = dir.isStarred;
+                  }
                 } else {
-                  finalDir['finalStarred'] = item.is_starred;
+                  if (found == 0) {
+                    finalDir['finalStarred'] = (dir.isStarred) ? dir.isStarred : 0;
+                  }
                 }
-              } else {
-                finalDir['finalStarred'] = (dir.isStarred)?dir.isStarred:0;
-              }
-            });
-            // if (dir.isDeleted == 0) {
+              });
+            } else {
+              finalDir['finalStarred'] = 0;
+            }
+            if (dir.isDeleted == 0) {
               arr.push(finalDir);
-            // }
+            }
           }
         }
       });
@@ -366,6 +398,63 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public closeUploadModal() {
     this.isVisible = false;
+    this.renameModalVisible = false;
+    this.isSubmitting = false;
+    this.currItemName = '';
+  }
+
+  public renameSubmit() {
+    this.isSubmitting = true;
+    // if file
+    if(this.currItemName.indexOf('.') !== -1) {
+      let oldPath = this.renameForm.value.oldName;
+      let oldSegment = this.currItemName.split('.');
+      let oldKeySegment = this.renameForm.value.oldName.split('/');
+
+      oldSegment[0] = this.renameForm.value.newName;
+      let newName = oldSegment.join('.');
+      oldKeySegment[oldKeySegment.length-1] = newName;
+      let newPath = oldKeySegment.join('/');
+
+      //send form to api
+      this.subscriptions.push(
+        this.VaultService.rename(oldPath, newPath).subscribe((response:any) => {
+          this.isSubmitting = false;
+          this.vaultDirectory.forEach((p) => {
+            if(p.Key == this.selectedItem.Key) {
+              p.newName = newName;
+            }
+          })
+          this.closeUploadModal();
+          this.displayMessage('Succesfully renamed the file.');
+        })
+      );
+    } else { //folder 
+      let oldPath = this.renameForm.value.oldName;
+      let oldKeySegment = this.renameForm.value.oldName.split('/');
+
+      if(oldKeySegment[oldKeySegment.length-1] == '') {
+        oldKeySegment[oldKeySegment.length-2] = this.renameForm.value.newName;
+      } else {
+        oldKeySegment[oldKeySegment.length-1] = this.renameForm.value.newName;
+      }
+
+      let newPath = oldKeySegment.join('/');
+
+      //send form to api
+      this.subscriptions.push(
+        this.VaultService.rename(oldPath, newPath).subscribe((response:any) => {
+          this.isSubmitting = false;
+          this.vaultDirectory.forEach((p) => {
+            if(p.Key == this.selectedItem.Key) {
+              p.newName = this.renameForm.value.newName;
+            }
+          })
+          this.closeUploadModal();
+          this.displayMessage('Succesfully renamed the folder.');
+        })
+      );
+    }
   }
 
   public submitUpload() {
@@ -380,14 +469,19 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.selectedStage.breadcrumbs.slice(1).join('/') +
             '/'
         ).subscribe((response: any) => {
+          console.log(response);
           response.results.forEach((file) => {
             this.vaultDirectory.push({
-              Key: file,
+              Key: file.key,
+              finalStarred:0,
+              isDeleted:0,
+              isStarred:0
             });
-            // this.VaultStateService.addToRecent(
-            //   file,
-            //   this.selectedProject.project_id
-            // );
+            console.log(file, this.selectedProject);
+            this.VaultStateService.addToRecent(
+              file,
+              this.selectedProject.project_id
+            );
           });
           this.isSubmitting = false;
           this.selectedStage = null;
@@ -407,6 +501,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         ).subscribe((response: any) => {
           this.vaultDirectory.push({
             Key: response.results.substring(0, response.results.length - 1),
+            finalStarred:0,
+            isDeleted:0,
+            isStarred:0
           });
           this.isSubmitting = false;
           this.selectedStage = null;
@@ -465,6 +562,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public downloadFile(file: any) {
+    console.log(file);
     this.isDownloading = true;
     this.subscriptions.push(
       this.VaultService.downloadFile(
@@ -501,6 +599,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'add').subscribe(
         (response: any) => {
           folder.isStarred = 1;
+          folder.finalStarred = 1;
         }
       )
     );
@@ -513,26 +612,52 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.VaultService.toggleStarStatus(folder.Key, objectTarget, 'remove').subscribe(
         (response: any) => {
           folder.isStarred = 0;
+          folder.finalStarred = 0;
         }
       )
     );
   }
 
+  public openRenameModal(item: any, stage:any) {
+    console.log('item is:', item);
+    this.selectedStageRename = stage;
+    this.selectedItem = item;
+    this.currItemName = this.selectedItem.name;
+    this.renameForm.patchValue({
+      oldName: this.selectedItem.Key
+    });
+    this.renameModalVisible = true;
+  }
+
   public deleteFile(folder: any, isFolder: boolean) {
     var objectTarget = '';
+    var path = '';
     var segment = folder.Key.split('/');
 
-    if (segment[segment.length-1] == "") {
-      objectTarget = segment[segment.length-1];
+    if (isFolder) {
+      if (segment[segment.length-1] == "") {
+        objectTarget = segment[segment.length-2];
+        segment.pop();
+        segment.pop();
+      } else {
+        objectTarget = segment[segment.length-1];
+        segment.pop();
+      }
     } else {
-      objectTarget = segment[segment.length-2];
+      objectTarget = segment[segment.length-1];
+      segment.pop();
     }
-
+    path = segment.join('/');
+    path = path + '/';
+    
     this.subscriptions.push(
-      this.VaultService.deleteFile(folder.Key, objectTarget).subscribe(
+      this.VaultService.deleteFile(path, objectTarget).subscribe(
         (response: any) => {
-          console.log(response);
-          folder.deleted = 1;
+          this.vaultDirectory.forEach((p) => {
+            if(p.Key == folder.Key) {
+              p.isDeleted = 1;
+            }
+          })
         }
       )
     );

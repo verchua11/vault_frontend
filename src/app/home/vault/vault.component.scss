@@ -1,3 +1,28 @@
 .project-name-inside{
     margin:0 !important;
 }
+
+.welcome-page {
+    text-align: center;
+    margin-top:45px;
+}
+
+.welcome-page img {
+    width:17em;
+    margin-top:-50px;
+}
+
+.welcome-text, .name-text {
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 2em;
+}
+
+.name-text {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.file-explorer {
+    width:100% !important;
+}

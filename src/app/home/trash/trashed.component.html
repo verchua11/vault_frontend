@@ -17,8 +17,8 @@
               ></a>
               <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="untrash(file)">Restore Item</li>
-                  <li nz-menu-item (click)="deleteForever(file)">Permanently Delete</li>
+                  <li nz-menu-item (click)="untrash(file, true)">Restore Item</li>
+                  <li nz-menu-item (click)="deleteForever(file, true)">Permanently Delete</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -62,8 +62,8 @@
               ></a>
               <nz-dropdown-menu #fileMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="untrash(file)">Restore Item</li>
-                  <li nz-menu-item (click)="deleteForever(file)">Permanently Delete</li>
+                  <li nz-menu-item (click)="untrash(file, false)">Restore Item</li>
+                  <li nz-menu-item (click)="deleteForever(file, false)">Permanently Delete</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -91,4 +91,29 @@
       </div>
     </div>
   </div>
+</div>
+
+<div
+  [ngClass]="
+    isLoadingVault ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Loading Vault..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="
+    isDownloading ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  "
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
+</div>
+
+<div
+  [ngClass]="isDeleting ? 'preloader-overlay-show' : 'preloader-overlay-hide'"
+  class="preloader-overlay"
+>
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Deleting file..."></nz-spin>
 </div>
