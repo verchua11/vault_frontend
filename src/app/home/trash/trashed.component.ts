@@ -160,8 +160,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
     }
     path = segment.join('/');
     path = path + '/';
-    
-    console.log(path,objectTarget);
+    objectTarget = objectTarget + '/';
 
     this.subscriptions.push(
       this.VaultService.deleteForever(path, objectTarget).subscribe((response:any) => {
