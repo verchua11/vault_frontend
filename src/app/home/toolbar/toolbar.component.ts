@@ -52,8 +52,6 @@ export class ToolbarComponent implements OnInit {
     this.subscriptions.push(
       this.VaultStateService.newSelectedProject.subscribe(
         (project) => {
-          // console.log('vault state service is:', this.VaultStateService);
-          // console.log('The project is:',project);
           if (project) {
             this.selectedProject = project;
             this.currentProjectName = this.selectedProject.project_name;
@@ -69,7 +67,6 @@ export class ToolbarComponent implements OnInit {
   }
   //detect selected project and navigate back to my-vault page
   public openProject(project: Project) {
-    console.log('selected project is:', project);
     if (this.selectedProject !== project) {
       this.VaultStateService.updateSelectedProject(project);
     } else {
