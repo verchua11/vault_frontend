@@ -191,16 +191,13 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.projects = response.projects.filter(
           (p) => p.status === 'Approved'
         );
-        // console.log('projects are: ', this.projects);
         const projectVaultPaths = [];
         this.projects.forEach((p) => {
           if (p.vault_path) projectVaultPaths.push(p.vault_path);
         });
-        // console.log('projects paths are: ', projectVaultPaths);
         this.subscriptions.push(
           this.VaultService.getDeletedFiles().subscribe((response: any) => {
             this.deletedFiles = response.items;
-            // console.log('deleted files are:', this.deletedFiles);
             this.subscriptions.push(
               this.VaultService.getFiles().subscribe((response: any) => {
                 this.vaultDirectory = response.results.filter(
@@ -213,7 +210,6 @@ export class VaultComponent implements OnInit, OnDestroy {
                     (project) => {
                       if (project) {
                         this.selectedProject = project;
-                      // console.log('selected project is:', this.selectedProject);
                       }
                     }
                   )
@@ -257,7 +253,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = tmpDir;
-            // console.log(this.starredList);
             if(this.starredList.length > 0) {
               this.starredList.forEach(item => {
                 if (item.path == dir.Key) {
@@ -326,7 +321,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openDirectory(stage: any, folder: any) {
-    // console.log('stage is:', stage);
     console.log('folder is:',folder);
     clearTimeout(this.timer);
     this.prevent = true;
@@ -340,7 +334,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public selectDirectory(folder: any) {
-    // console.log('Directory is:',folder);
     const _this = this;
     this.timer = setTimeout(function () {
       if (!_this.prevent) {
@@ -355,12 +348,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   public selectFile(folder: any) {
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
-        // console.log('recent response:', response);
       })
     );
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
-        // console.log('recent response:', response);
+        console.log('recent response:', response);
       })
     );
   }

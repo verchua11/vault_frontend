@@ -170,7 +170,6 @@ export class StarredComponent implements OnInit {
     this.subscriptions.push(
       this.VaultService.toggleStarStatus(folder.Key, '', 'remove').subscribe(
         (response: any) => {
-          console.log(folder.Key);
           this.regenerateStarred();
         }
       )

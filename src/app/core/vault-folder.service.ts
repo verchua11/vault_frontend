@@ -40,18 +40,12 @@ export class VaultFolderService {
             let pathSegment = path.path.split('/');
             let stage = pathSegment[2];
             let folder = pathSegment[3];
-            // console.log(path.path);
             if (Object.keys(this.folderMap).includes(stage)) {
                 if (Object.keys(this.folderMap[stage]).includes(folder)) {
-            console.log(pathSegment);
             convertedFolder.push(this.folderMap[stage][folder]);
                 }
             }
         });
-        console.log(convertedFolder);
-
-        console.log(recentList.viewed);
-        
         // return(convertedFolder);
     }
 
