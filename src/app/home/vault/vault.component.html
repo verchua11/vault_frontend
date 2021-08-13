@@ -3,9 +3,8 @@
   <div class="main-content">
     <div class="file-explorer">
       <div *ngIf="!selectedProject" class="welcome-page">
-        <p class="file-info-header welcome-text">Welcome to</p>
+        <h1 class="file-info-header welcome-text">Welcome to</h1>
         <img src="assets/logos/Logo_Vault_Default.svg">
-        <p class="file-info-header name-text">{{userInfo.first_name}} {{userInfo.last_name}}!</p>
       </div>
 
       <nz-collapse nzAccordion *ngIf="selectedProject" class="mt-2">
