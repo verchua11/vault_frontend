@@ -55,6 +55,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   allowDelete = false;
   timer: any;
 
+  filePath = [];
+
   uploadForm = new FormGroup({
     uploadType: new FormControl('1'),
     path: new FormControl(''),
@@ -330,7 +332,35 @@ export class VaultComponent implements OnInit, OnDestroy {
       stage.currDirLevel += 1;
       stage.breadcrumbs.push(folder.name);
     }
-    console.log('stage is:',stage);
+    this.filePath = stage.breadcrumbs;
+    // console.log('filePath is:',this.filePath);
+  }
+
+  public copyLocation(filename: any) {
+
+    let copiedPath = "";
+
+    this.filePath.forEach ((p) => {
+      copiedPath += p + '/';
+    })
+    copiedPath += filename;
+
+    let finalClipboardText = `Project: ` + this.selectedProject.project_name
+    + 
+    `
+File path: ` + copiedPath;
+    console.log(finalClipboardText);    
+    
+    navigator.clipboard.writeText(finalClipboardText).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+
+    var x = document.getElementById("clipboard-toast");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    
   }
 
   public selectDirectory(folder: any) {
@@ -373,7 +403,11 @@ export class VaultComponent implements OnInit, OnDestroy {
       newBreadcrumbs.push(stage.breadcrumbs[i]);
     }
     stage.breadcrumbs = newBreadcrumbs;
+    // console.log(stage.breadcrumbs);
+    
   }
+
+ 
 
   public getFormattedDate(date: string) {
     return moment(date).format('MMM DD, YYYY');

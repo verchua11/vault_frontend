@@ -151,9 +151,12 @@
                     <li *ngIf="!file.deleted && allowDelete" nz-menu-item (click)="deleteFile(file, false)">
                       Delete
                     </li>
+                    <li nz-menu-item (click)="copyLocation(file.name)">Copy location</li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
+
+              <div id="clipboard-toast">Copied to clipboard</div>
 
               <div class="file-thumbnail">
                 <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
