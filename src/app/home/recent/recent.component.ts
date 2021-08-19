@@ -26,6 +26,7 @@ export class RecentComponent implements OnInit {
   isDownloading = false;
   isLoadingVault = true;
   isDeleting = false;
+  isLoaded = false;
 
   subscriptions: Subscription[] = [];
 
@@ -68,23 +69,27 @@ export class RecentComponent implements OnInit {
 
   public prepareRecentItems(recentItems) {
     const arr = [];
-    recentItems.viewed.forEach(item => {
-      if(item.is_deleted != 1) {
-        let segment = item.path.split('/');
-        let fileInfo = {};
-        if (segment[segment.length-1] != '') {
-          fileInfo = {
-            "name": segment[segment.length-1],
-            "Key": item.path,
-            "project_id": item.project_id,
-            "isDeleted": 0
+    // if(this.isLoaded == false) {
+      recentItems.viewed.forEach(item => {
+        if(item.is_deleted != 1) {
+          let segment = item.path.split('/');
+          let fileInfo = {};
+          if (segment[segment.length-1] != '') {
+            fileInfo = {
+              "name": segment[segment.length-1],
+              "Key": item.path,
+              "project_id": item.project_id,
+              "isDeleted": 0
+            }
+            this.checkStarred(item, fileInfo);
           }
-          this.checkStarred(item, fileInfo);
         }
-      }
-    });
+      });
+      console.log('done loading');
+    // }
     this.isLoadingVault = false;
     this.isDeleting = false;
+    this.isLoaded = true;
   }
 
   public checkStarred(dir, fileInfo) {
@@ -111,9 +116,9 @@ export class RecentComponent implements OnInit {
         if ( found == 0 ) {
           fileInfo['finalStarred'] = 0;
         }
-        this.folderFile.push(fileInfo);
       })
     );
+    this.folderFile.push(fileInfo);
   }
 
   public selectFile(folder: any) {
@@ -130,6 +135,7 @@ export class RecentComponent implements OnInit {
   public regenerateRecent() {
     this.subscriptions.push(
       this.VaultService.getUserViewed().subscribe((response:any) => {
+        this.isLoaded = false;
         this.prepareRecentItems(response);
       })
     );

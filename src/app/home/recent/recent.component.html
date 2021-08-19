@@ -1,37 +1,12 @@
 <div class="page-wrapper">
-  <!-- <div class="title-nav">
-    <a nz-dropdown [nzDropdownMenu]="menu">
-      My Vault
-      <i
-        class="ms-3"
-        nz-icon
-        nzType="down"
-        nzTheme="outline"
-        style="font-size: 15px"
-      ></i>
-    </a>
-    <nz-dropdown-menu #menu="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li
-          *ngFor="let project of projects"
-          nz-menu-item
-          (click)="openProject(project)"
-        >
-          <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-          {{ project.project_name }}
-        </li>
-      </ul>
-    </nz-dropdown-menu>
-  </div> -->
   <div class="main-content">
     <div class="file-explorer">
       <span class="file-info-header">Recently Viewed</span>
       <!-- for folder items -->
       <div class="folders">
-        
         <nz-card
           class="folder-card mb-2"
-          *ngFor="let file of generateRecentItems()"
+          *ngFor="let file of folderFile"
           (click)="selectFile(file)"
         >
 

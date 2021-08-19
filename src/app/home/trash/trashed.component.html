@@ -7,7 +7,7 @@
       <div class="folders starred-folders">
         <nz-card
           class="folder-card mb-2"
-          *ngFor="let file of generateRecentItems('folder')"
+          *ngFor="let file of folderList"
           (click)="selectFile(file)"
         >
           <div *ngIf="file.name.indexOf('.') == -1">
@@ -52,7 +52,7 @@
 
         <nz-card
           class="folder-card mb-2"
-          *ngFor="let file of generateRecentItems('file')"
+          *ngFor="let file of fileList"
           (click)="selectFile(file)"
         >
           <div *ngIf="file.name.indexOf('.') !== -1">
