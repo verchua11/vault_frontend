@@ -191,7 +191,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.ProjectService.getProjects().subscribe((response: any) => {
         this.projects = response.projects.filter(
-          (p) => p.status === 'Approved'
+          (p: { status: string; }) => p.status === 'Approved'
         );
         const projectVaultPaths = [];
         this.projects.forEach((p) => {
@@ -203,7 +203,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.subscriptions.push(
               this.VaultService.getFiles().subscribe((response: any) => {
                 this.vaultDirectory = response.results.filter(
-                  (dir) =>
+                  (dir: { Key: string; }) =>
                     projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
                       -1 && this.deletedFiles.indexOf(dir.Key) === -1
                 );
@@ -376,6 +376,15 @@ File path: ` + copiedPath;
   }
   
   public selectFile(folder: any) {
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.vaultDirectory.find(
+          (dir) => dir.Key === folder.Key
+        );
+      }
+      _this.prevent = false;
+    }, 200);
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
       })
@@ -385,6 +394,7 @@ File path: ` + copiedPath;
         console.log('recent response:', response);
       })
     );
+    
   }
 
   public navigateBreadcrumb(stage: any, index: number) {
