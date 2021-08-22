@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { Project } from 'src/app/core/models/project.model';
 import { ProjectService } from 'src/app/core/project.service';
@@ -66,7 +67,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
         let segment = item.path.split('/');
         let fileInfo = {};
         let folderInfo = {};
-  
+        console.log(item);
         if (segment.length > 2) {
           //if folder
           if (segment[segment.length-1] == "" || segment[segment.length-1].indexOf('.') == -1) {
@@ -76,6 +77,9 @@ export class TrashedComponent implements OnInit, OnDestroy {
                 "Key": item.path,
                 "project_id": item.project_id,
                 "deleted_type": "folder",
+                "Size": item.Size,
+                "LastModified": item.LastModified,
+                "DisplayName": item.DisplayName
               }
             } else {
               folderInfo = {
@@ -83,6 +87,9 @@ export class TrashedComponent implements OnInit, OnDestroy {
                 "Key": item.path,
                 "project_id": item.project_id,
                 "deleted_type": "folder",
+                "Size": item.Size,
+                "LastModified": item.LastModified,
+                "DisplayName": item.DisplayName
               }
             }
             this.folderList.push(folderInfo);
@@ -91,7 +98,10 @@ export class TrashedComponent implements OnInit, OnDestroy {
               "name": segment[segment.length-1],
               "Key": item.path,
               "project_id": item.project_id,
-              "deleted_type": "file"
+              "deleted_type": "file",
+              "Size": item.Size,
+              "LastModified": item.LastModified,
+              "DisplayName": item.DisplayName
             }
             this.fileList.push(fileInfo);
           }
@@ -116,6 +126,10 @@ export class TrashedComponent implements OnInit, OnDestroy {
     if (this.folderFile[section]) {
       return this.folderFile[section].reverse();
     }
+  }
+
+  public getFormattedDate(date: string) {
+    return moment(date).format('MMM DD, YYYY');
   }
 
   public untrash(folder: any, isFolder: boolean) {

@@ -7,6 +7,7 @@ import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
 import { UserAuthService } from 'src/app/core/user-auth.service';
+import * as moment from 'moment';
 
 declare var $;
 
@@ -86,6 +87,9 @@ export class StarredComponent implements OnInit {
               "Key": item.path,
               "project_id": item.project_id,
               "starred_type": "folder",
+              "Size": item.Size,
+              "LastModified": item.LastModified,
+              "DisplayName": item.DisplayName
             }
             if(segment.length <= 5){
               folderInfo["isProject"] = 1;
@@ -96,7 +100,10 @@ export class StarredComponent implements OnInit {
               "name": segment[segment.length-1],
               "Key": item.path,
               "project_id": item.project_id,
-              "starred_type": "file"
+              "starred_type": "file",
+              "Size": item.Size,
+              "LastModified": item.LastModified,
+              "DisplayName": item.DisplayName
             }
             this.fileList.push(fileInfo);
           }
@@ -129,7 +136,6 @@ export class StarredComponent implements OnInit {
   }
 
   public selectFile(folder: any) {
-    console.log(folder);
     const _this = this;
     this.timer = setTimeout(function () {
       if (!_this.prevent) {
@@ -144,6 +150,10 @@ export class StarredComponent implements OnInit {
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
       })
     );
+  }
+
+  public getFormattedDate(date: string) {
+    return moment(date).format('MMM DD, YYYY');
   }
 
   public generateRecentItems(section: any) {

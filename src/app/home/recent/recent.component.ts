@@ -6,6 +6,7 @@ import { VaultStateService } from 'src/app/core/vault-state.service';
 import { VaultService } from 'src/app/core/vault.service';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
 import { UserAuthService } from 'src/app/core/user-auth.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-recent',
@@ -80,7 +81,10 @@ export class RecentComponent implements OnInit {
               "name": segment[segment.length-1],
               "Key": item.path,
               "project_id": item.project_id,
-              "isDeleted": 0
+              "isDeleted": 0,
+              "Size": item.Size,
+              "LastModified": item.LastModified,
+              "DisplayName": item.DisplayName
             }
             this.checkStarred(item, fileInfo);
           }
@@ -168,6 +172,10 @@ export class RecentComponent implements OnInit {
       this.VaultService.getUserViewed().subscribe((response:any) => {
       })
     );
+  }
+
+  public getFormattedDate(date: string) {
+    return moment(date).format('MMM DD, YYYY');
   }
 
   public regenerateRecent() {
