@@ -23,6 +23,10 @@ export class TrashedComponent implements OnInit, OnDestroy {
   isLoadingVault = true;
   isDownloading = false;
   isDeleting = false;
+  prevent = false;
+
+  selectedFile: any;
+  timer: any;
 
   metadata = [];
   folderFile = [];
@@ -65,12 +69,21 @@ export class TrashedComponent implements OnInit, OnDestroy {
   
         if (segment.length > 2) {
           //if folder
-          if (segment[segment.length-1] == "") {
-            folderInfo = {
-              "name": segment[segment.length-2],
-              "Key": item.path,
-              "project_id": item.project_id,
-              "deleted_type": "folder",
+          if (segment[segment.length-1] == "" || segment[segment.length-1].indexOf('.') == -1) {
+            if(segment[segment.length-1] == "") {
+              folderInfo = {
+                "name": segment[segment.length-2],
+                "Key": item.path,
+                "project_id": item.project_id,
+                "deleted_type": "folder",
+              }
+            } else {
+              folderInfo = {
+                "name": segment[segment.length-1],
+                "Key": item.path,
+                "project_id": item.project_id,
+                "deleted_type": "folder",
+              }
             }
             this.folderList.push(folderInfo);
           } else { //else, file
@@ -180,6 +193,31 @@ export class TrashedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
+  }
+
+  public selectDirectory(folder: any) {
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.folderList.find(
+          (dir) => dir.Key === folder.Key
+        );
+        console.log(_this.selectedFile);
+      }
+      _this.prevent = false;
+    }, 200);
+  }
+
+  public selectFile(folder: any) {
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.fileList.find(
+          (dir) => dir.Key === folder.Key
+        );
+      }
+      _this.prevent = false;
+    }, 200);
   }
 
   public setSelectedProject(project: Project) {
