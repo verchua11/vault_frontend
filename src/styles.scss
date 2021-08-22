@@ -131,6 +131,15 @@ a:hover {
   color: var(--jcva-black-80);
 }
 
+.cdk-overlay-pane {
+  overflow:scroll;
+  max-width:240px;
+}
+
+.ant-dropdown-menu-item {
+  white-space: break-spaces;
+}
+
 .ant-tooltip-inner {
   color: var(--jcva-black-80);
 }

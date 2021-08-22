@@ -1,20 +1,8 @@
 <div id="jcva-toolbar" class="toolbar">
-  <!-- <a class="mr-4" (click)="toggleSidenav()">
-      <i id="sidenav-toggle" class="fas fa-angle-left fa-3x sidenav-toggle"></i>
-    </a> -->
-  <!-- <div class="input-with-icon">
-    <div class="search-input-icon">
-      <i class="fas fa-search"></i>
-    </div>
-    <input class="search-input" type="text" placeholder="Search in Vault" />
-    <div class="filter-input-icon">
-      <i class="fas fa-filter"></i>
-    </div>
-  </div> -->
   <span class="filler"></span>
   <div *ngIf="userInfo" class="ml-4 toolbar-dropdown">
     <div class="dropdown-container">
-      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor">
+      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor" nzTrigger="click">
         <span class="filler"></span>
         <span>{{ currentProjectName }}</span>
         <span class="filler"></span>
@@ -34,7 +22,7 @@
             (click)="openProject(project)"
           >
             <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-            {{ project.project_name }}
+            <span>{{ project.project_name }}</span>
           </li>
         </ul>
       </nz-dropdown-menu>
@@ -54,19 +42,6 @@
       </ul>
     </nz-dropdown-menu>
   </div>
-  <!-- <div
-    *ngIf="userInfo && userInfo.profile_image_url !== ''"
-    class="user-avatar user-avatar-sm ml-3"
-  >
-    <a nz-dropdown [nzDropdownMenu]="menu2" nzPlacement="bottomRight">
-      <img [src]="userInfo.profile_image_url" alt="" />
-    </a>
-    <nz-dropdown-menu #menu2="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li nz-menu-item (click)="openLogoutModal()">Logout</li>
-      </ul>
-    </nz-dropdown-menu>
-  </div> -->
 </div>
 
 <nz-modal
