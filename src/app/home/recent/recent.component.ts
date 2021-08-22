@@ -84,7 +84,7 @@ export class RecentComponent implements OnInit {
               "isDeleted": 0,
               "Size": item.Size,
               "LastModified": item.LastModified,
-              "DisplayName": item.DisplayName
+              "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
             }
             this.checkStarred(item, fileInfo);
           }

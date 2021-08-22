@@ -89,7 +89,7 @@ export class StarredComponent implements OnInit {
               "starred_type": "folder",
               "Size": item.Size,
               "LastModified": item.LastModified,
-              "DisplayName": item.DisplayName
+              "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
             }
             if(segment.length <= 5){
               folderInfo["isProject"] = 1;

@@ -67,7 +67,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
         let segment = item.path.split('/');
         let fileInfo = {};
         let folderInfo = {};
-        console.log(item);
         if (segment.length > 2) {
           //if folder
           if (segment[segment.length-1] == "" || segment[segment.length-1].indexOf('.') == -1) {
@@ -79,7 +78,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
                 "deleted_type": "folder",
                 "Size": item.Size,
                 "LastModified": item.LastModified,
-                "DisplayName": item.DisplayName
+                "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
               }
             } else {
               folderInfo = {
@@ -89,7 +88,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
                 "deleted_type": "folder",
                 "Size": item.Size,
                 "LastModified": item.LastModified,
-                "DisplayName": item.DisplayName
+                "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
               }
             }
             this.folderList.push(folderInfo);
@@ -101,7 +100,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
               "deleted_type": "file",
               "Size": item.Size,
               "LastModified": item.LastModified,
-              "DisplayName": item.DisplayName
+              "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
             }
             this.fileList.push(fileInfo);
           }
@@ -216,7 +215,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
         _this.selectedFile = _this.folderList.find(
           (dir) => dir.Key === folder.Key
         );
-        console.log(_this.selectedFile);
       }
       _this.prevent = false;
     }, 200);
