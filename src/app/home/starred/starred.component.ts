@@ -27,7 +27,9 @@ export class StarredComponent implements OnInit {
   isLoadingVault = true;
   isDownloading = false;
   isDeleting = false;
+  prevent = false;
 
+  timer: any;
   folderFile = [];
   fileList = [];
   folderList = [];
@@ -114,13 +116,32 @@ export class StarredComponent implements OnInit {
     this.isLoadingVault = false;
   }
 
+  public selectDirectory(folder: any) {
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.folderList.find(
+          (dir) => dir.Key === folder.Key
+        );
+      }
+      _this.prevent = false;
+    }, 200);
+  }
+
   public selectFile(folder: any) {
+    console.log(folder);
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.fileList.find(
+          (dir) => dir.Key === folder.Key
+        );
+      }
+      _this.prevent = false;
+    }, 200);
+
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
-      })
-    );
-    this.subscriptions.push(
-      this.VaultService.getUserViewed().subscribe((response:any) => {
       })
     );
   }
@@ -134,6 +155,34 @@ export class StarredComponent implements OnInit {
   public openProject(project: Project) {
     if (this.selectedProject !== project)
       this.VaultStateService.updateSelectedProject(project);
+  }
+
+  public copyLocation(file: any) {
+    console.log(file)
+    let fullPath = file.Key;
+    let pathSegment = fullPath.split('/');
+    let pathProject = pathSegment.splice(2);
+    pathProject = pathProject.join('/');
+    let fullProject = pathSegment[1].split('-');
+
+    fullProject.pop();
+    for(var i = 0; i < fullProject.length; i++) {
+      fullProject[i] = fullProject[i].charAt(0).toUpperCase() + fullProject[i].slice(1);
+    }
+
+    let projectName = fullProject.join(' ');
+    let finalClipboardText = `Project: "` + projectName + `"\nFile path: "` + pathProject +`"`;
+    
+    navigator.clipboard.writeText(finalClipboardText).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+
+    var x = document.getElementById("clipboard-toast");
+    x.className = "show";
+    x.style.zIndex = "9999";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); x.style.zIndex= "-9999"}, 3000);
   }
   
   public downloadFile(file: any) {

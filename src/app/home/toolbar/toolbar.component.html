@@ -2,7 +2,7 @@
   <span class="filler"></span>
   <div *ngIf="userInfo" class="ml-4 toolbar-dropdown">
     <div class="dropdown-container">
-      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor" nzTrigger="click">
+      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor">
         <span class="filler"></span>
         <span>{{ currentProjectName }}</span>
         <span class="filler"></span>
@@ -14,17 +14,19 @@
           style="font-size: 15px"
         ></i>
       </a>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu nzSelectable>
-          <li
-            *ngFor="let project of projects"
-            nz-menu-item
-            (click)="openProject(project)"
-          >
-            <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
-            <span>{{ project.project_name }}</span>
-          </li>
-        </ul>
+      <nz-dropdown-menu #menu="nzDropdownMenu" >
+        <div class ="toolbar-menu-dropdown ant-dropdown-menu">
+          <ul nz-menu nzSelectable>
+            <li
+              *ngFor="let project of projects"
+              nz-menu-item
+              (click)="openProject(project)"
+            >
+              <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+              <span>{{ project.project_name }}</span>
+            </li>
+          </ul>
+        </div>
       </nz-dropdown-menu>
     </div>
   </div>

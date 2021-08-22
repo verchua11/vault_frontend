@@ -10,6 +10,7 @@
         <nz-card
           class="folder-card mb-2"
           *ngFor="let file of folderList"
+          (click)="selectDirectory(file)"
         >
           <div *ngIf="file.name.indexOf('.') == -1">
             <div class="file-menu">
@@ -66,6 +67,7 @@
                   <li nz-menu-item (click)="downloadFile(file)">Download</li>
                   <li nz-menu-item (click)="removeFromStarred(file)">Remove From Starred</li>
                   <li nz-menu-item *ngIf="allowDelete" (click)="deleteFile(file)">Delete</li>
+                  <li nz-menu-item (click)="copyLocation(file)">Copy location</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -92,8 +94,69 @@
         </nz-card>
       </div>
     </div>
+    <div class="file-info">
+      <p class="file-info-header file-detail-info">Starred</p>
+      <p class="file-info-subtext">
+        Select a file or folder to view its details
+      </p>
+      <div>
+        <div *ngIf="selectedFile">
+          <div class="folder-icon">
+            <i
+              class="mt-2 mb-2"
+              nz-icon
+              [nzType]="
+                selectedFile.Key.indexOf('.') === -1 ? 'folder' : 'file'
+              "
+              nzTheme="outline"
+            ></i>
+          </div>
+          <div class="file-metadata">
+            <p>
+              File Name:
+              {{
+                selectedFile.Key.indexOf(".") === -1
+                  ? selectedFile.Key.split("/")[
+                      selectedFile.Key.split("/").length - 2
+                    ]
+                  : selectedFile.Key.split("/")[
+                      selectedFile.Key.split("/").length - 1
+                    ]
+              }}
+            </p>
+            <p>
+              Type:
+              {{ selectedFile.Key.indexOf(".") === -1 ? "Folder" : "File" }}
+            </p>
+            <p>
+              Size: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB ({{
+                selectedFile.Size
+              }}
+              bytes)
+            </p>
+            <p>
+              Storage used: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB
+              ({{ selectedFile.Size }}
+              bytes)
+            </p>
+            <p>Location: My Vault</p>
+            <p>Owner: {{ selectedFile.Owner.DisplayName }}</p>
+            <p>Modified: {{ getFormattedDate(selectedFile.LastModified) }}</p>
+            <!-- <p>Opened: Dec 25, 2020 by me</p>
+            <p>Created: Dec 23, 2020</p> -->
+          </div>
+        </div>
+        <div *ngIf="!selectedFile">
+          <nz-empty
+            nzNotFoundContent="No selected file/folder."
+            style="margin-top: 2rem"
+          ></nz-empty>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+<div id="clipboard-toast">Copied to clipboard</div>
 
 <div
   [ngClass]="

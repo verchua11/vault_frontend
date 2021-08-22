@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { ProjectService } from 'src/app/core/project.service';
 import { UserAuthService } from 'src/app/core/user-auth.service';
 import { VaultService } from 'src/app/core/vault.service';
@@ -47,7 +47,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   isStarred = false;
   isVisible = false;
   renameModalVisible = false;
-  isLoadingVault = true;
+  isLoadingVault = false;
   isDownloading = false;
   isDeleting = false;
   isSubmitting = false;
@@ -168,13 +168,15 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
-
+    this.subscriptions.push(
+      this.VaultStateService.getSelectedProject().subscribe((response:any)=>{
+        this.selectedProject = response;
+        this.initData();
+      }),
+    ) ;   
     if(this.userInfo.role != 3) {
       this.allowDelete = true;
     }
-
-    this.isLoadingVault = true;
-    this.initData();
   }
 
   ngOnDestroy(): void {
@@ -182,51 +184,55 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public initData() {
-    this.subscriptions.push(
-      this.VaultService.getUserStarred().subscribe((response:any) => {
-        this.starredList = response.starred;
-      }),
-    );
-    
-    this.subscriptions.push(
-      this.ProjectService.getProjects().subscribe((response: any) => {
-        this.projects = response.projects.filter(
-          (p: { status: string; }) => p.status === 'Approved'
-        );
-        const projectVaultPaths = [];
-        this.projects.forEach((p) => {
-          if (p.vault_path) projectVaultPaths.push(p.vault_path);
-        });
-        this.subscriptions.push(
-          this.VaultService.getDeletedFiles().subscribe((response: any) => {
-            this.deletedFiles = response.items;
-            this.subscriptions.push(
-              this.VaultService.getFiles().subscribe((response: any) => {
-                this.vaultDirectory = response.results.filter(
-                  (dir: { Key: string; }) =>
-                    projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
-                      -1 && this.deletedFiles.indexOf(dir.Key) === -1
-                );
-                this.subscriptions.push(
-                  this.VaultStateService.newSelectedProject.subscribe(
-                    (project) => {
-                      if (project) {
-                        this.selectedProject = project;
+    if(this.selectedProject != undefined) {
+      this.isLoadingVault = true;
+
+      this.subscriptions.push(
+        this.VaultService.getUserStarred().subscribe((response:any) => {
+          this.starredList = response.starred;
+        }),
+      );
+      
+      this.subscriptions.push(
+        this.ProjectService.getProjects().subscribe((response: any) => {
+          this.projects = response.projects.filter(
+            (p: { status: string; }) => p.status === 'Approved'
+          );
+          const projectVaultPaths = [];
+          this.projects.forEach((p) => {
+            if (p.vault_path) projectVaultPaths.push(p.vault_path);
+          });
+          this.subscriptions.push(
+            this.VaultService.getDeletedFiles().subscribe((response: any) => {
+              this.deletedFiles = response.items;
+              this.subscriptions.push(
+                this.VaultService.getFiles().subscribe((response: any) => {
+                  this.vaultDirectory = response.results.filter(
+                    (dir: { Key: string; }) =>
+                      projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
+                        -1 && this.deletedFiles.indexOf(dir.Key) === -1
+                  );
+                  this.subscriptions.push(
+                    this.VaultStateService.newSelectedProject.subscribe(
+                      (project) => {
+                        if (project) {
+                          this.selectedProject = project;
+                        }
                       }
-                    }
-                  )
-                );
-                this.isLoadingVault = false;
-              },
-              (error) => {
-                console.log('no files detected');
-                this.isLoadingVault = false;
-              }),
-            );
-          })
-        );
-      })
-    );
+                    )
+                  );
+                  this.isLoadingVault = false;
+                },
+                (error) => {
+                  console.log('no files detected');
+                  this.isLoadingVault = false;
+                }),
+              );
+            })
+          );
+        })
+      );
+    }
   }
   public openProject(project: Project) {
     if (this.selectedProject !== project) {
@@ -345,10 +351,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     })
     copiedPath += filename;
 
-    let finalClipboardText = `Project: ` + this.selectedProject.project_name
-    + 
-    `
-File path: ` + copiedPath;
+    let finalClipboardText = `Project: "` + this.selectedProject.project_name + `" File path: "` + copiedPath +`"`;
     console.log(finalClipboardText);    
     
     navigator.clipboard.writeText(finalClipboardText).then(function() {
@@ -359,8 +362,8 @@ File path: ` + copiedPath;
 
     var x = document.getElementById("clipboard-toast");
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-    
+    x.style.zIndex = "9999";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); x.style.zIndex= "-9999"}, 3000);
   }
 
   public selectDirectory(folder: any) {
@@ -388,13 +391,7 @@ File path: ` + copiedPath;
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
       })
-    );
-    this.subscriptions.push(
-      this.VaultService.getUserViewed().subscribe((response:any) => {
-        console.log('recent response:', response);
-      })
-    );
-    
+    );   
   }
 
   public navigateBreadcrumb(stage: any, index: number) {

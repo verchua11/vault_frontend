@@ -73,9 +73,7 @@
                     <li *ngIf="folder.finalStarred == 0" nz-menu-item (click)="addToStarred(folder, true)">Add to Starred</li>
                     <li *ngIf="folder.finalStarred == 1" nz-menu-item (click)="removeFromStarred(folder, true)">Remove from Starred</li>
                     <li *ngIf="stage.currDirLevel > 3 && allowDelete" (click)="openRenameModal(folder, stage)" nz-menu-item>Rename</li>
-                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted && allowDelete" nz-menu-item (click)="deleteFile(folder, true)">
-                      Delete
-                    </li>
+                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted && allowDelete" nz-menu-item (click)="deleteFile(folder, true)">Delete</li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -148,16 +146,11 @@
                     <li *ngIf="file.finalStarred == 0" nz-menu-item (click)="addToStarred(file, false)">Add to Starred</li>
                     <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
                     <li nz-menu-item *ngIf="allowDelete" (click)="openRenameModal(file, stage)">Rename</li>
-                    <li *ngIf="!file.deleted && allowDelete" nz-menu-item (click)="deleteFile(file, false)">
-                      Delete
-                    </li>
+                    <li *ngIf="!file.deleted && allowDelete" nz-menu-item (click)="deleteFile(file, false)">Delete</li>
                     <li nz-menu-item (click)="copyLocation(file.name)">Copy location</li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-
-              <div id="clipboard-toast">Copied to clipboard</div>
-
               <div class="file-thumbnail">
                 <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
               </div>
@@ -191,6 +184,8 @@
         </nz-collapse-panel>
       </nz-collapse>
     </div>
+    <div id="clipboard-toast">Copied to clipboard</div>
+
     <div class="file-info">
       <p class="file-info-header">My Vault</p>
       <p class="file-info-subtext">

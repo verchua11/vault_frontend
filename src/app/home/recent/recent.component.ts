@@ -27,6 +27,8 @@ export class RecentComponent implements OnInit {
   isLoadingVault = true;
   isDeleting = false;
   isLoaded = false;
+  prevent = false;
+  timer: any;
 
   subscriptions: Subscription[] = [];
 
@@ -64,7 +66,6 @@ export class RecentComponent implements OnInit {
       this.VaultService.getFiles().subscribe((response:any) => {
       })
     );
-   
   }
 
   public prepareRecentItems(recentItems) {
@@ -121,7 +122,44 @@ export class RecentComponent implements OnInit {
     this.folderFile.push(fileInfo);
   }
 
+  public copyLocation(file: any) {
+    console.log(file)
+    let fullPath = file.Key;
+    let pathSegment = fullPath.split('/');
+    let pathProject = pathSegment.splice(2);
+    pathProject = pathProject.join('/');
+    let fullProject = pathSegment[1].split('-');
+
+    fullProject.pop();
+    for(var i = 0; i < fullProject.length; i++) {
+      fullProject[i] = fullProject[i].charAt(0).toUpperCase() + fullProject[i].slice(1);
+    }
+
+    let projectName = fullProject.join(' ');
+    let finalClipboardText = `Project: "` + projectName + `"\nFile path: "` + pathProject +`"`;
+    
+    navigator.clipboard.writeText(finalClipboardText).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+
+    var x = document.getElementById("clipboard-toast");
+    x.className = "show";
+    x.style.zIndex = "9999";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); x.style.zIndex= "-9999"}, 3000);
+  }
+  
   public selectFile(folder: any) {
+    const _this = this;
+    this.timer = setTimeout(function () {
+      if (!_this.prevent) {
+        _this.selectedFile = _this.folderFile.find(
+          (dir) => dir.Key === folder.Key
+        );
+      }
+      _this.prevent = false;
+    }, 200);
     this.subscriptions.push(
       this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
       })
@@ -235,33 +273,31 @@ export class RecentComponent implements OnInit {
   }
 
   public getFileIcon(fileName: string) {
-    if (fileName.indexOf('.') !== -1) {
-      switch (fileName.split('.')[1].toLowerCase()) {
-        case 'csv':
-        case 'xls':
-        case 'xlsx':
-          return 'file-excel';
-        case 'pdf':
-          return 'file-pdf';
-        case 'doc':
-        case 'docx':
-          return 'file-word';
-        case 'ppt':
-        case 'pptx':
-          return 'file-ppt';
-        case 'jpeg':
-        case 'jpg':
-        case 'png':
-        case 'gif':
-          return 'file-image';
-        case 'txt':
-          return 'file-text';
-        case 'zip':
-        case 'rar':
-          return 'file-zip';
-        default:
-          return 'file';
-      }
+    switch (fileName.split('.')[1].toLowerCase()) {
+      case 'csv':
+      case 'xls':
+      case 'xlsx':
+        return 'file-excel';
+      case 'pdf':
+        return 'file-pdf';
+      case 'doc':
+      case 'docx':
+        return 'file-word';
+      case 'ppt':
+      case 'pptx':
+        return 'file-ppt';
+      case 'jpeg':
+      case 'jpg':
+      case 'png':
+      case 'gif':
+        return 'file-image';
+      case 'txt':
+        return 'file-text';
+      case 'zip':
+      case 'rar':
+        return 'file-zip';
+      default:
+        return 'file';
     }
   }
     
