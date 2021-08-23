@@ -206,7 +206,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.VaultService.getDeletedFiles().subscribe((response: any) => {
               this.deletedFiles = response.items;
               this.subscriptions.push(
-                this.VaultService.getFiles().subscribe((response: any) => {
+                this.ProjectService.getProjectByID(this.selectedProject.project_id).subscribe((response: any) => {
                   this.vaultDirectory = response.results.filter(
                     (dir: { Key: string; }) =>
                       projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==

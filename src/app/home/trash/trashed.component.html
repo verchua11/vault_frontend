@@ -120,22 +120,7 @@
               Type:
               {{ selectedFile.Key.indexOf(".") === -1 ? "Folder" : "File" }}
             </p>
-            <p>
-              Size: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB ({{
-                selectedFile.Size
-              }}
-              bytes)
-            </p>
-            <p>
-              Storage used: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB
-              ({{ selectedFile.Size }}
-              bytes)
-            </p>
             <p>Location: My Vault</p>
-            <p>Owner: {{ selectedFile.DisplayName }}</p>
-            <p>Modified: {{ getFormattedDate(selectedFile.LastModified) }}</p>
-            <!-- <p>Opened: Dec 25, 2020 by me</p>
-            <p>Created: Dec 23, 2020</p> -->
           </div>
         </div>
         <div *ngIf="!selectedFile">

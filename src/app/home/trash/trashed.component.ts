@@ -85,10 +85,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
                 "name": segment[segment.length-1],
                 "Key": item.path,
                 "project_id": item.project_id,
-                "deleted_type": "folder",
-                "Size": item.Size,
-                "LastModified": item.LastModified,
-                "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
+                "deleted_type": "folder"
               }
             }
             this.folderList.push(folderInfo);
@@ -97,10 +94,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
               "name": segment[segment.length-1],
               "Key": item.path,
               "project_id": item.project_id,
-              "deleted_type": "file",
-              "Size": item.Size,
-              "LastModified": item.LastModified,
-              "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
+              "deleted_type": "file"
             }
             this.fileList.push(fileInfo);
           }

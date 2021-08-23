@@ -87,9 +87,6 @@ export class StarredComponent implements OnInit {
               "Key": item.path,
               "project_id": item.project_id,
               "starred_type": "folder",
-              "Size": item.Size,
-              "LastModified": item.LastModified,
-              "DisplayName": (item.Owner) ? item.Owner.DisplayName : ''
             }
             if(segment.length <= 5){
               folderInfo["isProject"] = 1;
@@ -101,9 +98,6 @@ export class StarredComponent implements OnInit {
               "Key": item.path,
               "project_id": item.project_id,
               "starred_type": "file",
-              "Size": item.Size,
-              "LastModified": item.LastModified,
-              "DisplayName": item.DisplayName
             }
             this.fileList.push(fileInfo);
           }
