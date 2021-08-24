@@ -75,13 +75,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   public setSelectedProject(project: Project) {
+    if (window.innerWidth <= 768) {
+      $('.sidenav').removeClass('show-sidenav');
+    }
     this.VaultStateService.updateSelectedProject(project);
     this.selectedNav = project.project_name;
     this.router.navigateByUrl('/home/my-vault');
   }
 
   sidenavOverlayClicked() {
-    // this.StateService.sidenavStateUpdated(false);
+    $('.sidenav').removeClass('show-sidenav');
   }
 
   navItemClicked(navItem) {
@@ -91,6 +94,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string) {
+    if (window.innerWidth <= 768) {
+      $('.sidenav').removeClass('show-sidenav');
+    }
     this.selectedNav = route;
     this.router.navigateByUrl(`/home/${route}`);
   }

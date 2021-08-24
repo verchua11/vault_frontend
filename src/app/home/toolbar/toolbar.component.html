@@ -1,3 +1,56 @@
+<!-- mobile view -->
+<div class="toolbar-sm mobile-toolbar">
+  <a (click)="sidenavBtnClicked()">
+    <i class="menu-icon fas fa-bars fa-2x"></i>
+  </a>
+  <div class="filler"></div>
+  <div class="filler"></div>
+  <div *ngIf="userInfo" class="ml-4 toolbar-dropdown">
+    <div class="dropdown-container toolbar-dropdown">
+      <a nz-dropdown [nzDropdownMenu]="menu" class="dropdown-anchor" nzTrigger="click">
+        <span class="filler"></span>
+        <span>{{ currentProjectName }}</span>
+        <span class="filler"></span>
+        <i
+          class="ms-3"
+          nz-icon
+          nzType="down"
+          nzTheme="outline"
+          style="font-size: 15px"
+        ></i>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <div class ="toolbar-menu-dropdown ant-dropdown-menu">
+          <ul nz-menu nzSelectable>
+            <li
+              *ngFor="let project of projects"
+              nz-menu-item
+              (click)="openProject(project)"
+            >
+              <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+              <span>{{ project.project_name }}</span>
+            </li>
+          </ul>
+        </div>
+      </nz-dropdown-menu>
+    </div>
+  </div>
+  <div *ngIf="userInfo" class="user-avatar user-avatar-sm mr-3">
+    <a nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight">
+      {{
+        userInfo.first_name.substring(0, 1).toUpperCase() +
+          userInfo.last_name.substring(0, 1).toUpperCase()
+      }}
+    </a>
+    <nz-dropdown-menu #menu1="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="openLogoutModal()">Logout</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</div>
+
+<!-- desktop view -->
 <div id="jcva-toolbar" class="toolbar">
   <span class="filler"></span>
   <div *ngIf="userInfo" class="ml-4 toolbar-dropdown">

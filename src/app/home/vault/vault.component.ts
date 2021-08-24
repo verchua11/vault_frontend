@@ -53,6 +53,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   isSubmitting = false;
   prevent = false;
   allowDelete = false;
+  isFolderTooltip = false;
   timer: any;
 
   filePath = [];
@@ -339,7 +340,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       stage.breadcrumbs.push(folder.name);
     }
     this.filePath = stage.breadcrumbs;
-    // console.log('filePath is:',this.filePath);
   }
 
   public copyLocation(filename: any) {
@@ -376,6 +376,17 @@ export class VaultComponent implements OnInit, OnDestroy {
       }
       _this.prevent = false;
     }, 200);
+  }
+
+  public checkToolTip(stage: any, folder: any) {
+    // this.isFolderTooltip = false;
+    $('.file-menu-folder').click(function(e) {
+      if(this.isFolderTooltip == false) {
+        this.isFolderTooltip = true;
+      } else {
+        console.log(e.target);
+      }
+    });
   }
   
   public selectFile(folder: any) {

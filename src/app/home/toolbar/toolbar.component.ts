@@ -8,6 +8,7 @@ import { VaultStateService } from 'src/app/core/vault-state.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Project } from 'src/app/core/models/project.model';
 import {Location} from '@angular/common';
+declare var $;
 
 @Component({
   selector: 'app-toolbar',
@@ -15,6 +16,7 @@ import {Location} from '@angular/common';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent implements OnInit {
+  sidenavState: boolean = false;
   selectedNav: string;
   userInfo: any;
   currentProjectName: any;
@@ -85,5 +87,8 @@ export class ToolbarComponent implements OnInit {
     this.UserAuthService.doLogout();
     this.closeLogoutModal();
     this.router.navigateByUrl('/');
+  }
+  public sidenavBtnClicked() {
+    $('.sidenav').addClass('show-sidenav');
   }
 }

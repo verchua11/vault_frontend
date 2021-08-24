@@ -610,7 +610,45 @@ nz-card {
     visibility: hidden;
   }
 }
+@media screen and (max-width:768px) {
+  .file-card, .folder-card, .folder-card-add {
+    width: 100%;
+  }
+  
+  .file-menu-folder {
+    display: grid;
+    left: unset;
+  }
 
+  .file-menu-folder a{
+    font-size: 1.8rem;
+  }
+
+  .page-wrapper {
+    margin-left: unset;
+    padding: 0 1rem;
+  }
+
+  .file-explorer {
+    border-right: unset;
+    padding-right: unset;
+    width: 100%;
+  }
+
+  .file-info {
+    display: none;
+  }
+
+  .show-sidenav {
+    transform: unset !important;
+  }
+}
+
+@media screen and (width:768px) and (height:1024px) {
+  .file-card, .folder-card, .folder-card-add {
+    width: 32%;
+  }
+}
 @media screen and (min-width: 576px) {
   html,
   body {
