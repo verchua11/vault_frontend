@@ -62,11 +62,6 @@ export class RecentComponent implements OnInit {
         }
       )
     );
-    
-    this.subscriptions.push(
-      this.VaultService.getFiles().subscribe((response:any) => {
-      })
-    );
   }
 
   public prepareRecentItems(recentItems) {
