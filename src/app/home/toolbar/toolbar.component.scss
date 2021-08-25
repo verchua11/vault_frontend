@@ -228,6 +228,10 @@
   color: var(--jcva-black-80);
 }
 
+.vault-icon-mobile {
+  display:none;
+}
+
 @media screen and (max-width:768px) {
   .toolbar-dropdown span{
     font-size: 1.2rem;
@@ -236,6 +240,16 @@
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
+  }
+
+  .vault-icon-mobile {
+    display:block;
+    filter: brightness(0) invert(1);
+    margin-left: 10px;
+  }
+  
+  .vault-icon-mobile img {
+    width:35px;
   }
 
   .toolbar-dropdown {

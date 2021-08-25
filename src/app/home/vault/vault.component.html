@@ -55,6 +55,8 @@
               [ngClass]="{
                 'selected-node': selectedFile?.Key == folder.Key
               }"
+              (dblclick)="openDirectory(stage, folder)"
+              (click)="selectDirectory(folder)"
             >
               <div class="file-menu-folder">
                 <a
