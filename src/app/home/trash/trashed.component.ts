@@ -21,6 +21,7 @@ export class TrashedComponent implements OnInit, OnDestroy {
 
   isFolder = false;
   isFile = false;
+  isMobile = false;
   isLoadingVault = true;
   isDownloading = false;
   isDeleting = false;
@@ -44,6 +45,9 @@ export class TrashedComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if(window.innerWidth <= 768) {
+      this.isMobile = true;
+    }
     this.subscriptions.push(
       this.VaultService.viewDeletedFile().subscribe((response:any) => {
         this.trashedItems(response);

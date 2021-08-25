@@ -25,14 +25,18 @@
               </nz-dropdown-menu>
             </div>
             <div class="folder-icon starred-folder">
+              <img *ngIf="isMobile" class="mobile-icon" src= "assets/icons/mobile/Icon_Folder.svg">
               <i
+              *ngIf="!isMobile"
               nz-icon
               nzType="folder"
               nzTheme="fill"
               ></i>
             </div>
             <div class="folder-card-content">
+              <img *ngIf="isMobile" src= "assets/icons/mobile/Icon_Folder.svg">
               <i
+                *ngIf="!isMobile"
                 nz-icon
                 nzType="folder"
                 nzTheme="fill"
@@ -73,11 +77,18 @@
             </div>
 
             <div class="file-thumbnail">
-              <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
+              <i *ngIf="isMobile" class="mobile-file-icon-svg" nz-icon [nzType]="getFileIcon(file.name)" nzTheme="outline"></i>
+              <i *ngIf="!isMobile" nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
             </div>
             <div class="folder-card-content">
               <i
-                *ngIf="file.name.indexOf('.') !== -1"
+                *ngIf="file.name.indexOf('.') !== -1 && isMobile"
+                nz-icon
+                [nzType]="getFileIcon(file.name)"
+                nzTheme="outline"
+              ></i>
+              <i
+                *ngIf="file.name.indexOf('.') !== -1 && !isMobile"
                 nz-icon
                 [nzType]="getFileIcon(file.name)"
                 nzTheme="fill"

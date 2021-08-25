@@ -41,6 +41,9 @@
               class="folder-card-add mb-2"
               (click)="openFolderUploadModal(stage)"
             >
+              <div *ngIf="isMobile" class="file-thumbnail" (click)="openDirectory(stage, folder)">
+                <img class="mobile-icon" src= "assets/icons/Icon_New Folder.svg">
+              </div>
               <div class="folder-card-content">
                 <img src="assets/icons/Icon_New Folder.svg" alt="" />
                 <p>New Folder</p>
@@ -74,9 +77,13 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
+              <div *ngIf="isMobile" class="file-thumbnail" (click)="openDirectory(stage, folder)">
+                <img class="mobile-icon" src= "assets/icons/mobile/Icon_Folder.svg">
+              </div>
               <div class="folder-card-content" (click)="openDirectory(stage, folder)">
+                <img *ngIf="isMobile" src= "assets/icons/mobile/Icon_Folder.svg">
                 <i
-                  *ngIf="folder.name.indexOf('.') === -1"
+                  *ngIf="folder.name.indexOf('.') === -1 && !isMobile"
                   nz-icon
                   nzType="folder"
                   nzTheme="fill"
@@ -115,7 +122,7 @@
               (click)="openFileUploadModal(stage)"
             >
               <div class="file-thumbnail">
-                <img src="assets/icons/Icon_New File.svg" alt="" />
+                <img class="mobile-file-icon" src="assets/icons/Icon_New File.svg" alt="" />
               </div>
               <div class="folder-card-content">
                 <img src="assets/icons/Icon_New File.svg" alt="" />
@@ -149,11 +156,18 @@
                 </nz-dropdown-menu>
               </div>
               <div class="file-thumbnail">
-                <i nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
+                <i *ngIf="isMobile" class="mobile-file-icon-svg" nz-icon [nzType]="getFileIcon(file.name)" nzTheme="outline"></i>
+                <i *ngIf="!isMobile" nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
               </div>
               <div class="folder-card-content">
                 <i
-                  *ngIf="file.name.indexOf('.') !== -1"
+                  *ngIf="file.name.indexOf('.') !== -1 && isMobile"
+                  nz-icon
+                  [nzType]="getFileIcon(file.name)"
+                  nzTheme="outline"
+                ></i>
+                <i
+                  *ngIf="file.name.indexOf('.') !== -1 && !isMobile"
                   nz-icon
                   [nzType]="getFileIcon(file.name)"
                   nzTheme="fill"

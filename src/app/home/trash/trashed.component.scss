@@ -4,3 +4,21 @@
 .trashed-label {
     margin-bottom:10px;
 }
+.folder-icon i {
+    font-size: 60px !important;
+}
+
+@media screen and (max-width:768px) {
+    .welcome-image {
+      width: 100%;
+    }
+    
+    .mobile-icon, .mobile-file-icon {
+      width: 90px;
+    }
+  
+    .mobile-file-icon-svg {
+      font-size: 7rem;
+      color: var(--jcva-black-80);
+    }
+  }

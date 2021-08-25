@@ -26,6 +26,7 @@ export class RecentComponent implements OnInit {
   allowDelete = false;
   isDownloading = false;
   isLoadingVault = true;
+  isMobile = false;
   isDeleting = false;
   isLoaded = false;
   prevent = false;
@@ -43,6 +44,9 @@ export class RecentComponent implements OnInit {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
+    if(window.innerWidth <= 768) {
+      this.isMobile = true;
+    }
     if(this.userInfo.role != 3) {
       this.allowDelete = true;
     }

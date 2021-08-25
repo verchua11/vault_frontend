@@ -51,6 +51,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   isDownloading = false;
   isDeleting = false;
   isSubmitting = false;
+  isMobile = false;
   prevent = false;
   allowDelete = false;
   isFolderTooltip = false;
@@ -169,6 +170,9 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
+    if(window.innerWidth <= 768) {
+      this.isMobile = true;
+    }
     this.subscriptions.push(
       this.VaultStateService.getSelectedProject().subscribe((response:any)=>{
         this.selectedProject = response;

@@ -43,13 +43,29 @@
                 'selected-nav': selectedNav === project.project_name
               }"
             >
-              <a
+              <a *ngIf="!isMobile"
                 class="subnavi-link project-side-nav"
                 role="button"
                 nz-tooltip
                 nzTooltipTitle="{{ project.project_name }}"
                 nzTooltipColor="white"
                 (click)="setSelectedProject(project)"
+              >
+                <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
+                <p
+                    style="
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    "
+                  >
+                    {{ project.project_name }}
+                </p>
+              </a>
+              <a *ngIf="isMobile"
+                  class="subnavi-link project-side-nav"
+                  role="button"
+                  (click)="setSelectedProject(project)"
               >
                 <i class="me-2" nz-icon nzType="folder" nzTheme="outline"></i>
                 <p

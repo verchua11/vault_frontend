@@ -21,7 +21,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   metadata = [];
   userInfo: any;
   allowTrash = false;
-
+  isMobile = false;
   storageSize = 0;
 
   subscriptions: Subscription[] = [];
@@ -36,6 +36,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
+    
+    if(window.innerWidth <= 768) {
+      this.isMobile = true;
+    }
 
     if(this.userInfo.role != 3) {
       this.allowTrash = true;
@@ -77,6 +81,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public setSelectedProject(project: Project) {
     if (window.innerWidth <= 768) {
       $('.sidenav').removeClass('show-sidenav');
+      $('.ant-tooltip').hide();
     }
     this.VaultStateService.updateSelectedProject(project);
     this.selectedNav = project.project_name;

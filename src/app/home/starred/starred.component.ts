@@ -26,6 +26,7 @@ export class StarredComponent implements OnInit {
   isFile = false;
   allowDelete = false;
   isLoadingVault = true;
+  isMobile = false;
   isDownloading = false;
   isDeleting = false;
   prevent = false;
@@ -50,6 +51,9 @@ export class StarredComponent implements OnInit {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
+    if(window.innerWidth <= 768) {
+      this.isMobile = true;
+    }
     if(this.userInfo.role != 3) {
       this.allowDelete = true;
     }

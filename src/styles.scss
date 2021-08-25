@@ -616,8 +616,9 @@ nz-card {
   }
   
   .file-menu-folder {
-    display: grid;
+    display: inline-block !important;
     left: unset;
+    top: 10px;
   }
 
   .file-menu-folder a{

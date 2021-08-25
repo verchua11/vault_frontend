@@ -36,6 +36,15 @@
   .welcome-image {
     width: 100%;
   }
+  
+  .mobile-icon, .mobile-file-icon {
+    width: 90px;
+  }
+
+  .mobile-file-icon-svg {
+    font-size: 7rem;
+    color: var(--jcva-black-80);
+  }
 }
   
   @-webkit-keyframes fadein {
