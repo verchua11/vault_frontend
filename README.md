@@ -4,7 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve --configuration <develop/production>` for a dev or production server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+If you want to change the port number, just add `--port <port number>` after the environment. 
 
 ## Code scaffolding
 
@@ -12,7 +14,12 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `ng build --configuration <environment> --base-href <environment base url> ` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+Note:
+- For the environments, use the following and replace the environment - environment base url:
+* `develop` -  `https://development.jcvassociates.ph/vault/`
+* `production` - `https://vault.jcvassociates.ph/`
 
 ## Running unit tests
 

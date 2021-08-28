@@ -10,7 +10,7 @@
           <img src="assets/logos/Logo_Vault_Default.svg" alt="" />
         </div>
         <p class="jcva-card-header-orange mt-3">
-          {{ showForgotPassword ? "Forgot password" : "Sign in" }}
+          Sign in
         </p>
         <form
           *ngIf="!showForgotPassword"
@@ -47,9 +47,6 @@
             >
               Enter
             </button>
-            <a class="forgot-link" (click)="showForgotPassword = true"
-              >Forgot password?</a
-            >
           </div>
           <div
             class="alert alert-danger d-flex align-items-center mt-3"
@@ -61,32 +58,6 @@
             <a type="button" data-dismiss="alert" (click)="errorMessage = null">
               <i class="fas fa-times"></i>
             </a>
-          </div>
-        </form>
-        <form
-          *ngIf="showForgotPassword"
-          class="mt-3"
-          [formGroup]="forgotPasswordForm"
-        >
-          <div>
-            <label class="input-label-white">User ID</label>
-            <jcva-input
-              mode="white"
-              placeholder=""
-              [parentFormControl]="forgotPasswordForm.controls.username"
-            ></jcva-input>
-          </div>
-          <div class="mt-3">
-            <button type="button" class="jcva-btn-lg w-100 mb-3">
-              Reset password via email
-            </button>
-            <button
-              type="button"
-              class="jcva-btn-lg w-100 mb-3"
-              (click)="showForgotPassword = false"
-            >
-              Cancel
-            </button>
           </div>
         </form>
       </div>
