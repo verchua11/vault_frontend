@@ -19,7 +19,7 @@ Run `ng build --configuration <environment> --base-href <environment base url> `
 Note:
 - For the environments, use the following and replace the environment - environment base url:
 * `develop` -  `https://development.jcvassociates.ph/vault/`
-* `production` - `https://endpoint.jcvassociates.ph/`
+* `production` - `https://vault.jcvassociates.ph/`
 
 ## Running unit tests
 
