@@ -65,7 +65,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
   }
 
   public trashedItems(recentItems) {
-    console.log('Trashed items are:', recentItems);
     if (recentItems.trashed) {
       recentItems.trashed.forEach(item => {
         let segment = item.path.split('/');
@@ -149,7 +148,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
     }
     path = segment.join('/');
     path = path + '/';
-    console.log(path, objectTarget);
     this.subscriptions.push(
       this.VaultService.unDeleteFile(path, objectTarget).subscribe((response:any) => {
         this.subscriptions.push(
@@ -188,7 +186,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.VaultService.deleteForever(path, objectTarget).subscribe((response:any) => {
-        console.log(response);
 
         this.subscriptions.push(
           this.VaultService.viewDeletedFile().subscribe((response2:any) => {

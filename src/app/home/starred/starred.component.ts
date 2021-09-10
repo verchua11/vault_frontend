@@ -166,7 +166,6 @@ export class StarredComponent implements OnInit {
   }
 
   public copyLocation(file: any) {
-    console.log(file)
     let fullPath = file.Key;
     let pathSegment = fullPath.split('/');
     let pathProject = pathSegment.splice(2);
@@ -246,7 +245,6 @@ export class StarredComponent implements OnInit {
     this.subscriptions.push(
       this.VaultService.deleteFile(item.Key, '').subscribe(
         (response: any) => {
-          console.log(response);
           this.regenerateStarred();
           // this.VaultFolderService.refreshPage('starred');
         }
@@ -259,7 +257,6 @@ export class StarredComponent implements OnInit {
     this.subscriptions.push(
       this.VaultService.viewDeletedFile().subscribe(
         (response: any) => {
-          console.log(response);
           this.isDeleting = false;
           // this.VaultFolderService.refreshPage('starred');
         }

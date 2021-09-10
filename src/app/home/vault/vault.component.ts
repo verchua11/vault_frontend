@@ -334,12 +334,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openDirectory(stage: any, folder: any) {
-    console.log('folder is:',folder);
     clearTimeout(this.timer);
     this.prevent = true;
     if (folder.name.indexOf('.') === -1) {
       this.openedFolder = folder;
-      console.log(this.openedFolder);
       stage.currDirLevel += 1;
       stage.breadcrumbs.push(folder.name);
     }
@@ -356,7 +354,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     copiedPath += filename;
 
     let finalClipboardText = `Project: "` + this.selectedProject.project_name + `" File path: "` + copiedPath +`"`;
-    console.log(finalClipboardText);    
     
     navigator.clipboard.writeText(finalClipboardText).then(function() {
       console.log('Async: Copying to clipboard was successful!');
@@ -387,8 +384,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     $('.file-menu-folder').click(function(e) {
       if(this.isFolderTooltip == false) {
         this.isFolderTooltip = true;
-      } else {
-        console.log(e.target);
       }
     });
   }
@@ -425,8 +420,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       newBreadcrumbs.push(stage.breadcrumbs[i]);
     }
     stage.breadcrumbs = newBreadcrumbs;
-    // console.log(stage.breadcrumbs);
-    
   }
 
  
@@ -517,7 +510,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             this.selectedStage.breadcrumbs.slice(1).join('/') +
             '/'
         ).subscribe((response: any) => {
-          console.log(response);
           response.results.forEach((file) => {
             this.vaultDirectory.push({
               Key: file.key,
@@ -525,7 +517,6 @@ export class VaultComponent implements OnInit, OnDestroy {
               isDeleted:0,
               isStarred:0
             });
-            console.log(file, this.selectedProject);
             this.VaultStateService.addToRecent(
               file,
               this.selectedProject.project_id
@@ -610,7 +601,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public downloadFile(file: any) {
-    console.log(file);
     this.isDownloading = true;
     this.subscriptions.push(
       this.VaultService.downloadFile(
@@ -667,7 +657,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public openRenameModal(item: any, stage:any) {
-    console.log('item is:', item);
     this.selectedStageRename = stage;
     this.selectedItem = item;
     this.currItemName = this.selectedItem.name;

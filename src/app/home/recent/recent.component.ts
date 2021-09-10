@@ -86,7 +86,6 @@ export class RecentComponent implements OnInit {
           }
         }
       });
-      console.log('done loading');
     // }
     this.isLoadingVault = false;
     this.isDeleting = false;
@@ -123,7 +122,6 @@ export class RecentComponent implements OnInit {
   }
 
   public copyLocation(file: any) {
-    console.log(file)
     let fullPath = file.Key;
     let pathSegment = fullPath.split('/');
     let pathProject = pathSegment.splice(2);
