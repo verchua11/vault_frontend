@@ -344,13 +344,20 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.filePath = stage.breadcrumbs;
   }
 
-  public copyLocation(filename: any) {
+  public copyLocation(file) {
 
     let copiedPath = "";
-
+    var filename = "";
     this.filePath.forEach ((p) => {
       copiedPath += p + '/';
     })
+
+    if(file.newName) {
+      filename = file.newName;
+    } else {
+      filename = file.name;
+    }
+
     copiedPath += filename;
 
     let finalClipboardText = `Project: "` + this.selectedProject.project_name + `" File path: "` + copiedPath +`"`;

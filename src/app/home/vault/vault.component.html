@@ -151,7 +151,7 @@
                     <li *ngIf="file.finalStarred == 1" nz-menu-item (click)="removeFromStarred(file, false)">Remove from Starred</li>
                     <li nz-menu-item *ngIf="allowDelete" (click)="openRenameModal(file, stage)">Rename</li>
                     <li *ngIf="!file.deleted && allowDelete" nz-menu-item (click)="deleteFile(file, false)">Delete</li>
-                    <li nz-menu-item (click)="copyLocation(file.name)">Copy location</li>
+                    <li nz-menu-item (click)="copyLocation(file)">Copy location</li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
