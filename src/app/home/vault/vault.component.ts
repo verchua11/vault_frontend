@@ -13,6 +13,7 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { VaultStateService } from 'src/app/core/vault-state.service';
 import * as moment from 'moment';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { Project } from 'src/app/core/models/project.model';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
 
@@ -608,6 +609,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public downloadFile(file: any) {
+    console.log(file);
     this.isDownloading = true;
     this.subscriptions.push(
       this.VaultService.downloadFile(
@@ -636,7 +638,28 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
   }
+  public downloadTemplate(file: any) {
+    this.isDownloading = true;
+    this.subscriptions.push(
+      this.VaultService.downloadFile(
+        "",
+        "Agile-Dashboard-Main-Desktop.jpg"
+      ).subscribe(async (response: any) => {
+        this.VaultService.download(response.results.effectiveUri).subscribe(
+          (blob) => {
+            const a = document.createElement('a');
+            const objectUrl = URL.createObjectURL(blob);
+            a.href = objectUrl;
+            a.download = "Agile-Dashboard-Main-Desktop.jpg";
+            a.click();
+            URL.revokeObjectURL(objectUrl);
+          }
+        );
 
+        this.isDownloading = false;
+      })
+    );
+  }
   public addToStarred(folder: any, isFolder: boolean) {
     var objectTarget = '';
 

@@ -32,6 +32,49 @@
 
 }
 
+.methodology-links h1{
+  color: #f79421;
+  font-size: 3em;
+  font-weight: bold;
+  margin: 2rem 0;
+}
+
+.methodology h2{
+  color: var(--jcva-black-80);
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.flexbox{
+  display: flex;
+}
+
+.block{
+  display: block;
+}
+
+.c-links{
+  width: 25%;
+}
+
+.c-image{
+  display: block;
+  margin: 1rem auto;
+}
+.m-link{
+  padding: 0;
+  width: 95%;
+}
+
+.m-link li{
+  color: #f79421;
+  margin-bottom: .5rem;
+}
+
+.m-link a{
+  color: var(--jcva-black-80);
+}
 @media screen and (max-width:768px) {
   .welcome-image {
     width: 100%;
