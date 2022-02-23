@@ -32,6 +32,10 @@
 
 }
 
+.methodology{
+  position: relative;
+}
+
 .methodology-links h1{
   color: #f79421;
   font-size: 3em;
@@ -63,8 +67,8 @@
   margin: 1rem auto;
 }
 .m-link{
-  padding: 0;
-  width: 95%;
+  // padding: 0;
+  width: 100%;
 }
 
 .m-link li{
@@ -75,7 +79,40 @@
 .m-link a{
   color: var(--jcva-black-80);
 }
+
+.m-link a:hover{
+  text-decoration: underline;  
+}
+img.arrow-divider {
+  position: absolute;
+  top: 12%;
+  right: -5%;
+}
+
+.method-image-initiation {
+  background: url(https://vault.jcvassociates.ph/assets/logos/PM%20METHODOLOGY.png);
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position-x: 0%;
+  margin: auto;
+}
+.method-image-plan {
+  background: url(https://vault.jcvassociates.ph/assets/logos/PM%20METHODOLOGY.png);
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position-x: 0%;
+  margin: auto;
+}
+
 @media screen and (max-width:768px) {
+  .flexbox {
+    flex-wrap: wrap;
+  }
+  img.arrow-divider{
+    display: none;
+  }
   .welcome-image {
     width: 100%;
   }
@@ -88,8 +125,22 @@
     font-size: 7rem;
     color: var(--jcva-black-80);
   }
+  .m-link{
+    list-style-type: none;
+  }
+  .c-links{
+    text-align: center;
+    width: 50%;
+  }
+  .methodology-links h1{
+    text-align: center;
+  }
 }
-  
+@media screen and (max-width:479px) {
+  .c-links{
+    width: 100%;
+  }
+}
   @-webkit-keyframes fadein {
     from {bottom: 0; opacity: 0;} 
     to {bottom: 30px; opacity: 1;}
