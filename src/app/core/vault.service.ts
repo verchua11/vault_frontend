@@ -28,6 +28,12 @@ export class VaultService {
     return this.http.post(`${environment.awsURL}/download`, formData);
   }
 
+  downloadTemplate(path: string) {
+    const formData = new FormData();
+    formData.append('path', path);;
+    return this.http.post(`${environment.awsURL}/downloadtemplate`, formData);
+  }
+
   uploadFile(files: Array<any>, path: string) {
     const formData = new FormData();
     formData.append('path', path);
@@ -106,5 +112,11 @@ export class VaultService {
     formData.append('old', oldName);
     formData.append('new', newName);
     return this.http.post(`${environment.awsURL}/rename`, formData);
+  }
+
+  getMethodology(methodology: string) {
+    const formData = new FormData();
+    formData.append('methodology', methodology);
+    return this.http.post(`${environment.awsURL}/getmethodology`, formData);
   }
 }

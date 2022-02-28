@@ -16,6 +16,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { Project } from 'src/app/core/models/project.model';
 import { VaultFolderService } from 'src/app/core/vault-folder.service';
+import { Router } from '@angular/router';
 
 declare var $;
 @Component({
@@ -24,6 +25,7 @@ declare var $;
   styleUrls: ['./vault.component.scss'],
 })
 export class VaultComponent implements OnInit, OnDestroy {
+  selectedNav: string;
   selectedProject: Project;
   projects: Array<Project> = [];
 
@@ -31,7 +33,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   selectedStage: any;
 
   selectedNode = null;
-
+  methodologies = [];
   starredList: any;
   folders = [];
   metadata = [];
@@ -65,6 +67,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     path: new FormControl(''),
     uploadedFile: new FormControl(''),
     folderName: new FormControl(''),
+    results: new FormControl(''),
+    methodology: new FormControl('')
   });
 
   renameForm = new FormGroup({
@@ -153,13 +157,14 @@ export class VaultComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
+    private router: Router,
     private ProjectService: ProjectService,
     private VaultService: VaultService,
     private VaultStateService: VaultStateService,
     private message: NzMessageService,
     private VaultFolderService: VaultFolderService,
     private UserAuthService: UserAuthService,
-  ) {}
+  ) { }
 
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList = this.fileList.concat(file);
@@ -171,16 +176,16 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userInfo = this.UserAuthService.getUserInfo();
-    if(window.innerWidth <= 768) {
+    if (window.innerWidth <= 768) {
       this.isMobile = true;
     }
     this.subscriptions.push(
-      this.VaultStateService.getSelectedProject().subscribe((response:any)=>{
+      this.VaultStateService.getSelectedProject().subscribe((response: any) => {
         this.selectedProject = response;
         this.initData();
       }),
-    ) ;   
-    if(this.userInfo.role != 3) {
+    );
+    if (this.userInfo.role != 3) {
       this.allowDelete = true;
     }
   }
@@ -190,15 +195,15 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public initData() {
-    if(this.selectedProject != undefined) {
+    if (this.selectedProject != undefined) {
       this.isLoadingVault = true;
 
       this.subscriptions.push(
-        this.VaultService.getUserStarred().subscribe((response:any) => {
+        this.VaultService.getUserStarred().subscribe((response: any) => {
           this.starredList = response.starred;
         }),
       );
-      
+
       this.subscriptions.push(
         this.ProjectService.getProjects().subscribe((response: any) => {
           this.projects = response.projects.filter(
@@ -216,7 +221,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                   this.vaultDirectory = response.results.filter(
                     (dir: { Key: string; }) =>
                       projectVaultPaths.indexOf(dir.Key.split('/')[1] + '/') !==
-                        -1 && this.deletedFiles.indexOf(dir.Key) === -1
+                      -1 && this.deletedFiles.indexOf(dir.Key) === -1
                   );
                   this.subscriptions.push(
                     this.VaultStateService.newSelectedProject.subscribe(
@@ -229,10 +234,10 @@ export class VaultComponent implements OnInit, OnDestroy {
                   );
                   this.isLoadingVault = false;
                 },
-                (error) => {
-                  console.log('no files detected');
-                  this.isLoadingVault = false;
-                }),
+                  (error) => {
+                    console.log('no files detected');
+                    this.isLoadingVault = false;
+                  }),
               );
             })
           );
@@ -267,7 +272,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = tmpDir;
-            if(this.starredList.length > 0) {
+            if (this.starredList.length > 0) {
               this.starredList.forEach(item => {
                 if (item.path == dir.Key) {
                   if (item.is_starred == 1) {
@@ -277,7 +282,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                     finalDir['finalStarred'] = dir.isStarred;
                   }
                 } else {
-                  if ( found == 0) {
+                  if (found == 0) {
                     finalDir['finalStarred'] = (dir.isStarred) ? dir.isStarred : 0;
                   }
                 }
@@ -292,7 +297,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         } else { //if the accessed folder is beyond the general folders
           const tmpDir = dir.Key.split('/')[stage.currDirLevel - 1];
           const content = dir.Key.split('/')[stage.currDirLevel];
-          
+
           if (
             content &&
             tmpDir === this.openedFolder.name &&
@@ -303,7 +308,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           ) {
             const finalDir = dir;
             finalDir['name'] = content;
-            if(this.starredList.length > 0) {
+            if (this.starredList.length > 0) {
               this.starredList.forEach(item => {
                 if (item.path == dir.Key) {
                   if (item.is_starred == 1) {
@@ -329,7 +334,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       });
     return arr;
   }
-  
+
   public capitalizeFirstLetter(dir: any) {
     return dir.charAt(0).toUpperCase() + dir.slice(1);
   }
@@ -349,11 +354,11 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     let copiedPath = "";
     var filename = "";
-    this.filePath.forEach ((p) => {
+    this.filePath.forEach((p) => {
       copiedPath += p + '/';
     })
 
-    if(file.newName) {
+    if (file.newName) {
       filename = file.newName;
     } else {
       filename = file.name;
@@ -361,18 +366,18 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     copiedPath += filename;
 
-    let finalClipboardText = `Project: "` + this.selectedProject.project_name + `" File path: "` + copiedPath +`"`;
-    
-    navigator.clipboard.writeText(finalClipboardText).then(function() {
+    let finalClipboardText = `Project: "` + this.selectedProject.project_name + `" File path: "` + copiedPath + `"`;
+
+    navigator.clipboard.writeText(finalClipboardText).then(function () {
       console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
+    }, function (err) {
       console.error('Async: Could not copy text: ', err);
     });
 
     var x = document.getElementById("clipboard-toast");
     x.className = "show";
     x.style.zIndex = "9999";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); x.style.zIndex= "-9999"}, 3000);
+    setTimeout(function () { x.className = x.className.replace("show", ""); x.style.zIndex = "-9999" }, 3000);
   }
 
   public selectDirectory(folder: any) {
@@ -389,13 +394,13 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public checkToolTip(stage: any, folder: any) {
     // this.isFolderTooltip = false;
-    $('.file-menu-folder').click(function(e) {
-      if(this.isFolderTooltip == false) {
+    $('.file-menu-folder').click(function (e) {
+      if (this.isFolderTooltip == false) {
         this.isFolderTooltip = true;
       }
     });
   }
-  
+
   public selectFile(folder: any) {
     const _this = this;
     this.timer = setTimeout(function () {
@@ -407,9 +412,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       _this.prevent = false;
     }, 200);
     this.subscriptions.push(
-      this.VaultService.updateUserViewed(folder.Key).subscribe((response:any) => {
+      this.VaultService.updateUserViewed(folder.Key).subscribe((response: any) => {
       })
-    );   
+    );
   }
 
   public navigateBreadcrumb(stage: any, index: number) {
@@ -421,7 +426,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.openedFolder.Key.split('/')
           .slice(0, this.openedFolder.Key.split('/').length - 2)
           .join('/') +
-          '/'
+        '/'
     );
     const newBreadcrumbs = [];
     for (let i = 0; i < index - 2; i++) {
@@ -430,7 +435,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     stage.breadcrumbs = newBreadcrumbs;
   }
 
- 
+
 
   public getFormattedDate(date: string) {
     return moment(date).format('MMM DD, YYYY');
@@ -445,6 +450,15 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.isVisible = true;
   }
 
+  public openMethodology(stage: any) {
+    this.selectedStage = stage;
+    this.resetForm();
+    this.uploadForm.patchValue({
+      uploadType: '3',
+    });
+    this.isVisible = true;
+  }
+
   public closeUploadModal() {
     this.isVisible = false;
     this.renameModalVisible = false;
@@ -455,22 +469,22 @@ export class VaultComponent implements OnInit, OnDestroy {
   public renameSubmit() {
     this.isSubmitting = true;
     // if file
-    if(this.currItemName.indexOf('.') !== -1) {
+    if (this.currItemName.indexOf('.') !== -1) {
       let oldPath = this.renameForm.value.oldName;
       let oldSegment = this.currItemName.split('.');
       let oldKeySegment = this.renameForm.value.oldName.split('/');
 
       oldSegment[0] = this.renameForm.value.newName;
       let newName = oldSegment.join('.');
-      oldKeySegment[oldKeySegment.length-1] = newName;
+      oldKeySegment[oldKeySegment.length - 1] = newName;
       let newPath = oldKeySegment.join('/');
 
       //send form to api
       this.subscriptions.push(
-        this.VaultService.rename(oldPath, newPath).subscribe((response:any) => {
+        this.VaultService.rename(oldPath, newPath).subscribe((response: any) => {
           this.isSubmitting = false;
           this.vaultDirectory.forEach((p) => {
-            if(p.Key == this.selectedItem.Key) {
+            if (p.Key == this.selectedItem.Key) {
               p.newName = newName;
             }
           })
@@ -482,20 +496,20 @@ export class VaultComponent implements OnInit, OnDestroy {
       let oldPath = this.renameForm.value.oldName;
       let oldKeySegment = this.renameForm.value.oldName.split('/');
 
-      if(oldKeySegment[oldKeySegment.length-1] == '') {
-        oldKeySegment[oldKeySegment.length-2] = this.renameForm.value.newName;
+      if (oldKeySegment[oldKeySegment.length - 1] == '') {
+        oldKeySegment[oldKeySegment.length - 2] = this.renameForm.value.newName;
       } else {
-        oldKeySegment[oldKeySegment.length-1] = this.renameForm.value.newName;
+        oldKeySegment[oldKeySegment.length - 1] = this.renameForm.value.newName;
       }
 
       let newPath = oldKeySegment.join('/');
 
       //send form to api
       this.subscriptions.push(
-        this.VaultService.rename(oldPath, newPath).subscribe((response:any) => {
+        this.VaultService.rename(oldPath, newPath).subscribe((response: any) => {
           this.isSubmitting = false;
           this.vaultDirectory.forEach((p) => {
-            if(p.Key == this.selectedItem.Key) {
+            if (p.Key == this.selectedItem.Key) {
               p.newName = this.renameForm.value.newName;
             }
           })
@@ -513,17 +527,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.VaultService.uploadFile(
           this.uploadForm.value.uploadedFile,
           'projects/' +
-            this.selectedProject.vault_path +
-            this.selectedStage.vaultDir +
-            this.selectedStage.breadcrumbs.slice(1).join('/') +
-            '/'
+          this.selectedProject.vault_path +
+          this.selectedStage.vaultDir +
+          this.selectedStage.breadcrumbs.slice(1).join('/') +
+          '/'
         ).subscribe((response: any) => {
           response.results.forEach((file) => {
             this.vaultDirectory.push({
               Key: file.key,
-              finalStarred:0,
-              isDeleted:0,
-              isStarred:0
+              finalStarred: 0,
+              isDeleted: 0,
+              isStarred: 0
             });
             this.VaultStateService.addToRecent(
               file,
@@ -536,26 +550,54 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.displayMessage('Uploading file complete.');
         })
       );
-    } else {
+    } else if (this.uploadForm.value.uploadType === '2') {
       this.subscriptions.push(
         this.VaultService.uploadFolder(
           this.uploadForm.value.folderName,
           'projects/' +
-            this.selectedProject.vault_path +
-            this.selectedStage.vaultDir +
-            this.selectedStage.breadcrumbs.slice(1).join('/') +
-            '/'
+          this.selectedProject.vault_path +
+          this.selectedStage.vaultDir +
+          this.selectedStage.breadcrumbs.slice(1).join('/') +
+          '/'
         ).subscribe((response: any) => {
           this.vaultDirectory.push({
             Key: response.results.substring(0, response.results.length - 1),
-            finalStarred:0,
-            isDeleted:0,
-            isStarred:0
+            finalStarred: 0,
+            isDeleted: 0,
+            isStarred: 0
           });
           this.isSubmitting = false;
           this.selectedStage = null;
           this.closeUploadModal();
           this.displayMessage('Creating new folder complete.');
+        })
+      );
+    }
+    else {
+      // FOR METHODOLOGY TEMPLATES
+      this.subscriptions.push(
+        this.VaultService.uploadFile(
+          this.uploadForm.value.uploadedFile,
+          'templates/' +
+          this.uploadForm.value.methodology + '/'
+        ).subscribe((response: any) => {
+          response.results.forEach((file) => {
+            this.vaultDirectory.push({
+              Key: file.key,
+              finalStarred: 0,
+              isDeleted: 0,
+              isStarred: 0
+            });
+            // this.VaultStateService.addToRecent(
+            //   file,
+            //   this.selectedProject.project_id
+            // );
+          });
+          this.resetForm();
+          this.isSubmitting = false;
+          this.selectedStage = null;
+          this.closeUploadModal();
+          this.displayMessage('Uploading Template complete.');
         })
       );
     }
@@ -638,28 +680,34 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
   }
-  public downloadTemplate(file: any) {
-    this.isDownloading = true;
+  public downloadTemplate(template: any, file: any) {
+
+    // this.isDownloading = true;
     this.subscriptions.push(
-      this.VaultService.downloadFile(
-        "",
-        "Agile-Dashboard-Main-Desktop.jpg"
+      this.VaultService.downloadTemplate(
+        template
       ).subscribe(async (response: any) => {
         this.VaultService.download(response.results.effectiveUri).subscribe(
           (blob) => {
             const a = document.createElement('a');
             const objectUrl = URL.createObjectURL(blob);
             a.href = objectUrl;
-            a.download = "Agile-Dashboard-Main-Desktop.jpg";
+            a.download = file;
             a.click();
             URL.revokeObjectURL(objectUrl);
           }
         );
 
-        this.isDownloading = false;
+        // this.isDownloading = false;
       })
     );
   }
+
+  navigateTo(route: string) {
+    this.selectedNav = route;
+    this.router.navigateByUrl(`/home/${route}`);
+  }
+
   public addToStarred(folder: any, isFolder: boolean) {
     var objectTarget = '';
 
@@ -686,7 +734,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
   }
 
-  public openRenameModal(item: any, stage:any) {
+  public openRenameModal(item: any, stage: any) {
     this.selectedStageRename = stage;
     this.selectedItem = item;
     this.currItemName = this.selectedItem.name;
@@ -702,32 +750,55 @@ export class VaultComponent implements OnInit, OnDestroy {
     var segment = folder.Key.split('/');
 
     if (isFolder) {
-      if (segment[segment.length-1] == "") {
-        objectTarget = segment[segment.length-2];
+      if (segment[segment.length - 1] == "") {
+        objectTarget = segment[segment.length - 2];
         segment.pop();
         segment.pop();
       } else {
-        objectTarget = segment[segment.length-1];
+        objectTarget = segment[segment.length - 1];
         segment.pop();
       }
     } else {
-      objectTarget = segment[segment.length-1];
+      objectTarget = segment[segment.length - 1];
       segment.pop();
     }
     path = segment.join('/');
     path = path + '/';
-    
+
     this.subscriptions.push(
       this.VaultService.deleteFile(path, objectTarget).subscribe(
         (response: any) => {
           this.vaultDirectory.forEach((p) => {
-            if(p.Key == folder.Key) {
+            if (p.Key == folder.Key) {
               p.isDeleted = 1;
             }
           })
         }
       )
     );
+  }
+
+  public getMethodology(methodology) {
+    // this.isDownloading = true;
+    this.subscriptions.push(
+      this.VaultService.getMethodology(methodology
+      ).subscribe((response: any) => {
+        // this.isDownloading = false;
+        this.methodologies = response.results;
+        // this.resetForm();
+        this.uploadForm.patchValue({
+          uploadType: '3',
+          results: this.methodologies,
+          methodology: methodology
+        });
+        this.isVisible = true;
+        return this.methodologies;
+      })
+    );
+  }
+
+  public thisMethodology() {
+    this.methodologies;
   }
   // public navigateBreadcrumb(node: any, index: number) {
   //   this.selectedNode = node;

@@ -80,7 +80,7 @@
   color: var(--jcva-black-80);
 }
 
-.m-link a:hover{
+.m-link a:hover, .template-links:hover{
   text-decoration: underline;  
 }
 img.arrow-divider {
@@ -105,7 +105,16 @@ img.arrow-divider {
   background-position-x: 0%;
   margin: auto;
 }
-
+img.c-image {
+  width: 125px;
+  height: 125px;
+}
+.template-container{
+  margin: 1rem 0;
+}
+.templates{
+  margin-bottom: .5rem;
+}
 @media screen and (max-width:768px) {
   .flexbox {
     flex-wrap: wrap;
