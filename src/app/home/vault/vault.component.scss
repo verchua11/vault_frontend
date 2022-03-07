@@ -4,7 +4,7 @@
 
 .welcome-page {
     text-align: center;
-    margin-top:8rem;
+    margin-top:2.5rem;
 }
 
 .welcome-page img {
@@ -24,11 +24,12 @@
 }
 
 .file-explorer {
+   border: 0;
     width:100% !important;
 }
 
 .welcome-image {
-    width: 75%;
+    width: 65%;
 
 }
 
@@ -37,19 +38,22 @@
 }
 
 .methodology-links h1{
-  color: #f79421;
+  color: var(--jcva-steel-blue);;
   font-size: 3em;
   font-weight: bold;
   margin: 2rem 0;
 }
 
 .methodology h2{
-  color: var(--jcva-black-80);
+  color: var(--jcva-steel-blue);
   font-size: 1.2em;
   font-weight: bold;
   text-align: center;
 }
 
+.methodology h2.one-liner{
+  font-size: 1em;
+}
 .flexbox{
   display: flex;
 }
@@ -62,18 +66,16 @@
   width: 25%;
 }
 
-.c-image{
-  display: block;
-  margin: 1rem auto;
-}
+
 .m-link{
   // padding: 0;
   width: 100%;
 }
 
 .m-link li{
-  color: #f79421;
-  margin-bottom: .5rem;
+  color: var(--jcva-steel-blue);
+  padding-bottom: .5rem;
+  font-size: .9rem;
 }
 
 .m-link a{
@@ -81,12 +83,15 @@
 }
 
 .m-link a:hover, .template-links:hover{
+  color: var(--jcva-steel-blue);
   text-decoration: underline;  
 }
-img.arrow-divider {
+.arrow-divider {
+  color: var(--jcva-steel-blue);
+  font-size: 50px;
   position: absolute;
-  top: 12%;
-  right: -5%;
+  top: 4rem;
+  right: -15%;
 }
 
 .method-image-initiation {
@@ -105,9 +110,14 @@ img.arrow-divider {
   background-position-x: 0%;
   margin: auto;
 }
-img.c-image {
-  width: 125px;
-  height: 125px;
+.c-image{
+  display: block;
+  margin: 1rem auto 1.5rem auto;
+  width: 100px;
+  height: 100px;
+}
+img.c-image:hover{
+  transform: scale(1.1);
 }
 .template-container{
   margin: 1rem 0;
@@ -115,7 +125,40 @@ img.c-image {
 .templates{
   margin-bottom: .5rem;
 }
+.methodology-links{
+  margin: 2em 0;
+}
+.tooltip-reminder {
+  position: absolute;
+  top: -70px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 15px 10px;
+  background: var(--jcva-steel-blue);
+  border-radius: 10px;
+  vertical-align: middle;
+}
+.tooltip-reminder h3 {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0;
+}
+.arrow-tooltip {
+  position: absolute;
+  font-size: 40px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  color: var(--jcva-steel-blue);
+}
+// ul.m-link{
+//   display: none;
+// }
 @media screen and (max-width:768px) {
+  .tooltip-reminder{
+    display: none;
+  }
   .flexbox {
     flex-wrap: wrap;
   }

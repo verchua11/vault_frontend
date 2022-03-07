@@ -28,10 +28,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   selectedNav: string;
   selectedProject: Project;
   projects: Array<Project> = [];
-
   vaultDirectory = [];
   selectedStage: any;
-
+  isMenu = false;
   selectedNode = null;
   methodologies = [];
   starredList: any;
@@ -52,6 +51,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   renameModalVisible = false;
   isLoadingVault = false;
   isDownloading = false;
+  isGettingTemplate = false;
   isDeleting = false;
   isSubmitting = false;
   isMobile = false;
@@ -59,7 +59,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   allowDelete = false;
   isFolderTooltip = false;
   timer: any;
-
+  loaderTimer: any;
   filePath = [];
 
   uploadForm = new FormGroup({
@@ -779,11 +779,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   public getMethodology(methodology) {
-    // this.isDownloading = true;
+    this.isGettingTemplate = true;
     this.subscriptions.push(
       this.VaultService.getMethodology(methodology
       ).subscribe((response: any) => {
-        // this.isDownloading = false;
+
         this.methodologies = response.results;
         // this.resetForm();
         this.uploadForm.patchValue({
@@ -791,7 +791,12 @@ export class VaultComponent implements OnInit, OnDestroy {
           results: this.methodologies,
           methodology: methodology
         });
-        this.isVisible = true;
+        this.isGettingTemplate = false;
+        //this.isVisible = true;
+        const _this = this;
+        this.loaderTimer = setTimeout(function () {
+          _this.isVisible = true;
+        }, 400);
         return this.methodologies;
       })
     );
@@ -799,6 +804,66 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public thisMethodology() {
     this.methodologies;
+  }
+  public showMethod(stage: string) {
+    if (this.isMobile == false) {
+      $('html, body').animate({ scrollTop: $(document).height() }, 1000);
+    }
+    // $('.c-links').on('hide.bs.collapse', function () {
+    //   return false;
+    // })
+
+  }
+
+  public triggerIn() {
+    if (this.isMobile == false) {
+      $('html, body').animate({ scrollTop: $(document).height() }, 2000);
+    }
+    // $("." + stage).mouseenter(function () {
+    //   $('.' + stage + '-menu').collapse('show');
+    // });
+    // $("." + stage).mouseleave(function () {
+    //   $('.' + stage + '-menu').collapse('hide');
+    // });
+    $('.initiation').mouseenter(function () {
+      $('.tooltip-reminder').fadeOut();
+      $('.initiation-menu').collapse('show');
+    });
+    $('.initiation').mouseleave(function () {
+      $('.initiation-menu').collapse('hide');
+    });
+    $('.plan').mouseenter(function () {
+      $('.tooltip-reminder').fadeOut();
+      $('.plan-menu').collapse('show');
+    });
+    $('.plan').mouseleave(function () {
+      $('.plan-menu').collapse('hide');
+    });
+    $('.monitor').mouseenter(function () {
+      $('.tooltip-reminder').fadeOut();
+      $('.monitor-menu').collapse('show');
+    });
+    $('.monitor').mouseleave(function () {
+      $('.monitor-menu').collapse('hide');
+    });
+    $('.execute').mouseenter(function () {
+      $('.tooltip-reminder').fadeOut();
+      $('.execute-menu').collapse('show');
+    });
+    $('.execute').mouseleave(function () {
+      $('.execute-menu').collapse('hide');
+    });
+    $('.close').mouseenter(function () {
+      $('.tooltip-reminder').fadeOut();
+      $('.close-menu').collapse('show');
+    });
+    $('.close').mouseleave(function () {
+      $('.close-menu').collapse('hide');
+    });
+
+  }
+  public triggerOut(stage: string) {
+    $('.' + stage + '-menu').collapse('hide');
   }
   // public navigateBreadcrumb(node: any, index: number) {
   //   this.selectedNode = node;

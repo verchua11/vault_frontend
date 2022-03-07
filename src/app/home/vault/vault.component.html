@@ -1,4 +1,4 @@
-<div class="page-wrapper">
+<div class="page-wrapper" (mouseover)="triggerIn();">
   <span *ngIf="selectedProject" class="file-info-header project-name-inside">{{ selectedProject.project_name }}</span>
   <div class="main-content">
     <div class="file-explorer">
@@ -78,6 +78,127 @@
           </div>
         </div>
       </div> -->
+      <div *ngIf="!selectedProject" class="methodology-links">
+        <!-- <h1>PM Methodology</h1> -->
+        <div class="flexbox">
+          <div class="navi-link methodology c-links initiation" data-bs-toggle="collapse" href="#initiation-menu"
+            role="button" aria-expanded="false" aria-controls="initiation-menu" (click)="showMethod('initiation')">
+            <div class="tooltip-reminder">
+              <div class="tooltips-custom">
+                <h3>Hover to see templates</h3>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="arrow-tooltip"></i>
+              </div>
+            </div>
+            <div>
+              <h2>INITIATION</h2>
+              <img class="c-image initiation-img" src="https://vault.jcvassociates.ph/assets/logos/INITIATION.svg"
+                width="100">
+              <div class="subnavi">
+                <ul class="m-link initiation-menu collapse" id="initiation-menu">
+                  <li><a (click)="getMethodology('Project Charter | Business Case')">Project Charter / Business Case</a>
+                  </li>
+                  <li><a (click)="getMethodology('Stakeholders Register')">Stakeholders Register</a></li>
+                  <li><a (click)="getMethodology('Technical Due Diligence')">Technical Due Diligence</a></li>
+                  <li><a (click)="getMethodology('Responsibility Assignment Matrix')">Responsibility Assignment
+                      Matrix</a>
+                  </li>
+                  <li><a (click)="getMethodology('Owners Project Requirements | Project Brief')">Owner's Project
+                      Requirements/Project Brief</a></li>
+                  <li><a (click)="getMethodology('Risk Register')">Risk Register</a></li>
+                  <li><a (click)="getMethodology('High Level Budget & Schedule')">High Level Budget & Schedule</a></li>
+                </ul>
+              </div>
+            </div>
+            <i nz-icon nzType="caret-right" nzTheme="outline" class="arrow-divider"></i>
+          </div>
+          <div #navAccount class="navi-link methodology c-links plan" data-bs-toggle="collapse" href="#plan-menu"
+            role="button" aria-expanded="false" aria-controls="plan-menu" (click)="showMethod('plan')"
+            (mouseover)="triggerIn('plan')">
+            <div>
+              <h2>PLAN</h2>
+              <!-- <div class="method-image-plan">
+            </div> -->
+              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/PLAN.svg" width="100">
+              <ul class="m-link plan-menu collapse" id="plan-menu">
+                <li><a (click)="getMethodology('Project Execution Plan')">Project Execution Plan</a></li>
+                <li><a (click)="getMethodology('Project Quality Plan')">Project Quality Plan</a></li>
+                <li><a (click)="getMethodology('EH&S Plan')">EH&S Plan</a></li>
+                <li><a (click)="getMethodology('Design Compliance Report')">Design Compliance Report</a></li>
+                <li><a (click)="getMethodology('Value Engineering Report')">Value Engineering Report</a></li>
+                <li><a (click)="getMethodology('Constructibility Assessment')">Constructibility Assessment</a></li>
+                <li><a (click)="getMethodology('Procurement Strategy')">Procurement Strategy</a></li>
+                <li><a (click)="getMethodology('Tender Event Programme')">Tender Event Programme</a></li>
+                <li><a (click)="getMethodology('Prequalification Exercise')">Prequalification Exercise</a></li>
+                <li><a (click)="getMethodology('Awarding of Contracts & Services')">Awarding of Contracts & Services</a>
+                </li>
+                <li><a (click)="getMethodology('Authority Submissions & Approvals')">Authority Submissions &
+                    Approvals</a>
+                </li>
+              </ul>
+            </div>
+            <!-- <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="25"> -->
+            <i nz-icon nzType="caret-right" nzTheme="outline" class="arrow-divider"></i>
+          </div>
+          <div #navAccount class="navi-link methodology c-links execute" data-bs-toggle="collapse" href="#execute-menu"
+            role="button" aria-expanded="false" aria-controls="execute-menu" (click)="showMethod('execute')"
+            (mouseover)="triggerIn('execute')">
+            <div>
+              <h2>EXECUTE</h2>
+              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/EXECUTE.svg" width="100">
+              <ul class="m-link execute-menu collapse" id="execute-menu">
+                <li><a (click)="getMethodology('Contracts Administration')">Contracts Administration</a></li>
+                <li><a (click)="getMethodology('Compliance with Plans & Specifications')">Compliance with Plans &
+                    Specifications</a></li>
+              </ul>
+            </div>
+            <!-- <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="25"> -->
+            <i nz-icon nzType="caret-right" nzTheme="outline" class="arrow-divider"></i>
+          </div>
+          <div #navAccount class="navi-link methodology c-links monitor" data-bs-toggle="collapse" href="#monitor-menu"
+            role="button" aria-expanded="false" aria-controls="monitor-menu" (click)="showMethod('monitor')"
+            (mouseover)="triggerIn('monitor')">
+            <div>
+              <h2 class="one-liner">MONITOR & CONTROL</h2>
+              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/MONITOR.svg" width="100">
+              <ul class="m-link monitor-menu collapse" id="monitor-menu">
+                <li><a (click)="getMethodology('Change Control')">Change Control</a></li>
+                <li><a (click)="getMethodology('Cost & Programme Management')">Cost & Programme Management</a></li>
+                <li><a (click)="getMethodology('Construction Progress Reporting')">Construction Progress Reporting</a>
+                </li>
+                <li><a (click)="getMethodology('QA|QC Reporting')">QA/QC Reporting</a></li>
+                <li><a (click)="getMethodology('EH&S Compliance Review')">EH&S Compliance Review</a></li>
+                <li><a (click)="getMethodology('Procurement Tracking')">Procurement Tracking</a></li>
+                <li><a (click)="getMethodology('Works Coordination')">Works Coordination</a></li>
+                <li><a (click)="getMethodology('Payment Evaluation')">Payment Evaluation</a></li>
+                <li><a (click)="getMethodology('Variation Orders Review')">Variation Orders Review</a></li>
+              </ul>
+            </div>
+            <!-- <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="25"> -->
+            <i nz-icon nzType="caret-right" nzTheme="outline" class="arrow-divider"></i>
+          </div>
+          <div #navAccount class="navi-link methodology c-links close" data-bs-toggle="collapse" href="#close-menu"
+            role="button" aria-expanded="false" aria-controls="close-menu" (click)="showMethod('close')"
+            (mouseover)="triggerIn('close')">
+            <div>
+              <h2>CLOSE</h2>
+              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/CLOSE.svg" width="100">
+              <ul class="m-link close-menu collapse" id="close-menu">
+                <li><a (click)="getMethodology('Testing & Commissioning')">Testing & Commissioning</a></li>
+                <li><a (click)="getMethodology('Defects Rectification')">Defects Rectification</a></li>
+                <li><a (click)="getMethodology('Final Accounts & Cost Report')">Final Accounts & Cost Report</a></li>
+                <li><a (click)="getMethodology('Close-out Documents')">Close-out Documents</a></li>
+                <li><a (click)="getMethodology('Authorities Approvals and Clearances')">Authorities Approvals and
+                    Clearances</a></li>
+                <li><a (click)="getMethodology('Vendors Performance Evaluation')">Vendors Performance Evaluation</a>
+                </li>
+                <li><a (click)="getMethodology('Service Level Agreements & Preventive Maintenance Schedules')">Service
+                    Level Agreements & Preventive Maintenance Schedules</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
       <nz-collapse nzAccordion *ngIf="selectedProject" class="mt-2">
         <nz-collapse-panel *ngFor="
             let stage of selectedProject.is_dnb_traditional === 'dnb'
@@ -265,85 +386,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!selectedProject" class="methodology-links">
-    <h1>PM Methodology</h1>
-    <div class="flexbox">
-      <div class="methodology c-links">
-        <h2>INITIATION</h2>
-        <!-- <div class="method-image-initiation">
-        </div> -->
-        <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/INITIATION.svg" width="120">
-        <ul class="block m-link">
-          <li><a (click)="getMethodology('Project Charter | Business Case')">Project Charter / Business Case</a></li>
-          <li><a (click)="getMethodology('Stakeholders Register')">Stakeholders Register</a></li>
-          <li><a (click)="getMethodology('Technical Due Diligence')">Technical Due Diligence</a></li>
-          <li><a (click)="getMethodology('Responsibility Assignment Matrix')">Responsibility Assignment Matrix</a></li>
-          <li><a (click)="getMethodology('Owners Project Requirements | Project Brief')">Owner's Project Requirements/Project Brief</a></li>
-          <li><a (click)="getMethodology('Risk Register')">Risk Register</a></li>
-          <li><a (click)="getMethodology('High Level Budget & Schedule')">High Level Budget & Schedule</a></li>
-        </ul>
-        <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="30">
-      </div>
-      <div class="methodology c-links">
-        <h2>PLAN</h2>
-        <!-- <div class="method-image-plan">
-        </div> -->
-        <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/PLAN.svg" width="120">
-        <ul class="block m-link">
-          <li><a (click)="getMethodology('Project Execution Plan')">Project Execution Plan</a></li>
-          <li><a (click)="getMethodology('Project Quality Plan')">Project Quality Plan</a></li>
-          <li><a (click)="getMethodology('EH&S Plan')">EH&S Plan</a></li>
-          <li><a (click)="getMethodology('Design Compliance Report')">Design Compliance Report</a></li>
-          <li><a (click)="getMethodology('Value Engineering Report')">Value Engineering Report</a></li>
-          <li><a (click)="getMethodology('Constructibility Assessment')">Constructibility Assessment</a></li>
-          <li><a (click)="getMethodology('Procurement Strategy')">Procurement Strategy</a></li>
-          <li><a (click)="getMethodology('Tender Event Programme')">Tender Event Programme</a></li>
-          <li><a (click)="getMethodology('Prequalification Exercise')">Prequalification Exercise</a></li>
-          <li><a (click)="getMethodology('Awarding of Contracts & Services')">Awarding of Contracts & Services</a></li>
-          <li><a (click)="getMethodology('Authority Submissions & Approvals')">Authority Submissions & Approvals</a></li>
-        </ul>
-        <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="30">
-      </div>
-      <div class="methodology c-links">
-        <h2>EXECUTE</h2>
-        <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/EXECUTE.svg" width="120">
-        <ul class="block m-link">
-          <li><a (click)="getMethodology('Contracts Administration')">Contracts Administration</a></li>
-          <li><a (click)="getMethodology('Compliance with Plans & Specifications')">Compliance with Plans & Specifications</a></li>
-        </ul>
-        <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="30">
-      </div>
-      <div class="methodology c-links">
-        <h2>MONITOR & CONTROL</h2>
-        <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/MONITOR.svg" width="120">
-        <ul class="block m-link">
-          <li><a (click)="getMethodology('Change Control')">Change Control</a></li>
-          <li><a (click)="getMethodology('Cost & Programme Management')">Cost & Programme Management</a></li>
-          <li><a (click)="getMethodology('Construction Progress Reporting')">Construction Progress Reporting</a></li>
-          <li><a (click)="getMethodology('QA|QC Reporting')">QA/QC Reporting</a></li>
-          <li><a (click)="getMethodology('EH&S Compliance Review')">EH&S Compliance Review</a></li>
-          <li><a (click)="getMethodology('Procurement Tracking')">Procurement Tracking</a></li>
-          <li><a (click)="getMethodology('Works Coordination')">Works Coordination</a></li>
-          <li><a (click)="getMethodology('Payment Evaluation')">Payment Evaluation</a></li>
-          <li><a (click)="getMethodology('Variation Orders Review')">Variation Orders Review</a></li>
-        </ul>
-        <img class="arrow-divider" src="https://vault.jcvassociates.ph/assets/logos/arrow.png" width="30">
-      </div>
-      <div class="methodology c-links">
-        <h2>CLOSE</h2>
-        <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/CLOSE.svg" width="120">
-        <ul class="block m-link">
-          <li><a (click)="getMethodology('Testing & Commissioning')">Testing & Commissioning</a></li>
-          <li><a (click)="getMethodology('Defects Rectification')">Defects Rectification</a></li>
-          <li><a (click)="getMethodology('Final Accounts & Cost Report')">Final Accounts & Cost Report</a></li>
-          <li><a (click)="getMethodology('Close-out Documents')">Close-out Documents</a></li>
-          <li><a (click)="getMethodology('Authorities Approvals and Clearances')">Authorities Approvals and Clearances</a></li>
-          <li><a (click)="getMethodology('Vendors Performance Evaluation')">Vendors Performance Evaluation</a></li>
-          <li><a (click)="getMethodology('Service Level Agreements & Preventive Maintenance Schedules')">Service Level Agreements & Preventive Maintenance Schedules</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+
 </div>
 
 <div [ngClass]="
@@ -356,6 +399,12 @@
     isDownloading ? 'preloader-overlay-show' : 'preloader-overlay-hide'
   " class="preloader-overlay">
   <nz-spin nzSimple [nzSize]="'large'" nzTip="Retrieving file..."></nz-spin>
+</div>
+
+<div [ngClass]="
+    isGettingTemplate ? 'preloader-overlay-show' : 'preloader-overlay-hide'
+  " class="preloader-overlay">
+  <nz-spin nzSimple [nzSize]="'large'" nzTip="Getting templates..."></nz-spin>
 </div>
 
 <div [ngClass]="isDeleting ? 'preloader-overlay-show' : 'preloader-overlay-hide'" class="preloader-overlay">
