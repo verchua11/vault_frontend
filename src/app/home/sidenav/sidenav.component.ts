@@ -41,7 +41,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.isMobile = true;
     }
 
-    if(this.userInfo.role != 3) {
+    if(this.userInfo.role != 3 && this.userInfo.role != 4) {
       this.allowTrash = true;
     }
     

@@ -185,7 +185,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.initData();
       }),
     );
-    if (this.userInfo.role != 3) {
+    if (this.userInfo.role != 3 && this.userInfo.role != 4) {
       this.allowDelete = true;
     }
   }
@@ -817,48 +817,62 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   public triggerIn() {
     if (this.isMobile == false) {
-      $('html, body').animate({ scrollTop: $(document).height() }, 2000);
+      $('html, body').animate({ scrollTop: $(document).height() }, 1000);
     }
-    // $("." + stage).mouseenter(function () {
-    //   $('.' + stage + '-menu').collapse('show');
-    // });
-    // $("." + stage).mouseleave(function () {
-    //   $('.' + stage + '-menu').collapse('hide');
-    // });
-    $('.initiation').mouseenter(function () {
+    $('.initiation > div').mouseenter(function () {
       $('.tooltip-reminder').fadeOut();
-      $('.initiation-menu').collapse('show');
+      setTimeout(() => {
+        $('.initiation-menu').collapse('show');
+      }, 200);
     });
     $('.initiation').mouseleave(function () {
-      $('.initiation-menu').collapse('hide');
+      setTimeout(() => {
+        $('.initiation-menu').collapse('hide');
+      }, 200);
     });
-    $('.plan').mouseenter(function () {
+    $('.plan > div').mouseenter(function () {
       $('.tooltip-reminder').fadeOut();
-      $('.plan-menu').collapse('show');
+      setTimeout(() => {
+        $('.plan-menu').collapse('show');
+      }, 200);
     });
     $('.plan').mouseleave(function () {
-      $('.plan-menu').collapse('hide');
+      setTimeout(() => {
+        $('.plan-menu').collapse('hide');
+      }, 200);
     });
-    $('.monitor').mouseenter(function () {
+    $('.monitor > div').mouseenter(function () {
       $('.tooltip-reminder').fadeOut();
-      $('.monitor-menu').collapse('show');
+      setTimeout(() => {
+        $('.monitor-menu').collapse('show');
+      }, 200);
     });
     $('.monitor').mouseleave(function () {
-      $('.monitor-menu').collapse('hide');
+      setTimeout(() => {
+        $('.monitor-menu').collapse('hide');
+      }, 200);
     });
-    $('.execute').mouseenter(function () {
+    $('.execute > div').mouseenter(function () {
       $('.tooltip-reminder').fadeOut();
-      $('.execute-menu').collapse('show');
+      setTimeout(() => {
+        $('.execute-menu').collapse('show');
+      }, 200);
     });
     $('.execute').mouseleave(function () {
-      $('.execute-menu').collapse('hide');
+      setTimeout(() => {
+        $('.execute-menu').collapse('hide');
+      }, 200);
     });
-    $('.close').mouseenter(function () {
+    $('.close > div').mouseenter(function () {
       $('.tooltip-reminder').fadeOut();
-      $('.close-menu').collapse('show');
+      setTimeout(() => {
+        $('.close-menu').collapse('show');
+      }, 200);
     });
     $('.close').mouseleave(function () {
-      $('.close-menu').collapse('hide');
+      setTimeout(() => {
+        $('.close-menu').collapse('hide');
+      }, 200);
     });
 
   }

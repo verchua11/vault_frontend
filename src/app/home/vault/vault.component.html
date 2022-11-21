@@ -118,7 +118,7 @@
               <h2>PLAN</h2>
               <!-- <div class="method-image-plan">
             </div> -->
-              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/PLAN.svg" width="100">
+              <img class="c-image plan-img" src="https://vault.jcvassociates.ph/assets/logos/PLAN.svg" width="100">
               <ul class="m-link plan-menu collapse" id="plan-menu">
                 <li><a (click)="getMethodology('Project Execution Plan')">Project Execution Plan</a></li>
                 <li><a (click)="getMethodology('Project Quality Plan')">Project Quality Plan</a></li>
@@ -144,7 +144,7 @@
             (mouseover)="triggerIn('execute')">
             <div>
               <h2>EXECUTE</h2>
-              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/EXECUTE.svg" width="100">
+              <img class="c-image execute-img" src="https://vault.jcvassociates.ph/assets/logos/EXECUTE.svg" width="100">
               <ul class="m-link execute-menu collapse" id="execute-menu">
                 <li><a (click)="getMethodology('Contracts Administration')">Contracts Administration</a></li>
                 <li><a (click)="getMethodology('Compliance with Plans & Specifications')">Compliance with Plans &
@@ -159,7 +159,7 @@
             (mouseover)="triggerIn('monitor')">
             <div>
               <h2 class="one-liner">MONITOR & CONTROL</h2>
-              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/MONITOR.svg" width="100">
+              <img class="c-image monitor-img" src="https://vault.jcvassociates.ph/assets/logos/MONITOR.svg" width="100">
               <ul class="m-link monitor-menu collapse" id="monitor-menu">
                 <li><a (click)="getMethodology('Change Control')">Change Control</a></li>
                 <li><a (click)="getMethodology('Cost & Programme Management')">Cost & Programme Management</a></li>
@@ -181,7 +181,7 @@
             (mouseover)="triggerIn('close')">
             <div>
               <h2>CLOSE</h2>
-              <img class="c-image" src="https://vault.jcvassociates.ph/assets/logos/CLOSE.svg" width="100">
+              <img class="c-image close-img" src="https://vault.jcvassociates.ph/assets/logos/CLOSE.svg" width="100">
               <ul class="m-link close-menu collapse" id="close-menu">
                 <li><a (click)="getMethodology('Testing & Commissioning')">Testing & Commissioning</a></li>
                 <li><a (click)="getMethodology('Defects Rectification')">Defects Rectification</a></li>
@@ -216,7 +216,7 @@
           </div>
           <p class="file-explorer-header">Folders</p>
           <div class="folders">
-            <nz-card *ngIf="stage.currDirLevel > 3" class="folder-card-add mb-2" (click)="openFolderUploadModal(stage)">
+            <nz-card *ngIf="stage.currDirLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFolderUploadModal(stage)">
               <div *ngIf="isMobile" class="file-thumbnail" (click)="openDirectory(stage, folder)">
                 <img class="mobile-icon" src="assets/icons/Icon_New Folder.svg">
               </div>
@@ -280,7 +280,7 @@
             Files
           </p>
           <div class="folders">
-            <nz-card *ngIf="stage.currDirLevel > 3" class="folder-card-add mb-2" (click)="openFileUploadModal(stage)">
+            <nz-card *ngIf="stage.currDirLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFileUploadModal(stage)">
               <div class="file-thumbnail">
                 <img class="mobile-file-icon" src="assets/icons/Icon_New File.svg" alt="" />
               </div>
@@ -427,7 +427,7 @@
         </nz-input-group>
       </div>
       <div *ngIf="uploadForm.get('uploadType').value === '3'">
-        <nz-upload [(nzFileList)]="fileList" nzMultiple="true" [nzBeforeUpload]="beforeUpload">
+        <nz-upload [(nzFileList)]="fileList" nzMultiple="true" *ngIf="userInfo.role !== '4'" [nzBeforeUpload]="beforeUpload">
           <button nz-button><i nz-icon nzType="upload"></i>Add Template</button>
         </nz-upload>
         <nz-input-group nzAddOnBefore="" class="template-container">

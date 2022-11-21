@@ -2,6 +2,9 @@
     margin:0 !important;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 .welcome-page {
     text-align: center;
     margin-top:2.5rem;
@@ -151,6 +154,33 @@ img.c-image:hover{
   right: 0;
   margin: auto;
   color: var(--jcva-steel-blue);
+}
+.collapse {
+  visibility: hidden;
+}
+.collapse.show {
+  visibility: visible;
+  display: block;
+}
+.collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease;
+}
+.collapsing.width {
+  -webkit-transition-property: width, visibility;
+  transition-property: width, visibility;
+  width: 0;
+  height: auto;
+}
+.m-link{
+  transition: .5s ease;
 }
 // ul.m-link{
 //   display: none;

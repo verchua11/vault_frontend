@@ -47,7 +47,7 @@ export class RecentComponent implements OnInit {
     if(window.innerWidth <= 768) {
       this.isMobile = true;
     }
-    if(this.userInfo.role != 3) {
+    if(this.userInfo.role != 3 && this.userInfo.role !== '4') {
       this.allowDelete = true;
     }
 
