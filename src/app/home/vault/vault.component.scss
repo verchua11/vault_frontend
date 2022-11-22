@@ -5,6 +5,9 @@
 html {
   scroll-behavior: smooth;
 }
+.full-width-container{
+  overflow: initial !important;
+}
 .welcome-page {
     text-align: center;
     margin-top:2.5rem;
