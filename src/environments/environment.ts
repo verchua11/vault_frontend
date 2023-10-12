@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiURL: 'https://endpoint.jcvassociates.ph/api',
-  awsURL: 'https://endpoint.jcvassociates.ph/aws',
+  apiURL: 'https://development.jcvassociates.ph/api',
+  awsURL: 'https://development.jcvassociates.ph/aws',
 };
 
 /*

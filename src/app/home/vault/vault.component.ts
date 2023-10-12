@@ -45,7 +45,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   currItemName: any;
   selectedStageRename: any;
   userInfo: any;
-  filteredFile: [];
+
   isStarred = false;
   isVisible = false;
   renameModalVisible = false;
@@ -252,7 +252,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
   //get subdirectory of each folder/files inside the parent folder
   public getSubdirectory(stage: any, isFolder: boolean) {
-
     const arr = [];
     this.vaultDirectory
       .filter(
@@ -328,35 +327,14 @@ export class VaultComponent implements OnInit, OnDestroy {
               finalDir['finalStarred'] = 0;
             }
             if (dir.isDeleted == 0) {
-              // stage.breadcrumbs.forEach((segment) => {
-              //   if(finalDir.includes(segment[1]))
-              // });
               arr.push(finalDir);
-
             }
           }
         }
       });
-
     return arr;
   }
-  public verifyFile(stage: any, file) {
-    // if (stage.breadcrumbs[2]) {
-    if (stage.breadcrumbs[2]) {
-      var splitKey = file.split('/');
 
-      if (splitKey[3] == stage.breadcrumbs[1]) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    else {
-      return true;
-    }
-    // }
-  }
   public capitalizeFirstLetter(dir: any) {
     return dir.charAt(0).toUpperCase() + dir.slice(1);
   }
@@ -450,13 +428,11 @@ export class VaultComponent implements OnInit, OnDestroy {
           .join('/') +
         '/'
     );
-  
     const newBreadcrumbs = [];
     for (let i = 0; i < index - 2; i++) {
       newBreadcrumbs.push(stage.breadcrumbs[i]);
     }
     stage.breadcrumbs = newBreadcrumbs;
-
   }
 
 
@@ -516,7 +492,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.displayMessage('Succesfully renamed the file.');
         })
       );
-
     } else { //folder 
       let oldPath = this.renameForm.value.oldName;
       let oldKeySegment = this.renameForm.value.oldName.split('/');
@@ -524,7 +499,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       if (oldKeySegment[oldKeySegment.length - 1] == '') {
         oldKeySegment[oldKeySegment.length - 2] = this.renameForm.value.newName;
       } else {
-        oldKeySegment[oldKeySegment.length - 2] = this.renameForm.value.newName;
+        oldKeySegment[oldKeySegment.length - 1] = this.renameForm.value.newName;
       }
 
       let newPath = oldKeySegment.join('/');
@@ -706,15 +681,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
   }
   public downloadTemplate(template: any, file: any) {
+
     // this.isDownloading = true;
     this.subscriptions.push(
       this.VaultService.downloadTemplate(
         template
       ).subscribe(async (response: any) => {
-
         this.VaultService.download(response.results.effectiveUri).subscribe(
           (blob) => {
-            console.log(blob);
             const a = document.createElement('a');
             const objectUrl = URL.createObjectURL(blob);
             a.href = objectUrl;
@@ -780,24 +754,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         objectTarget = segment[segment.length - 2];
         segment.pop();
         segment.pop();
-        console.log('1');
       } else {
-        objectTarget = segment[segment.length - 2];
+        objectTarget = segment[segment.length - 1];
         segment.pop();
-        segment.pop();
-        console.log('2');
       }
     } else {
       objectTarget = segment[segment.length - 1];
       segment.pop();
-      console.log('3');
     }
-    console.log(segment);
-
     path = segment.join('/');
     path = path + '/';
-    console.log(path);
-    console.log(objectTarget);
+
     this.subscriptions.push(
       this.VaultService.deleteFile(path, objectTarget).subscribe(
         (response: any) => {
@@ -824,7 +791,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           results: this.methodologies,
           methodology: methodology
         });
-
         this.isGettingTemplate = false;
         //this.isVisible = true;
         const _this = this;

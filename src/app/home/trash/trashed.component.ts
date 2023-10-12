@@ -177,7 +177,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
         segment.pop();
       }
       objectTarget = objectTarget + '/';
-      
     } else {
       objectTarget = segment[segment.length-1];
       segment.pop();
@@ -186,8 +185,6 @@ export class TrashedComponent implements OnInit, OnDestroy {
     path = segment.join('/');
     path = path + '/';
    
-    console.log(path);
-    console.log(objectTarget);
 
     this.subscriptions.push(
       this.VaultService.deleteForever(path, objectTarget).subscribe((response:any) => {
