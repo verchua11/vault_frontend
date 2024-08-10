@@ -201,22 +201,22 @@
       </div>
       <nz-collapse nzAccordion *ngIf="selectedProject" class="mt-2">
         <nz-collapse-panel *ngFor="
-            let stage of selectedProject.is_dnb_traditional === 'dnb'
-              ? stagesDnB
-              : stagesTraditional;
+            let stage of stages;
             let stageIdx = index
-          " [nzHeader]="stage.name" [nzActive]="stage.active">
+          " [nzHeader]="stage.name" 
+          [nzActive]="stage.active"
+          (nzActiveChange)="onCollapsePanelChange(stage)">
           <div class="folder-breadcrumb">
             <nz-breadcrumb>
-              <nz-breadcrumb-item *ngFor="let breadcrumb of stage.breadcrumbs; let i = index">
+              <nz-breadcrumb-item *ngFor="let breadcrumb of currBreadcrumbs; let i = index">
                 <i *ngIf="i === 0" nz-icon nzType="home" nzTheme="outline" class="me-2"></i>
-                <a (click)="navigateBreadcrumb(stage, i)">{{ breadcrumb }}</a>
+                <a (click)="navigateBreadcrumb(i)">{{ breadcrumb }}</a>
               </nz-breadcrumb-item>
             </nz-breadcrumb>
           </div>
           <p class="file-explorer-header">Folders</p>
           <div class="folders">
-            <nz-card *ngIf="stage.currDirLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFolderUploadModal(stage)">
+            <nz-card *ngIf="currDirectoryLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFolderUploadModal(stage)">
               <div *ngIf="isMobile" class="file-thumbnail" (click)="openDirectory(stage, folder)">
                 <img class="mobile-icon" src="assets/icons/Icon_New Folder.svg">
               </div>
@@ -225,37 +225,39 @@
                 <p>New Folder</p>
               </div>
             </nz-card>
-            <nz-card class="folder-card mb-2" *ngFor="
-                let folder of getSubdirectory(stage, true);
+            <nz-card class="folder-card mb-2" 
+            *ngFor="
+                let folder of getDirectoryFolders();
                 let folderIdx = index
-              " [ngClass]="{
+              " 
+              [ngClass]="{
                 'selected-node': selectedFile?.Key == folder.Key
-              }" (dblclick)="openDirectory(stage, folder)" (click)="selectDirectory(folder)">
+              }" (dblclick)="onFolderDoubleClick(folder)" (click)="selectDirectory(folder)">
               <div class="file-menu-folder">
-                <a nz-dropdown [nzDropdownMenu]="fileMenu1" nzPlacement="bottomRight"><i nz-icon nzType="more"></i></a>
+                <a nz-dropdown [nzDropdownMenu]="fileMenu1" nzPlacement="bottomRight"  *ngIf="currDirectoryLevel > 3"><i nz-icon nzType="more"></i></a>
                 <nz-dropdown-menu #fileMenu1="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li *ngIf="folder.finalStarred == 0" nz-menu-item (click)="addToStarred(folder, true)">Add to
+                  <ul nz-menu >
+                    <!-- <li *ngIf="folder.finalStarred == 0" nz-menu-item (click)="addToStarred(folder, true)">Add to
                       Starred</li>
                     <li *ngIf="folder.finalStarred == 1" nz-menu-item (click)="removeFromStarred(folder, true)">Remove
-                      from Starred</li>
-                    <li *ngIf="stage.currDirLevel > 3 && allowDelete" (click)="openRenameModal(folder, stage)"
+                      from Starred</li> -->
+                    <li *ngIf="currDirectoryLevel > 3 && allowDelete" (click)="openRenameModal(folder, stage)"
                       nz-menu-item>Rename</li>
-                    <li *ngIf="stage.currDirLevel > 3 && !folder.deleted && allowDelete" nz-menu-item
+                    <li *ngIf="currDirectoryLevel > 3 && !folder.deleted && allowDelete" nz-menu-item
                       (click)="deleteFile(folder, true)">Delete</li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <div *ngIf="isMobile" class="file-thumbnail" (click)="openDirectory(stage, folder)">
+              <div *ngIf="isMobile" class="file-thumbnail" >
                 <img class="mobile-icon" src="assets/icons/mobile/Icon_Folder.svg">
               </div>
-              <div class="folder-card-content" (click)="openDirectory(stage, folder)">
+              <div class="folder-card-content">
                 <img *ngIf="isMobile" src="assets/icons/mobile/Icon_Folder.svg">
                 <i *ngIf="folder.name.indexOf('.') === -1 && !isMobile" nz-icon nzType="folder" nzTheme="fill"></i>
                 <p *ngIf="!folder.newName">
                   {{
-                  stageIdx +
-                  1 +
+                  (stageIdx +
+                  1) +
                   "." +
                   (folderIdx + 1 | number: "2.0") +
                   " " +
@@ -264,8 +266,8 @@
                 </p>
                 <p *ngIf="folder.newName">
                   {{
-                  stageIdx +
-                  1 +
+                  (stageIdx +
+                  1) +
                   "." +
                   (folderIdx + 1 | number: "2.0") +
                   " " +
@@ -276,11 +278,11 @@
             </nz-card>
           </div>
 
-          <p *ngIf="stage.currDirLevel > 3" class="file-explorer-header">
+          <p *ngIf="currDirectoryLevel > 3" class="file-explorer-header">
             Files
           </p>
           <div class="folders">
-            <nz-card *ngIf="stage.currDirLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFileUploadModal(stage)">
+            <nz-card *ngIf="currDirectoryLevel > 3 && userInfo.role !== '4'" class="folder-card-add mb-2" (click)="openFileUploadModal(stage)">
               <div class="file-thumbnail">
                 <img class="mobile-file-icon" src="assets/icons/Icon_New File.svg" alt="" />
               </div>
@@ -289,7 +291,7 @@
                 <p>New File</p>
               </div>
             </nz-card>
-            <nz-card class="folder-card mb-2" *ngFor="let file of getSubdirectory(stage, false)" [ngClass]="{
+            <nz-card class="folder-card mb-2" *ngFor="let file of getDirectoryFiles();" [ngClass]="{
                 'selected-node': selectedFile?.Key == file.Key
               }" (click)="selectFile(file)">
               <div class="file-menu">
@@ -313,9 +315,9 @@
                 <i *ngIf="!isMobile" nz-icon [nzType]="getFileIcon(file.name)" nzTheme="fill"></i>
               </div>
               <div class="folder-card-content">
-                <i *ngIf="file.name.indexOf('.') !== -1 && isMobile" nz-icon [nzType]="getFileIcon(file.name)"
+                <i *ngIf="file.type === TYPE_FILE && isMobile" nz-icon [nzType]="getFileIcon(file.name)"
                   nzTheme="outline"></i>
-                <i *ngIf="file.name.indexOf('.') !== -1 && !isMobile" nz-icon [nzType]="getFileIcon(file.name)"
+                <i *ngIf="file.type === TYPE_FILE && !isMobile" nz-icon [nzType]="getFileIcon(file.name)"
                   nzTheme="fill"></i>
 
                 <p nz-tooltip nzTooltipTitle="{{ file.name }}" nzTooltipColor="white" *ngIf="!file.newName">
@@ -341,33 +343,22 @@
         <div *ngIf="selectedFile">
           <div class="folder-icon">
             <i class="mt-2 mb-2" nz-icon [nzType]="
-                selectedFile.Key.indexOf('.') === -1 ? 'folder' : 'file'
+                selectedFile.type.toLowerCase()
               " nzTheme="outline"></i>
           </div>
           <div class="file-metadata">
             <p>
-              File Name:
-              {{
-              selectedFile.Key.indexOf(".") === -1
-              ? selectedFile.Key.split("/")[
-              selectedFile.Key.split("/").length - 2
-              ]
-              : selectedFile.Key.split("/")[
-              selectedFile.Key.split("/").length - 1
-              ]
-              }}
+              File Name: {{selectedFile.name}}
             </p>
             <p>
               Type:
-              {{ selectedFile.Key.indexOf(".") === -1 ? "Folder" : "File" }}
+              {{ selectedFile.type}}
             </p>
-            <p>
-              Size: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB ({{
-              selectedFile.Size
-              }}
-              bytes)
+            <p *ngIf="selectedFile.type === 'File'">
+              Size: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB 
+              ({{ selectedFile.Size }} bytes)
             </p>
-            <p>
+            <p *ngIf="selectedFile.type === 'File'">
               Storage used: {{ (selectedFile.Size / 1000000).toFixed(2) }} MB
               ({{ selectedFile.Size }}
               bytes)
